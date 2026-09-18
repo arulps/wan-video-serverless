@@ -28,7 +28,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 COPY app /app/app
 COPY handler.py /app/handler.py
 
-RUN python -c "import wan; from app import generator, storage; import runpod"
+RUN python -c "import decord, einops, peft, safetensors, librosa, runpod, huggingface_hub, hf_transfer, boto3, cv2, imageio, torchvision, torchaudio, diffusers, transformers, tokenizers, accelerate, easydict, ftfy, tqdm, numpy; print('deps OK')"
 
 ARG BAKE_TI2V=0
 RUN if [ "$BAKE_TI2V" = "1" ]; then \
