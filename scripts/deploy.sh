@@ -72,10 +72,10 @@ PYEOF
 echo "== upserting template: $TPL_NAME =="
 TPL_ID="$(runpodctl template list --type user -o json 2>/dev/null | find_by_name "$TPL_NAME" || true)"
 if [ -n "$TPL_ID" ]; then
-    runpodctl template update "$TPL_ID" --image "$TPL_IMAGE" --disk "$TPL_DISK" --env "$TPL_ENV"
+    runpodctl template update "$TPL_ID" --image "$TPL_IMAGE" --container-disk-in-gb "$TPL_DISK" --env "$TPL_ENV"
     echo "updated template $TPL_ID"
 else
-    if TPL_ID="$(runpodctl template create --name "$TPL_NAME" --image "$TPL_IMAGE" --disk "$TPL_DISK" --env "$TPL_ENV" --serverless -o json 2>/dev/null | find_by_name "$TPL_NAME" || true)"; then
+    if TPL_ID="$(runpodctl template create --name "$TPL_NAME" --image "$TPL_IMAGE" --container-disk-in-gb "$TPL_DISK" --env "$TPL_ENV" --serverless -o json 2>/dev/null | find_by_name "$TPL_NAME" || true)"; then
         :
     fi
     if [ -z "$TPL_ID" ]; then
@@ -100,9 +100,7 @@ if [ -n "$EP_ID" ]; then
         runpodctl serverless update "$EP_ID" \
             --workers-min "$(cfg endpoint.workersMin)" \
             --workers-max "$(cfg endpoint.workersMax)" \
-            --execution-timeout "$(cfg endpoint.executionTimeoutSec)" \
-            --idle-timeout "$(cfg endpoint.idleTimeoutSec)" \
-            --flash-boot "$(cfg endpoint.flashBoot)"
+            --idle-timeout "$(cfg endpoint.idleTimeoutSec)"
         echo "updated endpoint $EP_ID"
     else
         echo "GPU pool differs from config; recreating endpoint"
@@ -120,7 +118,7 @@ if [ -z "$EP_ID" ]; then
         --workers-max "$(cfg endpoint.workersMax)" \
         --execution-timeout "$(cfg endpoint.executionTimeoutSec)" \
         --idle-timeout "$(cfg endpoint.idleTimeoutSec)" \
-        --flash-boot "$(cfg endpoint.flashBoot)" \
+        --flash-boot="$(cfg endpoint.flashBoot)" \
         --scale-by "$(cfg endpoint.scaleBy)" \
         --scale-threshold "$(cfg endpoint.scaleThreshold)" \
         --min-cuda-version "$(cfg endpoint.minCudaVersion)" \
