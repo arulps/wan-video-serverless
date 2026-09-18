@@ -43,13 +43,20 @@ print(json.dumps(env, separators=(",", ":")))
 PYEOF
 )"
 
-find_by_name() {
-    "$PY" - "$1" <<'PYEOF'
+find_id_by_name() {
+    "$PY" - "$1" "$2" <<'PYEOF'
 import json
 import sys
 
-name = sys.argv[1]
-data = json.load(sys.stdin)
+name, path = sys.argv[1], sys.argv[2]
+try:
+    with open(path, encoding="utf-8") as fp:
+        data = json.load(fp)
+except Exception:
+    sys.exit(0)
+
+if isinstance(data, dict):
+    data = [data]
 
 def walk(node):
     if isinstance(node, dict):
@@ -70,21 +77,26 @@ PYEOF
 }
 
 echo "== upserting template: $TPL_NAME =="
-TPL_ID="$(runpodctl template list --type user -o json 2>/dev/null | find_by_name "$TPL_NAME" || true)"
+EP_FILE=""
+TPL_FILE="$(mktemp)"
+trap 'rm -f "$TPL_FILE" "$EP_FILE"' EXIT
+runpodctl template list --type user -o json 2>/dev/null > "$TPL_FILE" || true
+TPL_ID="$(find_id_by_name "$TPL_NAME" "$TPL_FILE" || true)"
 if [ -n "$TPL_ID" ]; then
     runpodctl template update "$TPL_ID" --image "$TPL_IMAGE" --container-disk-in-gb "$TPL_DISK" --env "$TPL_ENV"
     echo "updated template $TPL_ID"
 else
-    if TPL_ID="$(runpodctl template create --name "$TPL_NAME" --image "$TPL_IMAGE" --container-disk-in-gb "$TPL_DISK" --env "$TPL_ENV" --serverless -o json 2>/dev/null | find_by_name "$TPL_NAME" || true)"; then
-        :
-    fi
+    runpodctl template create --name "$TPL_NAME" --image "$TPL_IMAGE" --container-disk-in-gb "$TPL_DISK" --env "$TPL_ENV" --serverless -o json 2>/dev/null > "$TPL_FILE" || true
+    TPL_ID="$(find_id_by_name "$TPL_NAME" "$TPL_FILE" || true)"
     if [ -z "$TPL_ID" ]; then
-        TPL_ID="$(runpodctl template list --type user -o json 2>/dev/null | find_by_name "$TPL_NAME" || true)"
+        runpodctl template list --type user -o json 2>/dev/null > "$TPL_FILE" || true
+        TPL_ID="$(find_id_by_name "$TPL_NAME" "$TPL_FILE" || true)"
     fi
     if [ -n "$TPL_ID" ]; then
         echo "created/confirmed template $TPL_ID"
     else
         echo "FATAL: could not find or create template '$TPL_NAME'"
+        rm -f "$TPL_FILE"
         exit 1
     fi
 fi
@@ -93,7 +105,9 @@ EP_NAME="$(cfg endpoint.name)"
 DESIRED_POOL="${GPU_POOL:-$(cfg endpoint.gpuPool)}"
 
 echo "== upserting endpoint: $EP_NAME =="
-EP_ID="$(runpodctl serverless list -o json 2>/dev/null | find_by_name "$EP_NAME" || true)"
+EP_FILE="$(mktemp)"
+runpodctl serverless list -o json 2>/dev/null > "$EP_FILE" || true
+EP_ID="$(find_id_by_name "$EP_NAME" "$EP_FILE" || true)"
 if [ -n "$EP_ID" ]; then
     CURRENT="$(runpodctl serverless get "$EP_ID" -o json 2>/dev/null || true)"
     if [ -n "$CURRENT" ] && grep -Fq "$DESIRED_POOL" <<< "$CURRENT"; then
@@ -122,8 +136,9 @@ if [ -z "$EP_ID" ]; then
         --scale-by "$(cfg endpoint.scaleBy)" \
         --scale-threshold "$(cfg endpoint.scaleThreshold)" \
         --min-cuda-version "$(cfg endpoint.minCudaVersion)" \
-        --wait
-    EP_ID="$(runpodctl serverless list -o json 2>/dev/null | find_by_name "$EP_NAME" || true)"
+        --wait || true
+    runpodctl serverless list -o json 2>/dev/null > "$EP_FILE" || true
+    EP_ID="$(find_id_by_name "$EP_NAME" "$EP_FILE" || true)"
     echo "created endpoint: ${EP_ID:+yes}"
 fi
 
