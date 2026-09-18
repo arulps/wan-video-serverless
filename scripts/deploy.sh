@@ -103,6 +103,10 @@ fi
 
 EP_NAME="$(cfg endpoint.name)"
 DESIRED_POOL="${GPU_POOL:-$(cfg endpoint.gpuPool)}"
+DESIRED_GPU="$(cfg endpoint.gpuId 2>/dev/null || true)"
+if [ -z "$DESIRED_GPU" ]; then
+    DESIRED_GPU="$DESIRED_POOL"
+fi
 
 echo "== upserting endpoint: $EP_NAME =="
 EP_FILE="$(mktemp)"
@@ -110,7 +114,7 @@ runpodctl serverless list -o json 2>/dev/null > "$EP_FILE" || true
 EP_ID="$(find_id_by_name "$EP_NAME" "$EP_FILE" || true)"
 if [ -n "$EP_ID" ]; then
     CURRENT="$(runpodctl serverless get "$EP_ID" -o json 2>/dev/null || true)"
-    if [ -n "$CURRENT" ] && grep -Fq "$DESIRED_POOL" <<< "$CURRENT"; then
+    if [ -n "$CURRENT" ] && grep -Fq "$DESIRED_GPU" <<< "$CURRENT"; then
         runpodctl serverless update "$EP_ID" \
             --workers-min "$(cfg endpoint.workersMin)" \
             --workers-max "$(cfg endpoint.workersMax)" \
@@ -127,7 +131,7 @@ if [ -z "$EP_ID" ]; then
     runpodctl serverless create \
         --name "$EP_NAME" \
         --template-id "$TPL_ID" \
-        --gpu-id "$DESIRED_POOL" \
+        --gpu-id "$DESIRED_GPU" \
         --workers-min "$(cfg endpoint.workersMin)" \
         --workers-max "$(cfg endpoint.workersMax)" \
         --execution-timeout "$(cfg endpoint.executionTimeoutSec)" \
@@ -135,8 +139,7 @@ if [ -z "$EP_ID" ]; then
         --flash-boot="$(cfg endpoint.flashBoot)" \
         --scale-by "$(cfg endpoint.scaleBy)" \
         --scale-threshold "$(cfg endpoint.scaleThreshold)" \
-        --min-cuda-version "$(cfg endpoint.minCudaVersion)" \
-        --wait || true
+        --min-cuda-version "$(cfg endpoint.minCudaVersion)" || true
     runpodctl serverless list -o json 2>/dev/null > "$EP_FILE" || true
     EP_ID="$(find_id_by_name "$EP_NAME" "$EP_FILE" || true)"
     echo "created endpoint: ${EP_ID:+yes}"

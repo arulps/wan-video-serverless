@@ -13,6 +13,7 @@
   "endpoint": {
     "name": "wan-video-serverless",
     "gpuPool": "ADA_24",
+    "gpuId": "NVIDIA GeForce RTX 4090",
     "gpuCount": 1,
     "workersMin": 0,
     "workersMax": 3,
