@@ -28,6 +28,8 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 COPY app /app/app
 COPY handler.py /app/handler.py
 
+RUN python -c "import wan; from app import generator, storage; import runpod"
+
 ARG BAKE_TI2V=0
 RUN if [ "$BAKE_TI2V" = "1" ]; then \
       python -c "from huggingface_hub import snapshot_download; snapshot_download('Wan-AI/Wan2.2-TI2V-5B', local_dir='/models/ti2v-5B')"; \
