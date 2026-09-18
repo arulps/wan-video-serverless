@@ -1,4 +1,4 @@
-ARG PYTORCH_IMAGE=runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04
+ARG PYTORCH_IMAGE=pytorch/pytorch:2.8.0-cuda12.8-cudnn9-runtime
 FROM ${PYTORCH_IMAGE}
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -6,6 +6,13 @@ ENV HF_HOME=/models
 ENV HF_HUB_ENABLE_HF_TRANSFER=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app:/opt/wan
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git \
+        ffmpeg \
+        libgl1 \
+        libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /app /opt/wan /models /tmp/wan-input /tmp/wan-output
 
