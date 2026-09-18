@@ -1,0 +1,9 @@
+.git
+.github
+*.md
+.env
+client
+scripts
+config
+out
+.gitignore

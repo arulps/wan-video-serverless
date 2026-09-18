@@ -1,0 +1,29 @@
+{
+  "template": {
+    "name": "wan-video-serverless",
+    "image": "ghcr.io/your-org/wan-video-serverless:latest",
+    "containerDiskGb": 200,
+    "env": {
+      "HF_HOME": "/models",
+      "HF_HUB_ENABLE_HF_TRANSFER": "1",
+      "DEFAULT_TASK": "ti2v-5B",
+      "LOG_LEVEL": "INFO"
+    }
+  },
+  "endpoint": {
+    "name": "wan-video-serverless",
+    "gpuPool": "ADA_24",
+    "gpuCount": 1,
+    "workersMin": 0,
+    "workersMax": 3,
+    "idleTimeoutSec": 300,
+    "executionTimeoutSec": 1800,
+    "scaleBy": "delay",
+    "scaleThreshold": 4,
+    "flashBoot": true,
+    "minCudaVersion": "12.8"
+  },
+  "s3": {
+    "defaultOutputBucket": null
+  }
+}
