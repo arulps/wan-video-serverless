@@ -12,9 +12,8 @@ RUN mkdir -p /app /opt/wan /models /tmp/wan-input /tmp/wan-output
 WORKDIR /opt/wan
 ARG WAN_GIT_REF=main
 RUN git clone --depth 1 --branch ${WAN_GIT_REF} https://github.com/Wan-Video/Wan2.2.git /opt/wan && \
-    pip install --no-cache-dir -r /opt/wan/requirements.txt || \
-    { grep -v '^flash_attn' /opt/wan/requirements.txt > /tmp/wan-req.txt && \
-      pip install --no-cache-dir -r /tmp/wan-req.txt; }
+    grep -v -E '(^|[,; ])flash_attn([,; ]|$)' /opt/wan/requirements.txt > /tmp/wan-req.txt && \
+    pip install --no-cache-dir -r /tmp/wan-req.txt
 
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
