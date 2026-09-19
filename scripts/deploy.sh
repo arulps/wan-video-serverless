@@ -76,6 +76,19 @@ walk(data)
 PYEOF
 }
 
+REGISTRY_AUTH_ID="${RUNPOD_REGISTRY_AUTH_ID:-}"
+if [ -z "$REGISTRY_AUTH_ID" ]; then
+    REG_FILE="$(mktemp)"
+    if runpodctl registry list -o json 2>/dev/null > "$REG_FILE"; then
+        REGISTRY_AUTH_ID="$(find_id_by_name "ghcr-wan" "$REG_FILE" || true)"
+    fi
+    rm -f "$REG_FILE"
+fi
+REG_AUTH_ARGS=()
+if [ -n "$REGISTRY_AUTH_ID" ]; then
+    REG_AUTH_ARGS=(--registry-auth-id "$REGISTRY_AUTH_ID")
+fi
+
 echo "== upserting template: $TPL_NAME =="
 EP_FILE=""
 TPL_FILE="$(mktemp)"
@@ -83,10 +96,10 @@ trap 'rm -f "$TPL_FILE" "$EP_FILE"' EXIT
 runpodctl template list --type user -o json 2>/dev/null > "$TPL_FILE" || true
 TPL_ID="$(find_id_by_name "$TPL_NAME" "$TPL_FILE" || true)"
 if [ -n "$TPL_ID" ]; then
-    runpodctl template update "$TPL_ID" --image "$TPL_IMAGE" --container-disk-in-gb "$TPL_DISK" --env "$TPL_ENV"
+    runpodctl template update "$TPL_ID" --image "$TPL_IMAGE" --container-disk-in-gb "$TPL_DISK" --env "$TPL_ENV" "${REG_AUTH_ARGS[@]}"
     echo "updated template $TPL_ID"
 else
-    runpodctl template create --name "$TPL_NAME" --image "$TPL_IMAGE" --container-disk-in-gb "$TPL_DISK" --env "$TPL_ENV" --serverless -o json 2>/dev/null > "$TPL_FILE" || true
+    runpodctl template create --name "$TPL_NAME" --image "$TPL_IMAGE" --container-disk-in-gb "$TPL_DISK" --env "$TPL_ENV" --serverless "${REG_AUTH_ARGS[@]}" -o json 2>/dev/null > "$TPL_FILE" || true
     TPL_ID="$(find_id_by_name "$TPL_NAME" "$TPL_FILE" || true)"
     if [ -z "$TPL_ID" ]; then
         runpodctl template list --type user -o json 2>/dev/null > "$TPL_FILE" || true
