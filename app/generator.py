@@ -48,16 +48,27 @@ def _install_decode_guard(pipe):
     vae = pipe.vae
     orig_decode = vae.decode
 
+    def _mem():
+        try:
+            free, total = torch.cuda.mem_get_info(0)
+            return ("free=%.2fGiB total=%.2fGiB allocated=%.2fGiB reserved=%.2fGiB" % (
+                free / 2**30, total / 2**30,
+                torch.cuda.memory_allocated() / 2**30, torch.cuda.memory_reserved() / 2**30))
+        except Exception as exc:  # pragma: no cover
+            return "mem stats unavailable: %s" % exc
+
     def guarded_decode(zs):
         DECODE_STATE["vae_decode_dtype"] = str(getattr(vae, "dtype", "?"))
         DECODE_STATE["vae_decode_retried"] = False
         gc.collect()
         torch.cuda.empty_cache()
+        log.info("VAE decode start (%s): %s", getattr(vae, "dtype", "?"), _mem())
         try:
             return orig_decode(zs)
         except torch.cuda.OutOfMemoryError as exc:
-            log.warning("VAE decode OOM in %s: %s -- retrying in bfloat16",
-                        getattr(vae, "dtype", "?"), str(exc).splitlines()[0][:160])
+            first = str(exc).splitlines()[0][:200]
+            log.warning("VAE decode OOM in %s: %s | %s -- retrying in bfloat16",
+                        getattr(vae, "dtype", "?"), first, _mem())
             try:
                 vae.model.clear_cache()
             except Exception:
@@ -68,7 +79,21 @@ def _install_decode_guard(pipe):
             vae.dtype = torch.bfloat16
             DECODE_STATE["vae_decode_dtype"] = str(torch.bfloat16)
             DECODE_STATE["vae_decode_retried"] = True
-            return orig_decode(zs)
+            log.info("VAE decode retry (bf16): %s", _mem())
+            try:
+                return orig_decode(zs)
+            except Exception as exc2:
+                raise RuntimeError(
+                    "VAE decode failed twice: fp32 OOM (%s) then bf16 retry raised %s: %s | %s"
+                    % (first, type(exc2).__name__, str(exc2).splitlines()[0][:300], _mem())
+                ) from exc2
+        except Exception as exc:
+            # Not an OOM: surface the type and memory state so it can't be mistaken for one.
+            raise RuntimeError(
+                "VAE decode raised %s (not OOM) in %s: %s | %s"
+                % (type(exc).__name__, getattr(vae, "dtype", "?"),
+                   str(exc).splitlines()[0][:300], _mem())
+            ) from exc
 
     vae.decode = guarded_decode
     pipe._decode_guarded = True
@@ -162,8 +187,12 @@ def generate(
     if image_path:
         img = Image.open(image_path).convert("RGB")
 
+    try:
+        gpu_name = torch.cuda.get_device_name(0)
+    except Exception:
+        gpu_name = None
     info = {
-        "task": task, "size": size, "width": w, "height": h,
+        "task": task, "size": size, "width": w, "height": h, "gpu": gpu_name,
         "frame_num": frame_num, "fps": fps, "duration_s": round(frame_num / fps, 3),
         "steps": steps, "shift": shift,
         "guide_scale": list(guide_scale) if isinstance(guide_scale, tuple) else guide_scale,

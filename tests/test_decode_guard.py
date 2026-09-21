@@ -63,7 +63,7 @@ pipe2.vae.decode(zs)
 assert pipe2.vae.calls == [(torch.float32, torch.float32)]
 assert G.DECODE_STATE == {"vae_decode_dtype": "torch.float32", "vae_decode_retried": False}
 
-# 3. a non-OOM error is not swallowed
+# 3. a non-OOM error is not swallowed, and is labelled as not-OOM
 class Boom(FakeVAE):
     def decode(self, zs):
         raise RuntimeError("something else")
@@ -72,6 +72,19 @@ G._install_decode_guard(pipe3)
 try:
     pipe3.vae.decode(zs); raise SystemExit("should have raised")
 except RuntimeError as e:
-    assert "something else" in str(e)
+    assert "something else" in str(e) and "not OOM" in str(e) and "RuntimeError" in str(e)
+
+# 4. OOM then bf16 retry also fails -> one message carrying both causes
+class Twice(FakeVAE):
+    def decode(self, zs):
+        self.calls.append(self.dtype)
+        raise torch.cuda.OutOfMemoryError("CUDA out of memory. Tried to allocate 1.30 GiB")
+pipe4 = types.SimpleNamespace(vae=Twice(False))
+G._install_decode_guard(pipe4)
+try:
+    pipe4.vae.decode(zs); raise SystemExit("should have raised")
+except RuntimeError as e:
+    assert "failed twice" in str(e) and "bf16 retry raised OutOfMemoryError" in str(e)
+    assert pipe4.vae.calls == [torch.float32, torch.bfloat16]
 
 print("DECODE GUARD CHECKS PASSED")
