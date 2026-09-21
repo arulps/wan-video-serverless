@@ -36,7 +36,10 @@ param(
   # ~928x928 video. By default the ref is composited onto a 1280x704 canvas first.
   [switch]$NoFitToFrame,
   [string]$CanvasColor = "#F6EFE3",
-  [double]$SubjectHeightFrac = 0.90
+  [double]$SubjectHeightFrac = 0.90,
+  # Optional crop of the source before fitting, "x,y,w,h" in source pixels (e.g. to take one
+  # panel out of a multi-view turnaround sheet).
+  [string]$CropPx = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -85,6 +88,14 @@ New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 if (-not $NoFitToFrame) {
   Add-Type -AssemblyName System.Drawing
   $src = [System.Drawing.Image]::FromFile($Image)
+  if ($CropPx) {
+    $c = $CropPx -split "," | ForEach-Object { [int]$_.Trim() }
+    if ($c.Count -ne 4 -or $c[2] -le 0 -or $c[3] -le 0 -or ($c[0] + $c[2]) -gt $src.Width -or ($c[1] + $c[3]) -gt $src.Height) { throw "bad -CropPx `"$CropPx`" for a $($src.Width)x$($src.Height) image (want x,y,w,h inside the image)" }
+    $rect = New-Object System.Drawing.Rectangle $c[0], $c[1], $c[2], $c[3]
+    $cropped = ([System.Drawing.Bitmap]$src).Clone($rect, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+    $src.Dispose(); $src = $cropped
+    Write-Host ("cropped source to {0}x{1} at {2},{3}" -f $c[2], $c[3], $c[0], $c[1])
+  }
   $cw, $ch = 1280, 704
   $canvas = New-Object System.Drawing.Bitmap $cw, $ch
   $g = [System.Drawing.Graphics]::FromImage($canvas)
@@ -175,7 +186,11 @@ while (((Get-Date) -lt $deadline) -and ($jobs | Where-Object { $_.status -notin 
       Write-Host ("SAVED steps={0}: {1} ({2:N0} B) t_sample={3}s t_total={4}s vae={5}" -f $j.steps, $file, (Get-Item $file).Length, $meta.t_sample_s, $meta.t_total_s, $meta.vae_decode_dtype)
     } elseif ($s.status -in "FAILED", "CANCELLED", "TIMED_OUT") {
       $j.status = $s.status; $j.meta = $s
-      Write-Host ("steps={0} {1}: {2}" -f $j.steps, $s.status, ($s.error | Out-String).Substring(0, [Math]::Min(400, ($s.error | Out-String).Length)))
+      $errText = ($s.error | Out-String).Trim()
+      $errFile = Join-Path $outDir ("{0}-{1}-{2}steps-error.txt" -f $stamp, $Label, $j.steps)
+      [IO.File]::WriteAllText($errFile, $errText)
+      $tail = $errText.Substring([Math]::Max(0, $errText.Length - 700))
+      Write-Host ("steps={0} {1}: ...{2}`n  (full error: {3})" -f $j.steps, $s.status, $tail, $errFile)
     }
   }
   Start-Sleep -Seconds $PollSec
