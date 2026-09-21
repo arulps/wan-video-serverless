@@ -143,8 +143,10 @@ if [ -n "$EP_ID" ]; then
         --workers-min "$(cfg endpoint.workersMin)" \
         --workers-max "$(cfg endpoint.workersMax)" \
         --idle-timeout "$(cfg endpoint.idleTimeoutSec)" \
-        --execution-timeout "$(cfg endpoint.executionTimeoutSec)" \
         "${MODEL_REF_ARGS[@]}"
+    # NOTE: runpodctl 2.14.0 `serverless update` has NO --execution-timeout flag
+    # (it exists only on create). executionTimeoutSec therefore reaches an
+    # existing endpoint only via the console/REST API, not this script.
     echo "updated endpoint $EP_ID (template $TPL_ID, model ref ${MODEL_REF:-none})"
 
     # The previous version compared the configured GPU against a substring grep
