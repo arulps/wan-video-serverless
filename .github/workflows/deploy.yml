@@ -68,4 +68,9 @@ jobs:
           RUNPOD_REGISTRY_AUTH_ID: ${{ secrets.RUNPOD_REGISTRY_AUTH_ID }}
           TEMPLATE_IMAGE: ${{ needs.build.outputs.image }}
           TPL_ENV_HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TPL_ENV_S3_BUCKET: ${{ secrets.TPL_ENV_S3_BUCKET }}
+          TPL_ENV_S3_ENDPOINT_URL: ${{ secrets.TPL_ENV_S3_ENDPOINT_URL }}
+          TPL_ENV_AWS_REGION: ${{ secrets.TPL_ENV_AWS_REGION }}
+          TPL_ENV_AWS_ACCESS_KEY_ID: ${{ secrets.TPL_ENV_AWS_ACCESS_KEY_ID }}
+          TPL_ENV_AWS_SECRET_ACCESS_KEY: ${{ secrets.TPL_ENV_AWS_SECRET_ACCESS_KEY }}
         run: bash scripts/deploy.sh
