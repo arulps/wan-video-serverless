@@ -126,21 +126,35 @@ EP_FILE="$(mktemp)"
 runpodctl serverless list -o json 2>/dev/null > "$EP_FILE" || true
 EP_ID="$(find_id_by_name "$EP_NAME" "$EP_FILE" || true)"
 if [ -n "$EP_ID" ]; then
+    # Re-bind the template on EVERY deploy. Without --template-id the endpoint
+    # keeps whatever template it was already pointing at, so a freshly built
+    # image could be upserted into a template the endpoint no longer used and
+    # the deploy would report success while changing nothing that runs.
+    runpodctl serverless update "$EP_ID" \
+        --template-id "$TPL_ID" \
+        --workers-min "$(cfg endpoint.workersMin)" \
+        --workers-max "$(cfg endpoint.workersMax)" \
+        --idle-timeout "$(cfg endpoint.idleTimeoutSec)"
+    echo "updated endpoint $EP_ID (template $TPL_ID)"
+
+    # The previous version compared the configured GPU against a substring grep
+    # of the whole endpoint JSON and, on any mismatch, DELETED and recreated the
+    # endpoint. That hands you a new endpoint id while .env still holds the old
+    # one -- the origin of the 404-chasing documented in RUNBOOK section 6.
+    # Warn; never destroy. Deleting an endpoint is a deliberate human act.
     CURRENT="$(runpodctl serverless get "$EP_ID" -o json 2>/dev/null || true)"
-    if [ -n "$CURRENT" ] && grep -Fq "$DESIRED_GPU" <<< "$CURRENT"; then
-        runpodctl serverless update "$EP_ID" \
-            --workers-min "$(cfg endpoint.workersMin)" \
-            --workers-max "$(cfg endpoint.workersMax)" \
-            --idle-timeout "$(cfg endpoint.idleTimeoutSec)"
-        echo "updated endpoint $EP_ID"
-    else
-        echo "GPU pool differs from config; recreating endpoint"
-        runpodctl serverless delete "$EP_ID" || true
-        EP_ID=""
+    if [ -n "$CURRENT" ] && ! grep -Fq "$DESIRED_GPU" <<< "$CURRENT"; then
+        echo "WARNING: endpoint $EP_ID does not report GPU '$DESIRED_GPU'."
+        echo "WARNING: NOT recreating it. Change the GPU in the RunPod console,"
+        echo "WARNING: or delete the endpoint by hand if that is really intended."
     fi
 fi
 
 if [ -z "$EP_ID" ]; then
+    # No trailing '|| true' here. If create fails -- an unsupported flag on this
+    # runpodctl version, a quota refusal, a bad --gpu-id -- we want the real
+    # error and a non-zero exit, not a silent fall-through to the FATAL below
+    # with the actual cause swallowed.
     runpodctl serverless create \
         --name "$EP_NAME" \
         --template-id "$TPL_ID" \
@@ -152,10 +166,10 @@ if [ -z "$EP_ID" ]; then
         --flash-boot="$(cfg endpoint.flashBoot)" \
         --scale-by "$(cfg endpoint.scaleBy)" \
         --scale-threshold "$(cfg endpoint.scaleThreshold)" \
-        --min-cuda-version "$(cfg endpoint.minCudaVersion)" || true
+        --min-cuda-version "$(cfg endpoint.minCudaVersion)"
     runpodctl serverless list -o json 2>/dev/null > "$EP_FILE" || true
     EP_ID="$(find_id_by_name "$EP_NAME" "$EP_FILE" || true)"
-    echo "created endpoint: ${EP_ID:+yes}"
+    echo "created endpoint: ${EP_ID:-FAILED}"
 fi
 
 if [ -z "${EP_ID:-}" ]; then
@@ -163,7 +177,30 @@ if [ -z "${EP_ID:-}" ]; then
     exit 1
 fi
 
+# Rotate workers onto the new image.
+#
+# runpodctl updates the TEMPLATE, but already-running worker containers keep the
+# image they booted with. Without this step a deploy leaves stale workers serving
+# the old code while every dashboard says the template is current -- the exact
+# trap written up in RUNBOOK section 6, which until now had to be worked around
+# by hand on every deploy.
+#
+# Scaling max to 0 terminates any in-flight job, which is acceptable immediately
+# after a build. Set ROTATE_WORKERS=0 to skip.
+if [ "${ROTATE_WORKERS:-1}" = "1" ]; then
+    echo "== rotating workers onto $TPL_IMAGE =="
+    runpodctl serverless update "$EP_ID" --workers-min 0 --workers-max 0
+    sleep "${ROTATE_DRAIN_SEC:-30}"
+    runpodctl serverless update "$EP_ID" \
+        --workers-min "$(cfg endpoint.workersMin)" \
+        --workers-max "$(cfg endpoint.workersMax)"
+    echo "workers rotated; next cold start will pull $TPL_IMAGE"
+else
+    echo "NOTE: ROTATE_WORKERS=0 -- running workers may still serve the OLD image."
+fi
+
 echo
 echo "Done. Endpoint: $EP_NAME ($EP_ID)"
+echo "Image: $TPL_IMAGE"
 echo "Test: curl -H \"Authorization: Bearer \$RUNPOD_API_KEY\" -H 'Content-Type: application/json'"
 echo "  https://api.runpod.ai/v2/$EP_ID/runsync -d '{\"input\":{\"prompt\":\"a cat surfing\"}}'"

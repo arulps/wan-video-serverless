@@ -12,6 +12,11 @@ on:
       - "config/**"
       - "scripts/**"
       - ".github/workflows/deploy.yml"
+      # DEPLOY.md is the redeploy marker file. It was NOT in this list, so every
+      # "ci-redeploy-trigger" commit that touched only DEPLOY.md matched no path
+      # and silently ran nothing -- while the endpoint was assumed to have been
+      # rotated onto a new image. Keep it here so the marker actually works.
+      - "DEPLOY.md"
   workflow_dispatch:
 
 env:
