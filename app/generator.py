@@ -1,3 +1,4 @@
+import gc
 import logging
 import os
 import threading
@@ -21,6 +22,56 @@ _PIPE_CLASSES = {
     "i2v-A14B": wan.WanI2V,
     "ti2v-5B": wan.WanTI2V,
 }
+
+# Filled in by the decode guard for the last job (reported in the result).
+DECODE_STATE = {"vae_decode_dtype": None, "vae_decode_retried": False}
+
+
+def _install_decode_guard(pipe):
+    """Wrap pipe.vae.decode so a CUDA OOM in the VAE decode does not lose the
+    sampled latents.
+
+    Observed 2026-09-21 (job caf3f7b9, RTX 4090 24 GB, ti2v-5B 1280x704x81f):
+    all sampling steps completed, then `vae.decode` died allocating 2.60 GiB
+    with 4.17 GiB reserved-but-unallocated. Wan2.2's decoder runs in fp32 with
+    160 channels at full resolution (one 4-frame activation ~2.3-2.6 GiB) and
+    grows its output with `torch.cat` on every latent frame, which fragments
+    the caching allocator. PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+    (set in the Dockerfile and template env) addresses the fragmentation; this
+    guard is the second line: it clears the cache first and, on OOM, retries
+    the decode with the VAE in bfloat16 (halves activation memory; upstream
+    vae2_2.py already carries a bf16 compatibility fix for its upsampler).
+    The latents are still referenced here, so the retry costs seconds, not a
+    5-minute resample."""
+    if getattr(pipe, "_decode_guarded", False):
+        return
+    vae = pipe.vae
+    orig_decode = vae.decode
+
+    def guarded_decode(zs):
+        DECODE_STATE["vae_decode_dtype"] = str(getattr(vae, "dtype", "?"))
+        DECODE_STATE["vae_decode_retried"] = False
+        gc.collect()
+        torch.cuda.empty_cache()
+        try:
+            return orig_decode(zs)
+        except torch.cuda.OutOfMemoryError as exc:
+            log.warning("VAE decode OOM in %s: %s -- retrying in bfloat16",
+                        getattr(vae, "dtype", "?"), str(exc).splitlines()[0][:160])
+            try:
+                vae.model.clear_cache()
+            except Exception:
+                pass
+            gc.collect()
+            torch.cuda.empty_cache()
+            vae.model.to(torch.bfloat16)
+            vae.dtype = torch.bfloat16
+            DECODE_STATE["vae_decode_dtype"] = str(torch.bfloat16)
+            DECODE_STATE["vae_decode_retried"] = True
+            return orig_decode(zs)
+
+    vae.decode = guarded_decode
+    pipe._decode_guarded = True
 
 
 def valid_frame_num(n):
@@ -46,6 +97,7 @@ def _get_pipe(task: str, ckpt_dir: str):
                 convert_model_dtype=True,
             )
             log.info("pipeline %s loaded from %s in %.1fs", task, ckpt_dir, time.time() - t0)
+            _install_decode_guard(_pipes[task])
         return _pipes[task]
 
 
@@ -167,6 +219,8 @@ def generate(
             offload_model=offload,
         )
     info["t_sample_s"] = round(time.time() - t0, 1)
+    info.update(DECODE_STATE)
+    info["alloc_conf"] = os.environ.get("PYTORCH_CUDA_ALLOC_CONF")
 
     from .storage import temp_output_file
 

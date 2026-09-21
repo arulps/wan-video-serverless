@@ -47,4 +47,11 @@ RUN if [ "$BAKE_TI2V" = "1" ]; then \
       python -c "from huggingface_hub import snapshot_download; snapshot_download('Wan-AI/Wan2.2-TI2V-5B', local_dir='/models/ti2v-5B')"; \
     fi
 
+# Wan2.2's VAE decode grows its output with torch.cat per latent frame and needs
+# ~2.6 GiB contiguous blocks at 1280x704; without expandable segments the
+# caching allocator fragments and OOMs on a 24 GB card with >4 GiB reserved
+# but unallocated (job caf3f7b9, 2026-09-21). Kept last so it does not
+# invalidate the build layers above.
+ENV PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
 CMD ["python", "-u", "/app/handler.py"]

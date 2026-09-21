@@ -179,3 +179,17 @@ Quick arithmetic: RTX 4090 serverless ≈ $0.99–1.19/GPU-hr + idle-minimum cha
   10 MB). Over the cap → explicit error, never a silent `null`. 81 frames @ 1280×704 crf 23 ≈ 2–5 MB.
 - For production set `S3_BUCKET` (+ `S3_ENDPOINT_URL` for Cloudflare R2, `AWS_REGION=auto`,
   `AWS_ACCESS_KEY_ID/SECRET`) in the template env; the result then carries a URL.
+
+## 9.1 First live results — 2026-09-21 ~12:45 (Phase 2 image)
+
+- selftest: RTX 4090, 23 GB free, `wan.modules.model.flash_attention` patched, huggingface_hub 0.36.2
+  (kwarg still present — dropping it was harmless), cached snapshot found at
+  `/runpod-volume/huggingface-cache/hub/models--Wan-AI--Wan2.2-TI2V-5B/snapshots/921dbaf3…`.
+- job `caf3f7b9`: weights 30 s from cache (no download), 20/20 sampling steps OK (~5.5 min) —
+  **the corrected SDPA path works end to end** — then `vae.decode` OOM (2.60 GiB request, 4.17 GiB
+  reserved-unallocated). 407 s, ≈$0.05–0.10. No video.
+- Cause: fp32 Wan2.2 VAE decode at 704p (160 ch at full res, ~2.6 GiB per activation) + `torch.cat`
+  growth per latent frame → allocator fragmentation. Fix in Phase 2b: `PYTORCH_CUDA_ALLOC_CONF=
+  expandable_segments:True` (image + template env) and a decode guard that retries in bf16 without
+  resampling. See `CC-DISPATCH-phase2b-2026-09-21.md`.
+- The selftest now reports `alloc_conf`; `first_video.ps1` refuses to submit the real job without it.

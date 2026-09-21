@@ -7,7 +7,8 @@
       "HF_HOME": "/models",
       "HF_HUB_ENABLE_HF_TRANSFER": "1",
       "DEFAULT_TASK": "ti2v-5B",
-      "LOG_LEVEL": "INFO"
+      "LOG_LEVEL": "INFO",
+      "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"
     }
   },
   "endpoint": {

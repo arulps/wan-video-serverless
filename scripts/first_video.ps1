@@ -116,8 +116,11 @@ if (-not $SkipSelftest) {
   if ($st.status -ne "COMPLETED") { throw "selftest job ended $($st.status): $($st.error)" }
   if (-not $out.ok) { throw "selftest reports NOT ok: $($out.error)" }
   if (-not $out.shim.model_binding_patched) { throw "SDPA patch did not reach wan.modules.model - STOP" }
-  Write-Host ("selftest OK: gpu={0} vram_free={1}GB hf_hub={2} cached_snapshot={3}" -f `
-    $out.gpu, $out.vram_free_gb, $out.huggingface_hub, $out.weights.runpod_cached_snapshot)
+  Write-Host ("selftest OK: gpu={0} vram_free={1}GB hf_hub={2} cached_snapshot={3} alloc_conf={4}" -f `
+    $out.gpu, $out.vram_free_gb, $out.huggingface_hub, $out.weights.runpod_cached_snapshot, $out.alloc_conf)
+  if ($out.alloc_conf -notlike "*expandable_segments:True*") {
+    throw "worker is running WITHOUT PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True - the image/template is stale (the VAE decode OOM fix is not on this worker). STOP."
+  }
   if (-not $out.weights.runpod_cached_snapshot -and -not $out.weights.local_copy) {
     Write-Host "NOTE: no cached weights on this worker - the real job will download ~34 GB first (billed). Attach the model to the endpoint (Model field: Wan-AI/Wan2.2-TI2V-5B) to avoid this next time."
   }
@@ -162,7 +165,7 @@ if ($out.video) {
   throw "no video in output (keys: $($out.PSObject.Properties.Name -join ', '))"
 }
 $bytes = (Get-Item $file).Length
-Write-Host ("`nSAVED {0} ({1:N0} bytes)  seed={2} steps={3} frames={4} fps={5} t_total={6}s" -f $file, $bytes, $out.seed, $out.steps, $out.frame_num, $out.fps, $out.t_total_s)
+Write-Host ("`nSAVED {0} ({1:N0} bytes)  seed={2} steps={3} frames={4} fps={5} t_total={6}s  vae_decode={7} retried={8}" -f $file, $bytes, $out.seed, $out.steps, $out.frame_num, $out.fps, $out.t_total_s, $out.vae_decode_dtype, $out.vae_decode_retried)
 if ($bytes -lt 10000) { Write-Host "WARNING: file is suspiciously small - inspect before trusting" }
 
 # meta sidecar for the review

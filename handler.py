@@ -87,6 +87,7 @@ def selftest(task):
     except Exception as exc:  # pragma: no cover
         rep["huggingface_hub"] = f"error: {exc}"
     rep["torch"] = torch.__version__
+    rep["alloc_conf"] = os.environ.get("PYTORCH_CUDA_ALLOC_CONF")
     rep["cuda_available"] = bool(torch.cuda.is_available())
     if rep["cuda_available"]:
         try:

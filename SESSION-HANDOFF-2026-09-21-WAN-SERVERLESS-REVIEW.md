@@ -4,7 +4,8 @@
 **Repo under work:** `C:\Projects\opencode\video_image` → `github.com/arulps/wan-video-serverless`
 **HEAD at handoff:** `7e9f193` · **working tree: DIRTY, nothing committed, nothing pushed**
 **UPDATE 2026-09-21 ~12:00 (Fable):** Phase 0/1 is committed as `92b31d3` and deployed (CI run #14).
-Phase 2 is in the working tree, uncommitted — see §9 at the bottom; that section supersedes §1–§2.
+Phase 2 was committed and deployed ~12:30 and the cached model attached. First live job ran: sampling OK,
+VAE decode OOM. Phase 2b (fix) is in the working tree — see §10; §9–§10 supersede §1–§2.
 **No RunPod API calls were made. No GPU was spent.**
 
 > This file is the local copy, kept beside `CC-DISPATCH-phase01-2026-09-21.md`.
@@ -202,3 +203,33 @@ Report the selftest JSON, the job meta JSON, and the mp4.
 Object storage (S3/R2) in the template env; `--model-reference` in `deploy.sh`; GPU priority list;
 container disk down from 200 GB; production step/frame defaults from measured `t_sample_s`;
 executionTimeout review for 121f/50-step jobs.
+
+---
+
+## 10 · Fable session 2026-09-21 (12:00–13:15) — first live run, VAE-decode OOM, Phase 2b
+
+**Money spent:** selftest + one job ≈ $0.10. **No resubmits.**
+
+### 10.1 What the run proved (all previously open)
+- Cached model works: `/runpod-volume/huggingface-cache/hub/models--Wan-AI--Wan2.2-TI2V-5B/snapshots/921dbaf3…`, 30 s, unbilled.
+- The corrected SDPA shim is right in practice: 20/20 steps at 1280×704×81f in ≈5.5 min on a 4090, no errors.
+- `huggingface_hub` in the image is 0.36.2 (kwarg present) — Phase-1 item closed.
+- Selftest gate works as designed (patched bindings incl. `wan.modules.model.flash_attention`, `wan.modules.flash_attention`, `wan.distributed.ulysses.flash_attention`).
+
+### 10.2 Failure and diagnosis
+`vae.decode` → `vae2_2.py:40 F.pad` OOM: 2.60 GiB requested, 18.35 GiB allocated, 4.17 GiB reserved-but-unallocated,
+509 MiB free. Upstream already offloads the DiT before decode; the tenant is the fp32 decoder (160 channels at full
+704p → ~2.6 GiB per 4-frame activation) plus `torch.cat`-per-latent-frame output growth that fragments the allocator.
+
+### 10.3 Phase 2b (working tree) — `CC-DISPATCH-phase2b-2026-09-21.md`
+- `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` in `Dockerfile` (last layer) and `config/endpoint.json` template env.
+- `app/generator.py::_install_decode_guard` — cache clear before decode; on OOM retry in bf16 with latents in hand.
+- selftest reports `alloc_conf`; `first_video.ps1` refuses the real job if it is unset; result carries `vae_decode_dtype`/`vae_decode_retried`.
+- `tests/test_decode_guard.py` added; all five test files pass.
+
+### 10.4 Next action
+CC: run Phase 2b Part A (commit/push/CI), confirm the cached-model reference survived the deploy, then Part B (one run).
+Report `vae_decode_retried` — it decides whether bf16 decode becomes the default.
+
+### 10.5 If it fails again at decode (do not loop)
+bf16 decode by default → 48 GB GPU first in `gpuTypeIds` (L40S) → tiled VAE decode.
