@@ -144,10 +144,30 @@ if [ -n "$EP_ID" ]; then
         --workers-max "$(cfg endpoint.workersMax)" \
         --idle-timeout "$(cfg endpoint.idleTimeoutSec)" \
         "${MODEL_REF_ARGS[@]}"
-    # NOTE: runpodctl 2.14.0 `serverless update` has NO --execution-timeout flag
-    # (it exists only on create). executionTimeoutSec therefore reaches an
-    # existing endpoint only via the console/REST API, not this script.
     echo "updated endpoint $EP_ID (template $TPL_ID, model ref ${MODEL_REF:-none})"
+
+    # runpodctl 2.14.0 `serverless update` has NO --execution-timeout flag (it
+    # exists only on create; CI run 35636080696 failed on it). Settings that the
+    # CLI cannot update on an existing endpoint go through the REST API instead:
+    #   PATCH https://rest.runpod.io/v1/endpoints/{id}   (docs.runpod.io/api-reference)
+    # Fields verified there: executionTimeoutMs, gpuTypeIds (priority order),
+    # workersMin/Max, idleTimeout, templateId. gpuTypeIds is taken from
+    # endpoint.gpuTypeIds (a JSON list) when present, else the single gpuId.
+    EXEC_MS=$(( $(cfg endpoint.executionTimeoutSec) * 1000 ))
+    GPU_IDS_JSON="$(cfg endpoint.gpuTypeIds --default '' --raw-json)"
+    if [ -z "$GPU_IDS_JSON" ] || [ "$GPU_IDS_JSON" = "null" ]; then
+        GPU_IDS_JSON="$("$PY" -c 'import json,sys; print(json.dumps([sys.argv[1]]))' "$DESIRED_GPU")"
+    fi
+    PATCH_BODY="$("$PY" -c 'import json,sys; print(json.dumps({"executionTimeoutMs": int(sys.argv[1]), "gpuTypeIds": json.loads(sys.argv[2])}))' "$EXEC_MS" "$GPU_IDS_JSON")"
+    echo "== REST PATCH endpoint $EP_ID: $PATCH_BODY =="
+    PATCH_RESP="$(curl -sS -w '\nHTTP %{http_code}' -X PATCH \
+        -H "Authorization: Bearer $RUNPOD_API_KEY" -H "Content-Type: application/json" \
+        "https://rest.runpod.io/v1/endpoints/$EP_ID" -d "$PATCH_BODY" || true)"
+    echo "$PATCH_RESP" | tail -c 600
+    case "$PATCH_RESP" in
+        *"HTTP 2"*) echo "endpoint PATCH applied (executionTimeoutMs=$EXEC_MS)";;
+        *) echo "ERROR: endpoint PATCH failed - execution timeout / GPU list NOT applied"; exit 1;;
+    esac
 
     # The previous version compared the configured GPU against a substring grep
     # of the whole endpoint JSON and, on any mismatch, DELETED and recreated the
