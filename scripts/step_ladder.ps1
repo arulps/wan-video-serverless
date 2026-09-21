@@ -20,9 +20,9 @@
 param(
   [Parameter(Mandatory = $true)][string]$Image,
   [Parameter(Mandatory = $true)][string]$Label,
-  [string]$Prompt = "The child looks at the camera, smiles and gives a small wave; gentle natural motion, soft matte children's picture-book look, camera steady, no text",
+  [string]$Prompt = "The child slowly turns to look at the camera and smiles warmly, blinks once, hair sways in a gentle breeze; slow natural motion, soft matte children's picture-book look, camera steady, no text",
   [string]$NegativePrompt = "text, watermark, logo, subtitles, blurry, deformed, extra limbs, extra fingers, realistic photo, dark, horror, fast motion, camera shake",
-  [int[]]$Steps = @(20, 30, 40, 50),
+  [int[]]$Steps = @(30),
   [string]$Size = "1280*704",
   [int]$Frames = 81,
   [double]$GuideScale = 5.0,
@@ -39,7 +39,13 @@ param(
   [double]$SubjectHeightFrac = 0.90,
   # Optional crop of the source before fitting, "x,y,w,h" in source pixels (e.g. to take one
   # panel out of a multi-view turnaround sheet).
-  [string]$CropPx = ""
+  [string]$CropPx = "",
+  # Framing. Full-figure refs left the character ~40% of frame height, so a hand was
+  # ~40 px and the model smeared it while moving (2026-09-21 ladders). "waist" keeps the
+  # top TopFrac of the (cropped) source and fills the canvas with it; "full" is the old
+  # behaviour. Use waist/close for anything with hand or face motion.
+  [ValidateSet("full", "waist", "close")][string]$Framing = "waist",
+  [double]$TopFrac = 0.58
 )
 
 $ErrorActionPreference = "Stop"
@@ -95,6 +101,41 @@ if (-not $NoFitToFrame) {
     $cropped = ([System.Drawing.Bitmap]$src).Clone($rect, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
     $src.Dispose(); $src = $cropped
     Write-Host ("cropped source to {0}x{1} at {2},{3}" -f $c[2], $c[3], $c[0], $c[1])
+  }
+  if ($Framing -ne "full") {
+    # Trim the margins so the figure, not the padding, sets the scale. Background =
+    # the mean of the four corner pixels (refs are ~245 grey or transparent, not pure
+    # white); a pixel is figure if alpha>16 and any channel differs from that by >24;
+    # rows/cols need >=2 such pixels (4-px stride; GetPixel is slow in PowerShell) so stray
+    # noise cannot stretch the box.
+    $bmp = [System.Drawing.Bitmap]$src
+    $cs = @($bmp.GetPixel(0,0), $bmp.GetPixel($bmp.Width-1,0), $bmp.GetPixel(0,$bmp.Height-1), $bmp.GetPixel($bmp.Width-1,$bmp.Height-1))
+    $bgR = ($cs | Measure-Object -Property R -Average).Average
+    $bgG = ($cs | Measure-Object -Property G -Average).Average
+    $bgB = ($cs | Measure-Object -Property B -Average).Average
+    $rowCount = New-Object int[] $bmp.Height; $colCount = New-Object int[] $bmp.Width
+    for ($y = 0; $y -lt $bmp.Height; $y += 4) {
+      for ($x = 0; $x -lt $bmp.Width; $x += 4) {
+        $px = $bmp.GetPixel($x, $y)
+        if ($px.A -gt 16) {
+          $d = [Math]::Max([Math]::Abs($px.R - $bgR), [Math]::Max([Math]::Abs($px.G - $bgG), [Math]::Abs($px.B - $bgB)))
+          if ($d -gt 24) { $rowCount[$y]++; $colCount[$x]++ }
+        }
+      }
+    }
+    $rows = 0..($bmp.Height-1) | Where-Object { $rowCount[$_] -ge 2 }
+    $cols = 0..($bmp.Width-1)  | Where-Object { $colCount[$_] -ge 2 }
+    if (-not $rows -or -not $cols) { throw "could not find the figure's bounding box in the start frame" }
+    $minY = ($rows | Measure-Object -Minimum).Minimum; $maxY = ($rows | Measure-Object -Maximum).Maximum
+    $minX = ($cols | Measure-Object -Minimum).Minimum; $maxX = ($cols | Measure-Object -Maximum).Maximum
+    if ($maxX -le $minX -or $maxY -le $minY) { throw "could not find the figure's bounding box in the start frame" }
+    $keep = if ($Framing -eq "close") { [Math]::Min($TopFrac, 0.40) } else { $TopFrac }
+    $bh = [int](($maxY - $minY) * $keep)
+    $rect = New-Object System.Drawing.Rectangle $minX, $minY, ($maxX - $minX), $bh
+    $part = $bmp.Clone($rect, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+    $src.Dispose(); $src = $part
+    Write-Host ("framing={0}: figure bbox {1},{2}-{3},{4}; keeping top {5:P0} -> {6}x{7}" -f $Framing, $minX, $minY, $maxX, $maxY, $keep, $src.Width, $src.Height)
+    $SubjectHeightFrac = 0.96
   }
   $cw, $ch = 1280, 704
   $canvas = New-Object System.Drawing.Bitmap $cw, $ch

@@ -81,11 +81,19 @@ def temp_output_file(ext: str = ".mp4") -> str:
     return name
 
 
-def compact_mp4(src: str, crf: int = 23, preset: str = "medium") -> str:
+# Review-copy encode quality when no object storage is configured. crf 23 smeared
+# fine moving detail (fingers) in the 2026-09-21 ladders at ~470 kbps; 18 is ~3x the
+# bitrate and still far under RunPod's 10 MB output cap for a 3-4 s clip.
+COMPACT_CRF = int(os.environ.get("COMPACT_CRF", "18"))
+
+
+def compact_mp4(src: str, crf: int | None = None, preset: str = "medium") -> str:
     """Re-encode Wan's quality=8 libx264 output to a web-sized H.264 (yuv420p,
     faststart). Wan's writer is tuned for fidelity, not size; a 4 s 1280x704 clip
     can be well over RunPod's 10 MB job-output ceiling. Returns the new path.
     Raises on ffmpeg failure so the caller never returns a bogus file."""
+    if crf is None:
+        crf = COMPACT_CRF
     dst = temp_output_file(".mp4")
     cmd = [
         "ffmpeg", "-y", "-loglevel", "error", "-i", src,

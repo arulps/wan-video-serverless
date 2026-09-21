@@ -91,7 +91,7 @@ kw = CALLS[-1]
 assert kw["frame_num"] == 81 and kw["steps"] == 20 and kw["guide_scale"] == 4.5
 assert kw["shift"] == 5.0 and kw["n_prompt"] == "blurry" and kw["size"] == "1280*704"
 assert kw["seed"] >= 0 and r["seed"] == kw["seed"], "seed must be drawn and reported"
-assert r["delivery"] == "inline" and r["encoded"].startswith("libx264 crf23")
+assert r["delivery"] == "inline" and r["encoded"].startswith("libx264 crf18")
 vid = base64.b64decode(r["video_b64"])
 assert vid[4:8] == b"ftyp", "must be an mp4"
 assert r["video_bytes"] == len(vid)

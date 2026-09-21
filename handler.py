@@ -189,7 +189,7 @@ def handler(job):
             progress("compacting")
             try:
                 compact_path = storage.compact_mp4(out_path)
-                inline_src, encoded = compact_path, "libx264 crf23 yuv420p"
+                inline_src, encoded = compact_path, "libx264 crf%d yuv420p" % storage.COMPACT_CRF
             except Exception as exc:
                 log.warning("compact re-encode failed (%s); trying the raw file", exc)
                 inline_src, encoded = out_path, "wan save_video (quality=8)"
