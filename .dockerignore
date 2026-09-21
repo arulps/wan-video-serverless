@@ -7,3 +7,5 @@ scripts
 config
 out
 .gitignore
+tests
+outputs

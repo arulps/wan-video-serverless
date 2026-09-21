@@ -1,13 +1,25 @@
 import base64
 import os
+import subprocess
 import tempfile
 
 import boto3
 import requests
 
+# Object storage for outputs. Any S3-compatible service works:
+#   AWS S3:        S3_BUCKET + AWS_REGION + AWS_ACCESS_KEY_ID/SECRET
+#   Cloudflare R2: S3_BUCKET + S3_ENDPOINT_URL=https://<acct>.r2.cloudflarestorage.com
+#                  + AWS_ACCESS_KEY_ID/SECRET (R2 API token), AWS_REGION=auto
+# Optional S3_PUBLIC_BASE_URL (e.g. an R2 public bucket domain): when set the
+# handler returns a plain public URL instead of a presigned one.
 S3_BUCKET = os.environ.get("S3_BUCKET")
 S3_REGION = os.environ.get("AWS_REGION", "us-east-1")
+S3_ENDPOINT_URL = os.environ.get("S3_ENDPOINT_URL") or None
+S3_PUBLIC_BASE_URL = (os.environ.get("S3_PUBLIC_BASE_URL") or "").rstrip("/")
+S3_PRESIGN_SECONDS = int(os.environ.get("S3_PRESIGN_SECONDS", "86400"))
+
 INPUT_DIR = "/tmp/wan-input"
+OUTPUT_DIR = "/tmp/wan-output"
 FILE_PART = 1 << 16
 
 
@@ -31,20 +43,22 @@ def _s3_download(uri: str) -> str:
     return dest
 
 
-def upload_to_s3(path: str, key: str | None = None, expires: int = 3600) -> str | None:
+def upload_to_s3(path: str, key: str | None = None, expires: int | None = None) -> str | None:
     if not S3_BUCKET:
         return None
     final_key = key or f"wan-video/{os.path.basename(path)}"
-    _s3().upload_file(path, S3_BUCKET, final_key)
+    _s3().upload_file(path, S3_BUCKET, final_key, ExtraArgs={"ContentType": "video/mp4"})
+    if S3_PUBLIC_BASE_URL:
+        return f"{S3_PUBLIC_BASE_URL}/{final_key}"
     return _s3().generate_presigned_url(
         "get_object",
         Params={"Bucket": S3_BUCKET, "Key": final_key},
-        ExpiresIn=expires,
+        ExpiresIn=expires or S3_PRESIGN_SECONDS,
     )
 
 
 def _s3():
-    return boto3.client("s3", region_name=S3_REGION)
+    return boto3.client("s3", region_name=S3_REGION, endpoint_url=S3_ENDPOINT_URL)
 
 
 def write_b64(payload: str) -> str:
@@ -61,7 +75,24 @@ def to_base64(path: str) -> str:
 
 
 def temp_output_file(ext: str = ".mp4") -> str:
-    os.makedirs("/tmp/wan-output", exist_ok=True)
-    fd, name = tempfile.mkstemp(suffix=ext, dir="/tmp/wan-output")
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    fd, name = tempfile.mkstemp(suffix=ext, dir=OUTPUT_DIR)
     os.close(fd)
     return name
+
+
+def compact_mp4(src: str, crf: int = 23, preset: str = "medium") -> str:
+    """Re-encode Wan's quality=8 libx264 output to a web-sized H.264 (yuv420p,
+    faststart). Wan's writer is tuned for fidelity, not size; a 4 s 1280x704 clip
+    can be well over RunPod's 10 MB job-output ceiling. Returns the new path.
+    Raises on ffmpeg failure so the caller never returns a bogus file."""
+    dst = temp_output_file(".mp4")
+    cmd = [
+        "ffmpeg", "-y", "-loglevel", "error", "-i", src,
+        "-c:v", "libx264", "-preset", preset, "-crf", str(crf),
+        "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-an", dst,
+    ]
+    subprocess.run(cmd, check=True, capture_output=True, timeout=600)
+    if not os.path.isfile(dst) or os.path.getsize(dst) == 0:
+        raise RuntimeError("ffmpeg produced no output")
+    return dst
