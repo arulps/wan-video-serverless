@@ -7,7 +7,7 @@ export RUNPOD_API_KEY="${RUNPOD_API_KEY:?RUNPOD_API_KEY must be set}"
 
 PY="${PYTHON:-python3}"
 
-cfg() { "$PY" "$ROOT/scripts/config_get.py" "$CONFIG" "$1"; }
+cfg() { "$PY" "$ROOT/scripts/config_get.py" "$CONFIG" "$@"; }
 
 if ! command -v runpodctl >/dev/null 2>&1; then
     echo "runpodctl not found; downloading..."
@@ -115,6 +115,14 @@ else
 fi
 
 EP_NAME="$(cfg endpoint.name)"
+# RunPod cached model (host-side, unbilled). Format is the full HF URL + revision.
+# Passed on EVERY update so a deploy can never silently drop it (verified needed
+# 2026-09-21: `serverless update` without it left the reference in doubt).
+MODEL_REF="${MODEL_REFERENCE:-$(cfg endpoint.modelReference --default '')}"
+MODEL_REF_ARGS=()
+if [ -n "$MODEL_REF" ]; then
+    MODEL_REF_ARGS=(--model-reference "$MODEL_REF")
+fi
 DESIRED_POOL="${GPU_POOL:-$(cfg endpoint.gpuPool)}"
 DESIRED_GPU="$(cfg endpoint.gpuId 2>/dev/null || true)"
 if [ -z "$DESIRED_GPU" ]; then
@@ -134,8 +142,10 @@ if [ -n "$EP_ID" ]; then
         --template-id "$TPL_ID" \
         --workers-min "$(cfg endpoint.workersMin)" \
         --workers-max "$(cfg endpoint.workersMax)" \
-        --idle-timeout "$(cfg endpoint.idleTimeoutSec)"
-    echo "updated endpoint $EP_ID (template $TPL_ID)"
+        --idle-timeout "$(cfg endpoint.idleTimeoutSec)" \
+        --execution-timeout "$(cfg endpoint.executionTimeoutSec)" \
+        "${MODEL_REF_ARGS[@]}"
+    echo "updated endpoint $EP_ID (template $TPL_ID, model ref ${MODEL_REF:-none})"
 
     # The previous version compared the configured GPU against a substring grep
     # of the whole endpoint JSON and, on any mismatch, DELETED and recreated the
@@ -166,7 +176,8 @@ if [ -z "$EP_ID" ]; then
         --flash-boot="$(cfg endpoint.flashBoot)" \
         --scale-by "$(cfg endpoint.scaleBy)" \
         --scale-threshold "$(cfg endpoint.scaleThreshold)" \
-        --min-cuda-version "$(cfg endpoint.minCudaVersion)"
+        --min-cuda-version "$(cfg endpoint.minCudaVersion)" \
+        "${MODEL_REF_ARGS[@]}"
     runpodctl serverless list -o json 2>/dev/null > "$EP_FILE" || true
     EP_ID="$(find_id_by_name "$EP_NAME" "$EP_FILE" || true)"
     echo "created endpoint: ${EP_ID:-FAILED}"
@@ -187,10 +198,41 @@ fi
 #
 # Scaling max to 0 terminates any in-flight job, which is acceptable immediately
 # after a build. Set ROTATE_WORKERS=0 to skip.
+# 2026-09-21: a fixed 30 s sleep was not enough. FlashBoot keeps idle workers
+# warm on the OLD image and they were still serving after the restore, so the
+# selftest saw a stale worker (empty PYTORCH_CUDA_ALLOC_CONF) and the run had to
+# be rotated by hand. Now: scale to 0, then POLL /health until every worker
+# count is 0 (or ROTATE_MAX_WAIT_SEC elapses), and only then restore.
+worker_count() {
+    curl -fsS -H "Authorization: Bearer $RUNPOD_API_KEY" \
+        "https://api.runpod.ai/v2/$EP_ID/health" 2>/dev/null | "$PY" -c '
+import json, sys
+try:
+    w = json.load(sys.stdin).get("workers", {})
+    print(sum(int(w.get(k, 0) or 0) for k in ("idle", "initializing", "ready", "running", "throttled", "unhealthy")))
+except Exception:
+    print(-1)
+'
+}
+
 if [ "${ROTATE_WORKERS:-1}" = "1" ]; then
     echo "== rotating workers onto $TPL_IMAGE =="
     runpodctl serverless update "$EP_ID" --workers-min 0 --workers-max 0
-    sleep "${ROTATE_DRAIN_SEC:-30}"
+    max_wait="${ROTATE_MAX_WAIT_SEC:-420}"
+    waited=0
+    while :; do
+        n="$(worker_count)"
+        echo "  drain: workers=$n after ${waited}s"
+        if [ "$n" = "0" ]; then break; fi
+        if [ "$waited" -ge "$max_wait" ]; then
+            echo "WARNING: workers still present after ${max_wait}s; restoring anyway."
+            echo "WARNING: a stale worker may serve the old image until it idles out -"
+            echo "WARNING: the selftest job's alloc_conf/image check will catch it."
+            break
+        fi
+        sleep 15
+        waited=$((waited + 15))
+    done
     runpodctl serverless update "$EP_ID" \
         --workers-min "$(cfg endpoint.workersMin)" \
         --workers-max "$(cfg endpoint.workersMax)"

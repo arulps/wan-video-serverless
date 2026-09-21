@@ -2,7 +2,7 @@
   "template": {
     "name": "wan-video-serverless",
     "image": "ghcr.io/your-org/wan-video-serverless:latest",
-    "containerDiskGb": 200,
+    "containerDiskGb": 50,
     "env": {
       "HF_HOME": "/models",
       "HF_HUB_ENABLE_HF_TRANSFER": "1",
@@ -19,11 +19,12 @@
     "workersMin": 0,
     "workersMax": 3,
     "idleTimeoutSec": 300,
-    "executionTimeoutSec": 1800,
+    "executionTimeoutSec": 3600,
     "scaleBy": "delay",
     "scaleThreshold": 4,
     "flashBoot": true,
-    "minCudaVersion": "12.8"
+    "minCudaVersion": "12.8",
+    "modelReference": "https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B:main"
   },
   "s3": {
     "defaultOutputBucket": null

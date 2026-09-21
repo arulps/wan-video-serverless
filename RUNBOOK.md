@@ -193,3 +193,13 @@ Quick arithmetic: RTX 4090 serverless ≈ $0.99–1.19/GPU-hr + idle-minimum cha
   expandable_segments:True` (image + template env) and a decode guard that retries in bf16 without
   resampling. See `CC-DISPATCH-phase2b-2026-09-21.md`.
 - The selftest now reports `alloc_conf`; `first_video.ps1` refuses to submit the real job without it.
+
+## 9.2 FIRST VIDEO — 2026-09-21 13:41
+
+Job `13d179ba` (image `2f76d58`): `outputs\20260921-134106-ti2v-5B-seed30313-81f-20s.mp4`, 1280×704, 81 f, 3.375 s.
+`t_load_s` 148 (cold), `t_sample_s` 371 (20 steps → 18.5 s/step), decode fp32 with expandable segments
+(no bf16 retry), inline delivery 196 KB. ≈ $0.05–0.10.
+
+Procedure that works, end to end: `scripts\first_video.ps1` (selftest gate → one job → save → drain).
+If the selftest shows an empty `alloc_conf` or a missing cached snapshot, the worker is stale: scale to 0,
+wait for `/health` workers = 0, restore 0/3, run again. `deploy.sh` will do this itself once Phase 3 lands.
