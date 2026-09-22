@@ -22,6 +22,11 @@ TASKS = {
     "t2v-A14B": {"repo": "Wan-AI/Wan2.2-T2V-A14B"},
     "i2v-A14B": {"repo": "Wan-AI/Wan2.2-I2V-A14B"},
     "ti2v-5B": {"repo": "Wan-AI/Wan2.2-TI2V-5B"},
+    # Reference-to-video (subject reference images + text, no start frame).
+    # Wan2.1 codebase (image built with WAN_REPO=Wan2.1); ~75 GB on disk, so it
+    # MUST come from the RunPod cached-model slot -- the selftest reports whether
+    # a snapshot is present and the client scripts refuse to run without one.
+    "vace-14B": {"repo": "Wan-AI/Wan2.1-VACE-14B"},
 }
 
 # A snapshot is only usable if these exist (guards against a half-staged dir).
@@ -30,6 +35,8 @@ REQUIRED_FILES = {
     "t2v-A14B": ("models_t5_umt5-xxl-enc-bf16.pth", "Wan2.1_VAE.pth"),
     "i2v-A14B": ("models_t5_umt5-xxl-enc-bf16.pth", "Wan2.1_VAE.pth"),
     "ti2v-5B": ("models_t5_umt5-xxl-enc-bf16.pth", "Wan2.2_VAE.pth"),
+    "vace-14B": ("models_t5_umt5-xxl-enc-bf16.pth", "Wan2.1_VAE.pth",
+                 "diffusion_pytorch_model.safetensors.index.json"),
 }
 
 _locks = {}

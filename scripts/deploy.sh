@@ -2,7 +2,12 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-CONFIG="$ROOT/config/endpoint.json"
+# Which endpoint this deploy targets. Default: the 5B endpoint. The VACE
+# endpoint's workflow sets ENDPOINT_CONFIG=config/endpoint-vace.json.
+CONFIG="${ENDPOINT_CONFIG:-$ROOT/config/endpoint.json}"
+case "$CONFIG" in /*) ;; *) CONFIG="$ROOT/$CONFIG" ;; esac
+[ -f "$CONFIG" ] || { echo "FATAL: endpoint config not found: $CONFIG"; exit 1; }
+echo "== endpoint config: $CONFIG =="
 export RUNPOD_API_KEY="${RUNPOD_API_KEY:?RUNPOD_API_KEY must be set}"
 
 PY="${PYTHON:-python3}"

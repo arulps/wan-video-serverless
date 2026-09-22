@@ -203,3 +203,30 @@ Job `13d179ba` (image `2f76d58`): `outputs\20260921-134106-ti2v-5B-seed30313-81f
 Procedure that works, end to end: `scripts\first_video.ps1` (selftest gate → one job → save → drain).
 If the selftest shows an empty `alloc_conf` or a missing cached snapshot, the worker is stale: scale to 0,
 wait for `/health` workers = 0, restore 0/3, run again. `deploy.sh` will do this itself once Phase 3 lands.
+
+## 10) Phase 4 — reference-to-video (VACE-14B), second endpoint — 2026-09-21 evening
+
+**Why.** Frame-by-frame comparison against the OpenArt Mazhai shots (`outputs\ladder\_qc\openart-vs-ours-2026-09-21.png`)
+showed OpenArt's clips are *reference-conditioned*: saved characters (Minnu = 4 turnaround views, Mintu = 1 front view)
++ a ~150-word scene prompt; the clip's first frame is built from text (back views, arms down, push-ins), not from the
+reference. The open Wan 2.2 weights we run (`ti2v-5B`, `i2v-A14B`, `t2v-A14B`) have **no reference input** — an image is
+only ever the literal first frame — so the I2V-from-a-cut-out pipeline cannot reproduce that. The model that can is
+**`Wan-AI/Wan2.1-VACE-14B`** (reference-to-video: `--src_ref_images a.png,b.png` + prompt, 81 f @ 16 fps = 5.06 s, 720p).
+
+**What changed (one codebase, two images, two endpoints).**
+- `Dockerfile` `ARG WAN_REPO=Wan2.2|Wan2.1` — both repos install as the `wan` package; `app/generator.py` builds its task
+  table from what the image's `wan` exposes (`_PIPE_CLASSES`), so the same handler serves both. `:latest` = Wan2.2 (5B),
+  `:vace` = Wan2.1 (vace-14B). The selftest reports `wan_repo`, `tasks`, `host_ram_gb`.
+- `vace-14B` job input: `ref_images` (list of data URIs/URLs, 1–8), `prompt`, `n_prompt` ("" → Wan's tuned default),
+  `size 1280*720`, `frame_num 81`, `steps 50` (upstream default), `context_scale 1.0`. No `image` key (that is a start
+  frame, refused for vace). Result carries `dit_dtype`, `ref_images`, `wan_repo`.
+- Weights: the VACE-14B shards are ~63 GB mostly fp32; Wan2.1 has no `convert_model_dtype`, so
+  `VaceWanModel.from_pretrained` is wrapped to load `torch_dtype=bf16` (~34 GB) before device placement.
+- References with alpha are flattened onto white before `prepare_source` (its `convert("RGB")` would make them black).
+- `config/endpoint-vace.json` (80 GB class, `executionTimeoutSec 5400`, model reference VACE-14B), `deploy.sh` takes
+  `ENDPOINT_CONFIG`, `scripts/vace_shot.ps1` submits one shot (money gate: refuses without a cached snapshot),
+  `prompts/mazhai/*.txt` = the runsheet blocks.
+
+**Money rules specific to this endpoint.** 75 GB of weights: NEVER run a job unless the selftest shows
+`weights.runpod_cached_snapshot` (the script enforces it). A cold 50-step 720p clip is 15–35 min of an 80 GB GPU
+(~$0.8–1.5); run one shot, look at it, then the next. workersMax 2.

@@ -17,21 +17,35 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /app /opt/wan /models /tmp/wan-input /tmp/wan-output
 
 WORKDIR /opt/wan
+# Which Wan codebase this image carries. Both install as the `wan` package:
+#   Wan2.2 (default) -> tasks t2v-A14B / i2v-A14B / ti2v-5B   (image tag :latest)
+#   Wan2.1           -> task vace-14B, reference-to-video     (image tag :vace)
+# app/generator.py builds its task table from whatever `wan` exposes, so one
+# handler serves both images; WAN_REPO is also exported so the selftest can say
+# which one is running.
+ARG WAN_REPO=Wan2.2
 ARG WAN_GIT_REF=main
-RUN git clone --depth 1 --branch ${WAN_GIT_REF} https://github.com/Wan-Video/Wan2.2.git /opt/wan && \
-    grep -v -E '(^|[,; ])flash_attn([,; ]|$)' /opt/wan/requirements.txt > /tmp/wan-req.txt && \
+ENV WAN_REPO=${WAN_REPO}
+RUN git clone --depth 1 --branch ${WAN_GIT_REF} https://github.com/Wan-Video/${WAN_REPO}.git /opt/wan && \
+    grep -v -E '(^|[,; ])(flash_attn|gradio)([,; =<>]|$)' /opt/wan/requirements.txt > /tmp/wan-req.txt && \
     pip install --no-cache-dir -r /tmp/wan-req.txt && \
     python - <<'EOF'
-import pathlib
+import os, pathlib
 p = pathlib.Path("/opt/wan/wan/__init__.py")
-p.write_text(
-    "# Copyright 2024-2025 The Alibaba Wan Team Authors. All rights reserved.\n"
-    "from . import configs, distributed, modules\n"
-    "from .image2video import WanI2V\n"
-    "from .text2video import WanT2V\n"
-    "from .textimage2video import WanTI2V\n"
-)
-print("patched", p)
+if os.environ.get("WAN_REPO", "Wan2.2") == "Wan2.2":
+    # Trim Wan2.2's package init to the three pipelines we ship (the others pull
+    # in speech/animate dependencies that are not installed here).
+    p.write_text(
+        "# Copyright 2024-2025 The Alibaba Wan Team Authors. All rights reserved.\n"
+        "from . import configs, distributed, modules\n"
+        "from .image2video import WanI2V\n"
+        "from .text2video import WanT2V\n"
+        "from .textimage2video import WanTI2V\n"
+    )
+    print("patched", p)
+else:
+    # Wan2.1's init (configs, distributed, modules, FLF2V, I2V, T2V, VACE) is used as is.
+    print("kept", p, p.read_text())
 EOF
 
 COPY requirements.txt /app/requirements.txt

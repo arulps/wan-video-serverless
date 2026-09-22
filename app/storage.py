@@ -27,7 +27,10 @@ def fetch_input(ref: str) -> str:
     os.makedirs(INPUT_DIR, exist_ok=True)
     if ref.startswith("s3://"):
         return _s3_download(ref)
-    dest = os.path.join(INPUT_DIR, os.path.basename(ref.split("?")[0]) or "input.bin")
+    # Unique per call: two references named front.png must not overwrite each other.
+    base = os.path.basename(ref.split("?")[0]) or "input.bin"
+    fd, dest = tempfile.mkstemp(prefix="input-", suffix="-" + base, dir=INPUT_DIR)
+    os.close(fd)
     with requests.get(ref, stream=True, timeout=600) as r:
         r.raise_for_status()
         with open(dest, "wb") as f:
@@ -38,7 +41,8 @@ def fetch_input(ref: str) -> str:
 
 def _s3_download(uri: str) -> str:
     bucket, _, key = uri[5:].partition("/")
-    dest = os.path.join(INPUT_DIR, os.path.basename(key))
+    fd, dest = tempfile.mkstemp(prefix="input-", suffix="-" + (os.path.basename(key) or "input.bin"), dir=INPUT_DIR)
+    os.close(fd)
     _s3().download_file(bucket, key, dest)
     return dest
 
@@ -62,10 +66,14 @@ def _s3():
 
 
 def write_b64(payload: str) -> str:
+    """Decode a base64 image into a fresh file. A fixed name ('input.png') would
+    make every reference image of a multi-reference (VACE) job overwrite the
+    previous one, so each call gets its own path."""
+    data = base64.b64decode(payload, validate=True)  # raises BEFORE any file is created
     os.makedirs(INPUT_DIR, exist_ok=True)
-    dest = os.path.join(INPUT_DIR, "input.png")
-    with open(dest, "wb") as f:
-        f.write(base64.b64decode(payload))
+    fd, dest = tempfile.mkstemp(prefix="input-", suffix=".png", dir=INPUT_DIR)
+    with os.fdopen(fd, "wb") as f:
+        f.write(data)
     return dest
 
 

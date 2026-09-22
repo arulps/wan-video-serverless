@@ -27,8 +27,9 @@ wan.modules = types.SimpleNamespace(attention=types.SimpleNamespace(flash_attent
 sys.modules["wan"] = wan
 
 gen = types.ModuleType("app.generator")
-gen._PIPE_CLASSES = {"ti2v-5B": object, "t2v-A14B": object, "i2v-A14B": object}
-gen.supported_sizes = lambda task: ("704*1280", "1280*704") if task == "ti2v-5B" else ()
+gen._PIPE_CLASSES = {"ti2v-5B": object, "t2v-A14B": object, "i2v-A14B": object, "vace-14B": object}
+gen.WAN_REPO = "FakeWan"
+gen.supported_sizes = lambda task: ("704*1280", "1280*704") if task == "ti2v-5B" else ("1280*720",)
 CALLS = []
 
 
@@ -124,5 +125,50 @@ assert r["status"] == "complete" and r["delivery"] == "inline" and "warning" in 
 # ---- 6. bad size for task -> error from validation path (stub passes through) -
 r = H.handler({"id": "t6", "input": {"prompt": "a duck", "task": "nope"}})
 assert r["status"] == "error" and "unsupported task" in r["error"]
+
+# ---- 7. vace reference images: list of data URIs -> N distinct files, cleaned up -
+import io  # noqa: E402
+
+from PIL import Image  # noqa: E402
+
+
+def _png_data_uri(color):
+    buf = io.BytesIO()
+    Image.new("RGBA", (8, 8), color).save(buf, format="PNG")
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+
+
+CALLS.clear()
+refs = [_png_data_uri((255, 0, 0, 255)), _png_data_uri((0, 255, 0, 0))]
+seen_paths = []
+_orig_fake = gen.generate
+
+
+def fake_generate_refs(**kw):
+    seen_paths.extend(kw["ref_image_paths"])
+    assert all(os.path.isfile(p) for p in kw["ref_image_paths"]), kw["ref_image_paths"]
+    return _orig_fake(**kw)
+
+
+gen.generate = fake_generate_refs
+r = H.handler({"id": "t7", "input": {"task": "vace-14B", "prompt": "a duck", "ref_images": refs,
+                                     "context_scale": 0.8, "size": "1280*720"}})
+gen.generate = _orig_fake
+assert r["status"] == "complete", r
+kw = CALLS[-1]
+assert len(kw["ref_image_paths"]) == 2 and len(set(kw["ref_image_paths"])) == 2, "two refs must not share a file"
+assert kw["context_scale"] == 0.8 and kw["image_path"] is None
+assert not any(os.path.exists(p) for p in seen_paths), "reference files must be removed after the job"
+assert not os.listdir("/tmp/wan-input"), os.listdir("/tmp/wan-input")
+# a single string is accepted as a one-element list; a broken entry is an input error
+r = H.handler({"id": "t7b", "input": {"task": "vace-14B", "prompt": "a duck", "ref_images": refs[0]}})
+assert r["status"] == "complete" and len(CALLS[-1]["ref_image_paths"]) == 1
+r = H.handler({"id": "t7c", "input": {"task": "vace-14B", "prompt": "a duck", "ref_images": ["/no/such/file.png"]}})
+assert r["status"] == "error" and "ref_images[0]" in r["error"], r["error"][-300:]
+
+# ---- 8. selftest reports the image's codebase and task table ----------------
+r = H.handler({"id": "t8", "input": {"op": "selftest"}})
+assert r["wan_repo"] == "FakeWan" and r["tasks"] == sorted(gen._PIPE_CLASSES)
+assert "host_ram_gb" in r
 
 print("HANDLER CHECKS PASSED")

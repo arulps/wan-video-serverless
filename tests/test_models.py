@@ -52,4 +52,16 @@ try:
 except RuntimeError as exc:
     assert "incomplete" in str(exc)
 
+# ---- vace-14B: cached snapshot under models--Wan-AI--Wan2.1-VACE-14B, index.json required
+root = tempfile.mkdtemp()
+snap = os.path.join(root, "models--Wan-AI--Wan2.1-VACE-14B", "snapshots", "abc123")
+os.makedirs(snap)
+for f in ("models_t5_umt5-xxl-enc-bf16.pth", "Wan2.1_VAE.pth"):
+    open(os.path.join(snap, f), "w").write("x")
+assert M.find_cached_snapshot("vace-14B", root) is None, "no DiT shards index -> not a usable snapshot"
+open(os.path.join(snap, "diffusion_pytorch_model.safetensors.index.json"), "w").write("{}")
+assert M.find_cached_snapshot("vace-14B", root) == snap
+assert M.repo_for("vace-14B") == "Wan-AI/Wan2.1-VACE-14B"
+assert M.weights_status("vace-14B")["repo"] == "Wan-AI/Wan2.1-VACE-14B"
+
 print("MODELS CHECKS PASSED")

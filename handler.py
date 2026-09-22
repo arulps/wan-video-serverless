@@ -37,6 +37,9 @@ _ALIASES = {
     "prompt": ("prompt",),
     "offload": ("offload", "offload_model"),
     "output_key": ("output_key",),
+    # vace-14B: subject reference images (list of data URIs / URLs / base64).
+    "ref_images": ("ref_images", "reference_images", "refs"),
+    "context_scale": ("context_scale", "vace_context_scale"),
 }
 
 
@@ -62,10 +65,37 @@ def _resolve_image(image):
         return image
 
 
+def _resolve_refs(refs):
+    """Resolve the vace reference list to local files. Accepts a list or a single
+    string; every entry must resolve to an existing file (a typo in a path or a
+    corrupt base64 string is an input error, not something to pass on to a
+    75 GB model load)."""
+    if refs is None:
+        return []
+    if isinstance(refs, str):
+        refs = [refs]
+    if not isinstance(refs, (list, tuple)):
+        raise ValueError("ref_images must be a list of images (data URI, URL, s3:// or base64)")
+    if len(refs) > 8:
+        raise ValueError("ref_images: at most 8 reference images")
+    paths = []
+    for i, ref in enumerate(refs):
+        p = _resolve_image(ref)
+        if not p or not os.path.isfile(p):
+            raise ValueError(f"ref_images[{i}] could not be resolved to a file")
+        paths.append(p)
+    return paths
+
+
 def _rm(path):
     if path:
         try:
             os.remove(path)
+        except OSError:
+            pass
+        # generator._flatten_reference writes <stem>-flat.png next to a reference
+        try:
+            os.remove(os.path.splitext(path)[0] + "-flat.png")
         except OSError:
             pass
 
@@ -88,6 +118,14 @@ def selftest(task):
         rep["huggingface_hub"] = f"error: {exc}"
     rep["torch"] = torch.__version__
     rep["alloc_conf"] = os.environ.get("PYTORCH_CUDA_ALLOC_CONF")
+    rep["wan_repo"] = generator.WAN_REPO
+    rep["tasks"] = sorted(generator._PIPE_CLASSES)
+    try:
+        # Host RAM matters for the 14B pipelines: offload_model parks the 34 GB
+        # DiT on the CPU during VAE decode and T5 (11 GB) lives there between jobs.
+        rep["host_ram_gb"] = round(os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES") / 2**30, 1)
+    except Exception:
+        rep["host_ram_gb"] = None
     rep["cuda_available"] = bool(torch.cuda.is_available())
     if rep["cuda_available"]:
         try:
@@ -126,9 +164,12 @@ def handler(job):
     inp = job.get("input") or {}
     task = _pick(inp, "task", DEFAULT_TASK)
     out_path = compact_path = image_path = None
+    ref_paths = []
     try:
         if task not in generator._PIPE_CLASSES:
-            raise ValueError(f"unsupported task '{task}'; choose from {sorted(generator._PIPE_CLASSES)}")
+            raise ValueError(
+                f"unsupported task '{task}' in this image (built from {generator.WAN_REPO}); "
+                f"choose from {sorted(generator._PIPE_CLASSES)}")
 
         if inp.get("op") == "selftest":
             return selftest(task)
@@ -147,6 +188,7 @@ def handler(job):
                 pass
 
         image_path = _resolve_image(_pick(inp, "image"))
+        ref_paths = _resolve_refs(_pick(inp, "ref_images"))
         size = _pick(inp, "size") or ("1280*704" if task == "ti2v-5B" else "1280*720")
         seed = int(_pick(inp, "seed", -1))
         if seed < 0:
@@ -168,6 +210,8 @@ def handler(job):
             offload=bool(_pick(inp, "offload", True)),
             solver=_pick(inp, "solver", "unipc"),
             progress=progress,
+            ref_image_paths=ref_paths,
+            context_scale=float(_pick(inp, "context_scale", 1.0)),
         )
 
         result = {"status": "complete", **info}
@@ -215,6 +259,8 @@ def handler(job):
         _rm(out_path)
         _rm(compact_path)
         _rm(image_path)
+        for p in ref_paths:
+            _rm(p)
 
 
 log.info("wan worker starting (task=%s, shim=%s)", DEFAULT_TASK, boot.SHIM_REPORT)

@@ -1,0 +1,40 @@
+{
+  "_comment": "Second endpoint: Wan2.1 VACE-14B reference-to-video (character refs + text -> 5 s 720p). Image built with WAN_REPO=Wan2.1 (tag :vace). 80 GB class GPU: the bf16 DiT alone is ~34 GB, T5 11 GB, plus 720p x 81 f activations and the VAE decode. gpuTypeIds are a PRIORITY list applied by the REST PATCH in deploy.sh; verify the exact id strings against RunPod's GPU list before the first deploy (see CC-DISPATCH-phase4-vace). executionTimeoutSec 5400: a cold 50-step 720p job on an A100 can take 30+ min (2 forward passes per step, SDPA not flash-attn).",
+  "template": {
+    "name": "wan-vace-serverless",
+    "image": "ghcr.io/arulps/wan-video-serverless:vace",
+    "containerDiskGb": 50,
+    "env": {
+      "HF_HOME": "/models",
+      "HF_HUB_ENABLE_HF_TRANSFER": "1",
+      "DEFAULT_TASK": "vace-14B",
+      "WAN_REPO": "Wan2.1",
+      "LOG_LEVEL": "INFO",
+      "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"
+    }
+  },
+  "endpoint": {
+    "name": "wan-vace-serverless",
+    "gpuPool": "AMPERE_80",
+    "gpuId": "NVIDIA A100 80GB PCIe",
+    "gpuTypeIds": [
+      "NVIDIA H100 80GB HBM3",
+      "NVIDIA H100 PCIe",
+      "NVIDIA A100 80GB PCIe",
+      "NVIDIA A100-SXM4-80GB"
+    ],
+    "gpuCount": 1,
+    "workersMin": 0,
+    "workersMax": 2,
+    "idleTimeoutSec": 300,
+    "executionTimeoutSec": 5400,
+    "scaleBy": "delay",
+    "scaleThreshold": 4,
+    "flashBoot": true,
+    "minCudaVersion": "12.8",
+    "modelReference": "https://huggingface.co/Wan-AI/Wan2.1-VACE-14B:main"
+  },
+  "s3": {
+    "defaultOutputBucket": null
+  }
+}
