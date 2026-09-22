@@ -35,25 +35,60 @@ The song can have any number of characters (`songs/<slug>/characters.txt` + the 
 - **512 text-encoder tokens — a hard budget, not a guideline.** Wan was trained with a 512-token umt5 context.
   The official Wan code truncates there; ComfyUI sends the whole prompt, so an over-long one is not cut — it is
   outside the trained range and every detail gets a thinner slice of attention (the "rain disappeared" mechanism).
-  The lock lines sit at the END of the prompt, so they lose first. The runner estimates tokens at 1.4/word,
-  prints `~tokens=` in `--dry-run`, and **refuses to submit an over-budget shot** (`--allow-long` overrides).
-  The first two planned songs came in at 530–1090 tokens per shot before trimming, so plan to these budgets from
-  the start (words; ×1.4 ≈ tokens):
+  The runner estimates tokens at **1.7 per word** (measured on the pod with the real umt5 tokenizer, 2026-09-22:
+  283 words → 472 tokens, 322 → 558; ±2 %), prints `~tokens=` in `--dry-run`, and **refuses to submit an
+  over-budget shot** (`--allow-long` overrides). Aim for ≤ 490 estimated. The first two planned songs came in at
+  530–1090 tokens per shot before trimming, so plan to these budgets from the start (words):
 
   | block | max words | notes |
   |---|---|---|
-  | `world.txt` line 1 (place clause) | 25 | where the camera is and where the characters may be — one sentence |
-  | assembled shot paragraph (ATMOSPHERE ×2 + ANGLE + SHOT + POSE + MOTION) | 120 | ATMOSPHERE ≤ 15 words since it is said twice; NOT-lines count |
-  | `style.txt` | 30 | the look in one breath: "Pixar-soft 3D, rounded shapes, matte, saturated, shallow depth of field, smooth eased animation" |
-  | `world.txt` lines 2+ (WORLD block) | 70 | only the set elements a shot can see or touch; décor that no shot names is wasted tokens |
-  | each character lock line | 30 | the reference sheet carries the identity; the lock line names the 4–5 non-negotiables + "keep exactly as in the reference image" |
+  | `world.txt` line 1 (place clause) | 20 | where the camera is and where the characters may be — one sentence |
+  | assembled shot paragraph (ATMOSPHERE ×2 + ANGLE + SHOT + POSE + MOTION) | 100 | ATMOSPHERE ≤ 12 words since it is said twice; NOT-lines count |
+  | `style.txt` | 25 | the look in one breath |
+  | `world.txt` lines 2+ (WORLD block) | 55 | only the set elements a shot can see or touch |
+  | each character lock line | 25 | the reference sheet carries the identity; the lock line names the 4–5 non-negotiables + "keep exactly as in the reference image" — the song's `characters.txt` overrides §8's longer lines |
   | cast per shot | 3 | three locks ≈ 130 tokens; a 4th does not fit |
 
-  That totals ≈ 480 tokens with three characters. Fixes when a shot is still over: cut décor from WORLD first, then
+  That totals ≈ 470 tokens with three characters. Fixes when a shot is still over: cut décor from WORLD first, then
   adjectives from POSE/MOTION, then a character from the shot — never the camera/framing lines.
-- Crowd/family beats: plan them as an establishing wide (cast=none or the two leads only, others described in one
-  clause as "family members" without lock lines) plus close two-shots that carry the identities. A preschooler
-  reads the wide as "everyone is there" and the close-ups as who they are.
+
+## 3c · Two children in one shot — bind by outfit and position, not by name
+S03 (Appa + Minnu + Mintu, blocking test 2026-09-22) rendered **two** people: Appa, and one child with Minnu's
+pigtails and Mintu's dinosaur shirt. "Minnu" and "Mintu" are near-identical tokens and the lock lines are the last
+thing in the prompt; two similar child tiles side by side on the sheet were read as one child. Rules:
+- In POSE/MOTION refer to each child as **"the girl in violet dungarees" / "the boy in the green dinosaur t-shirt"**
+  with a **position** ("in the bow", "left"); names belong in the lock lines only.
+- Per-shot NEGATIVE for two-child shots: `two children merged, only two people, pigtails on the boy, dinosaur shirt
+  on the girl`, and say "all three people" / "three separate people" in SHOT.
+- On the sheet keep the two children apart — an adult or the animal between them (`minnu-appa-mintu-16x9.png`)
+  is the A/B being tested; if it wins it becomes the rule for every kids+someone sheet.
+- Negatives only bite at cfg > 1: two-child shots run at cfg 1.5 if the cfg-1 pass merges them.
+
+## 3d · Expressions the model does not do on its own (the wink)
+T09a at 4 steps / cfg 1.0 blinked both eyes and opened the mouth — a symmetric blink is the model's default, and
+at cfg 1.0 every negative ("both eyes closed", "open mouth") is ignored. Identity, world and framing were perfect.
+Order of fixes: (1) 6 steps / cfg 2.0 with the wink negatives active and the asymmetry spelled out ("only his left
+eye closes … right eye stays wide open and round"); (2) a second seed; (3) if still a blink: VACE first/last-frame
+keyframes — frame 0 = the neutral frame from the passed clip, frame 80 = a wink keyframe painted from that frame
+(Gemini image edit), fed as `control_video` + `control_masks` so the model only in-betweens. Two reference tiles of
+the same character (neutral + wink) also produced a stray second pair of wings by the door — one identity tile plus
+the expression tile is the most a sheet should carry, and "extra wings, sleeves" go in that shot's NEGATIVE.
+
+## 3e · What the distilled sampler will not do (4g A/B, 2026-09-22)
+Measured on T09a and S03 at 832×480, six rows:
+- **cfg 2.0 removed the expression entirely** — no wink and no blink; cfg 1.0 gives a symmetric blink. The negative
+  prompt does not create asymmetry at any cfg the distilled LoRA tolerates.
+- **Two tiles of the same character** (neutral + wink) rendered a ghost second TV set at seed 4242 (both cfg 1 and 2).
+  One identity tile per character on a sheet; an expression is not a pose reference for this model.
+- **Appa between the children** fixed the head count (3 people, correct seats) at cfg 1.0 and 1.5 — that rule stands.
+  But the boy still got the girl's pigtails and bow, and both children held oars against POSE and the negative:
+  identity of two look-alike children and "hands on the gunwales" did not survive cfg 1.5 either.
+- The `mode` column therefore exists: `full` = no LoRA, 30 steps, cfg 5, uni_pc — the 4d control config, ~8× slower
+  (~4 min at 480p, ~10–12 min at 720p on an A100). It is the next lever for exactly these three failure types; if
+  full sampling also fails, the lever after it is VACE keyframes (§3d step 3) — a composed first frame with the right
+  two children, or a painted wink frame, and the model only in-betweens.
+- Cheap distilled lever still worth one row: cast order — the lock line that comes last loses first, so the
+  character whose identity slipped goes first in `cast`.
 
 ## 4 · Distilled sampling (lightx2v LoRA): 4–6 steps, cfg 1.0, shift 5, lcm/simple
 - 4 steps is clean; 6 is a touch smoother. Never needed 30 again.

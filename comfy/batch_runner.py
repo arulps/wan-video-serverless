@@ -29,7 +29,6 @@ import csv
 import os
 import queue
 import re
-import shlex
 import subprocess
 import sys
 import threading
@@ -56,7 +55,7 @@ FALLBACK_NEGATIVE = os.path.join(REPO_ROOT, "prompts", "mazhai", "NEGATIVE.txt")
 PLAYBOOK = os.path.join(REPO_ROOT, "docs", "PROMPT-PLAYBOOK.md")
 NO_TEXT_LINE = "No text, no captions, no watermark."
 
-CSV_FIELDS = ["shot_id", "cast", "ref", "prompt", "duration_s", "steps", "cfg",
+CSV_FIELDS = ["shot_id", "cast", "ref", "prompt", "duration_s", "steps", "cfg", "mode",
               "seed", "size", "negative", "status", "notes"]
 
 print_lock = threading.Lock()
@@ -189,7 +188,7 @@ def parse_shot_file(text):
 # lock lines + NO_TEXT_LINE at the END of our prompt are the first casualties.
 # Over-budget shots are refused before any GPU time unless --allow-long.
 T5_TOKEN_LIMIT = 512
-T5_TOKENS_PER_WORD = 1.4   # sentencepiece on English prose with punctuation, dashes, numbers (calibrate from the pod)
+T5_TOKENS_PER_WORD = 1.7   # measured on the pod 2026-09-22 with the real umt5 tokenizer (T09a 283 words -> 472 tokens, S03 322 -> 558); was 1.4
 
 
 def estimate_t5_tokens(text):
@@ -350,8 +349,19 @@ def shot_params(ctx, row):
     duration_s = float(row["duration_s"]) if row.get("duration_s", "").strip() else None
     frames = frames_for_duration(duration_s)
     ref = resolve_path(ctx.song_dir, row.get("ref", ""))
+    # `mode` column: "distilled" (default: lightx2v LoRA, lcm, steps/cfg from the row) or
+    # "full" (no LoRA, uni_pc/simple, defaults steps 30 / cfg 5 unless the row sets them --
+    # ~8x slower, for the shots where cfg-1 adherence is not enough: expressions, who holds what).
+    mode = (row.get("mode", "") or "").strip().lower() or "distilled"
+    if mode not in ("distilled", "full"):
+        raise RuntimeError("bad mode %r (distilled | full)" % row.get("mode"))
+    if mode == "full":
+        if not row.get("steps", "").strip():
+            steps = 30
+        if not row.get("cfg", "").strip():
+            cfg = 5.0
     return {"steps": steps, "cfg": cfg, "seed": seed, "width": w, "height": h,
-            "frames": frames, "ref": ref}
+            "frames": frames, "ref": ref, "mode": mode}
 
 
 # --------------------------------------------------------------------- CSV
@@ -442,8 +452,9 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
         wf = run_comfy.build_workflow(
             ctx.wf_base, prompt=prompt_text, negative=negative_text, ref_name=ref_name,
             width=p["width"], height=p["height"], length=p["frames"], seed=p["seed"],
-            steps=p["steps"], cfg=p["cfg"], sampler="lcm", scheduler="simple", shift=5.0,
-            lora=run_comfy.DEFAULT_LORA, lora_strength=1.0, no_lora=False, prefix=prefix)
+            steps=p["steps"], cfg=p["cfg"],
+            sampler="uni_pc" if p["mode"] == "full" else "lcm", scheduler="simple", shift=5.0,
+            lora=run_comfy.DEFAULT_LORA, lora_strength=1.0, no_lora=(p["mode"] == "full"), prefix=prefix)
         if ctx.crf is not None and ctx.crf_key and ctx.save_node_id in wf:
             wf[ctx.save_node_id]["inputs"][ctx.crf_key] = ctx.crf
 
@@ -459,8 +470,9 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
             "prompt": prompt_text, "negative": negative_text,
             "params": {"steps": p["steps"], "cfg": p["cfg"], "seed": p["seed"],
                        "width": p["width"], "height": p["height"], "length": p["frames"],
-                       "sampler": "lcm", "scheduler": "simple", "shift": 5.0,
-                       "lora": run_comfy.DEFAULT_LORA, "crf": ctx.crf},
+                       "mode": p["mode"],
+                       "sampler": "uni_pc" if p["mode"] == "full" else "lcm", "scheduler": "simple", "shift": 5.0,
+                       "lora": None if p["mode"] == "full" else run_comfy.DEFAULT_LORA, "crf": ctx.crf},
             "ref": p["ref"], "bytes": result["bytes"], "server_file": result["server_file"],
             "prompt_id": result["prompt_id"],
         }
@@ -496,10 +508,13 @@ def run_stop_cmd(cmd):
         return
     log("running --stop-cmd:", cmd)
     try:
-        if os.name == "nt":
-            subprocess.run(cmd, shell=False, check=False)
-        else:
-            subprocess.run(shlex.split(cmd), shell=False, check=False)
+        # shell=True so shell operators (&&, |, ...) in the command are actually
+        # interpreted -- shlex.split() + shell=False previously turned "cmd1 &&
+        # cmd2" into literal extra argv tokens for cmd1, silently swallowing cmd2
+        # (this is why the pod never stopped itself in Phase 4g/4h: out-push ran,
+        # "&& runpodctl stop pod ..." was just inert arguments to it).
+        result = subprocess.run(cmd, shell=True, check=False)
+        log("--stop-cmd exit code:", result.returncode)
     except Exception as e:
         log("--stop-cmd failed:", e)
 
@@ -573,8 +588,8 @@ def main():
                 log("  ERROR assembling prompt:", e)
                 continue
             log("--- params ---")
-            log("steps=%d cfg=%g seed=%d size=%dx%d frames=%d ref=%s ~tokens=%d" %
-                (p["steps"], p["cfg"], p["seed"], p["width"], p["height"], p["frames"], p["ref"],
+            log("mode=%s steps=%d cfg=%g seed=%d size=%dx%d frames=%d ref=%s ~tokens=%d" %
+                (p["mode"], p["steps"], p["cfg"], p["seed"], p["width"], p["height"], p["frames"], p["ref"],
                  estimate_t5_tokens(prompt_text)))
             warn = token_budget_warning(prompt_text, row.get("cast", ""))
             if warn:

@@ -63,7 +63,7 @@ ensure_rclone() {
     log "installing rclone"
     curl -fsSL https://rclone.org/install.sh | bash >/dev/null 2>&1 || die "rclone install failed (apt-get install rclone as a fallback)"
   fi
-  rclone version | head -1
+  rclone version | head -1 || true  # pipefail: head closes early, rclone can get SIGPIPE (141) -- non-fatal
 }
 
 detect_comfy_root() {

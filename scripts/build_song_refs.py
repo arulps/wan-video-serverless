@@ -25,6 +25,7 @@ import sys
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BIBLE = r"C:\Channel Contents\MinMiniKids\charecter bible"
 DAD = r"C:\Channel Contents\MinMiniKids\Model_Animation library\Charecters\Turnarounds\Dad"
+MINTU = r"C:\Channel Contents\MinMiniKids\Model_Animation library\Charecters\Turnarounds\Mintu_Latest"
 ROWSRC = r"C:\Channel Contents\MinMiniKids\songs\6 row row row your boat"
 TWSRC = r"C:\Channel Contents\MinMiniKids\songs\Twinkle Twinkle"
 CUTS = os.path.join(REPO, "outputs", "cutouts")
@@ -33,11 +34,14 @@ CUTS = os.path.join(REPO, "outputs", "cutouts")
 # cut=True  -> run background removal first (busy or tinted background)
 # cut=False -> already on clean white/near-white; make_ref_sheet trims it
 SRC = {
-    # children (relaxed turnarounds, NOT the T-poses -- playbook section 2)
-    "mintu_face":   (os.path.join(BIBLE, "generation-refs-2026-08-31", "Mintu-gemini2", "face-front.png"), False),
-    "mintu_face34": (os.path.join(BIBLE, "generation-refs-2026-08-31", "Mintu-gemini2", "face-threequarter.png"), False),
-    "mintu_body":   (os.path.join(BIBLE, "generation-refs-2026-08-31", "Mintu-gemini2", "body-relaxed-front.png"), False),
-    "mintu_body34": (os.path.join(BIBLE, "generation-refs-2026-08-31", "Mintu-gemini2", "body-relaxed.png"), False),
+    # Mintu -- Arul's call 2026-09-22: use the Mintu_Latest four-view turnaround (2816x1536 Gemini renders on a
+    # light-grey studio background -> cut). Views identified by eye: front is a T-POSE with an open-mouth smile,
+    # so every Mintu shot keeps the T-pose NOT-lines / negative (playbook section 2) and "open mouth" stays negative.
+    "mintu_front":  (os.path.join(MINTU, "Gemini_Generated_Image_c82nyxc82nyxc82n.jpeg"), True),   # front, T-pose
+    "mintu_left":   (os.path.join(MINTU, "Gemini_Generated_Image_7euvr7euvr7euvr7.jpeg"), True),   # profile facing left
+    "mintu_right":  (os.path.join(MINTU, "Gemini_Generated_Image_hbj14khbj14khbj1.jpeg"), True),   # profile facing right
+    "mintu_back":   (os.path.join(MINTU, "Gemini_Generated_Image_t0cqrot0cqrot0cq.jpeg"), True),   # back, T-pose
+    # (the older bible set generation-refs-2026-08-31/Mintu-gemini2 is superseded; its skin read yellow-plastic in S03)
     "minnu_face":   (os.path.join(BIBLE, "generation-refs-2026-08-31", "Minnu", "face-front.png"), False),
     "minnu_face34": (os.path.join(BIBLE, "generation-refs-2026-08-31", "Minnu", "face-threequarter.png"), False),
     "minnu_body":   (os.path.join(BIBLE, "generation-refs-2026-08-31", "Minnu", "body-relaxed-front.png"), False),
@@ -64,25 +68,30 @@ SRC = {
 # ---- sheets: song -> out name -> tiles, left to right ---------------------
 SHEETS = {
     "twinkle-twinkle": {
-        "mintu-4view-16x9.png":      ["mintu_face", "mintu_face34", "mintu_body", "mintu_body34"],
+        "mintu-4view-16x9.png":      ["mintu_front", "mintu_left", "mintu_right", "mintu_back"],
         "minnu-4view-16x9.png":      ["minnu_face", "minnu_face34", "minnu_body", "minnu_body34"],
-        "kids-16x9.png":             ["mintu_body", "minnu_body"],
+        "kids-16x9.png":             ["mintu_front", "minnu_body"],
         "thangam-16x9.png":          ["thangam"],
         "minmini-4view-16x9.png":    ["minmini_front", "minmini_sideA", "minmini_sideB", "minmini_back"],
         # neutral + wink in ONE sheet: identity and target expression together,
         # the playbook section 2 pose-reference fix that got V1a right first try
         "minmini-wink-16x9.png":     ["minmini_front", "minmini_wink"],
+        # 4g: the two-tile wink sheet produced a ghost second TV at one seed -- single-tile variant for the A/B
+        "minmini-front-16x9.png":    ["minmini_front"],
         "minmini-thangam-16x9.png":  ["minmini_front", "thangam"],
-        "kids-thangam-16x9.png":     ["mintu_body", "minnu_body", "thangam"],
-        "kids-minmini-16x9.png":     ["mintu_body", "minnu_body", "minmini_front"],
-        "mintu-thangam-16x9.png":    ["mintu_body", "thangam"],
+        "kids-thangam-16x9.png":     ["mintu_front", "minnu_body", "thangam"],
+        "kids-minmini-16x9.png":     ["mintu_front", "minnu_body", "minmini_front"],
+        "mintu-thangam-16x9.png":    ["mintu_front", "thangam"],
     },
     "row-row-row-your-boat": {
-        "appa-mintu-minnu-16x9.png": ["appa_front", "mintu_body", "minnu_body"],
-        "kids-modhu-16x9.png":       ["mintu_body", "minnu_body", "modhu"],
-        "kids-singa-16x9.png":       ["mintu_body", "minnu_body", "singa"],
-        "kids-karadi-16x9.png":      ["mintu_body", "minnu_body", "karadi"],
-        "kids-chiku-16x9.png":       ["mintu_body", "minnu_body", "chiku"],
+        "appa-mintu-minnu-16x9.png": ["appa_front", "mintu_front", "minnu_body"],
+        # A/B 2026-09-22: the two children side by side merged into one child in S03;
+        # Appa between them keeps the two child tiles apart on the sheet
+        "minnu-appa-mintu-16x9.png": ["minnu_body", "appa_front", "mintu_front"],
+        "kids-modhu-16x9.png":       ["mintu_front", "minnu_body", "modhu"],
+        "kids-singa-16x9.png":       ["mintu_front", "minnu_body", "singa"],
+        "kids-karadi-16x9.png":      ["mintu_front", "minnu_body", "karadi"],
+        "kids-chiku-16x9.png":       ["mintu_front", "minnu_body", "chiku"],
         "animals-3up-16x9.png":      ["modhu", "singa", "karadi"],
     },
 }
