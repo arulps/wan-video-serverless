@@ -1,0 +1,6 @@
+ATMOSPHERE: night, a deep indigo sky full of small white stars above the terrace, a thin crescent moon, cool blue moonlight lying across the honey-coloured deck planks, warm amber light spilling out of the arched glass door
+ANGLE: the camera stands at the far corner of the terrace deck at a child's eye height, facing the cream balustrade and the open sky beyond it, and drifts very slowly straight forward, one single continuous gentle push-in, no cuts, no pan, no tilt
+SHOT: wide shot taking in the whole terrace — the glass door and mint wall on the left, the empty deck planks across the middle, the cream balustrade running along the far edge, and open night sky filling the top third of frame
+POSE: the terrace is completely empty, no people and no creatures in frame at all; the two little chairs sit tucked under the round table, the woven mat lies flat and unused near the railing, the potted topiary stands still
+MOTION: only the slow forward push-in of the camera; far above the railing the small white stars twinkle faintly and one wisp of lilac cloud drifts, and the amber light from the door glows steadily; nothing on the deck moves at all; smooth fluid 3D animation, eased in and out, never choppy
+NEGATIVE: people, children, any character, any creature, camera shake, panning, tilting, zooming fast, empty black frame

@@ -1,0 +1,9 @@
+# Per-song cast for Row Row Row Your Boat. Mintu and Minnu come from PROMPT-PLAYBOOK.md section 8.
+Appa: father, South Indian, mid-30s, short jet-black hair, neat moustache, golden-brown skin, black-and-white checked shirt, navy trousers; keep exactly as in the reference image; do not restyle, recolour or resize.
+Modhu: chunky friendly cartoon crocodile, leaf-green, cream belly, big sparkly eyes, wide smile, never scary; keep exactly as in the reference image; do not restyle, recolour or resize.
+Singa: chunky friendly cartoon lion, golden-sand coat, cream muzzle, big caramel-brown mane, amber eyes, never scary; keep exactly as in the reference image; do not restyle, recolour or resize.
+Karadi: chunky cartoon polar bear cub, snow-white coat, small round ears, big black nose, gentle, never scary; keep exactly as in the reference image; do not restyle, recolour or resize.
+Chiku: tiny upright mouse no bigger than a child's hand, brown coat, cream belly, huge round ears; keep exactly as in the reference image; do not restyle, recolour or resize.
+# Song-only overrides of PROMPT-PLAYBOOK.md section 8 (shortened to fit three locks in the 512-token budget).
+Mintu: little boy, 4–5, black hair with a cowlick, warm brown skin, green dinosaur t-shirt, blue shorts; keep exactly as in the reference image; do not restyle, recolour or resize.
+Minnu: girl, 6–8, jet-black pigtails with red ribbon bows, warm brown skin, violet dungarees over cream t-shirt; keep exactly as in the reference image; do not restyle, recolour or resize.

@@ -6,7 +6,10 @@ row fits inside the canvas, and centre the row on a white canvas (default
 aspect, so sheets must already be that shape).
 
     python comfy/make_ref_sheet.py --out refs/minnu-4view-16x9.png \
-        a.png b.png c.png d.png [--size 1280x720] [--gap 24] [--margin 24]
+        a.png b.png c.png d.png [--size 1280x720] [--gap 24] [--margin 24] [--rows N]
+
+Up to 4 images go in one row; 5-8 auto-wrap to two rows (override with
+--rows). Warns when tiles get too small to be useful as identity references.
 
 Reproduces the logic described in docs/PROMPT-PLAYBOOK.md section 3 (the
 one-off script that made outputs/vace/refs/minnu-4view-16x9.png): trim to
@@ -55,7 +58,30 @@ def trim_white_margins(im, threshold=TRIM_THRESHOLD, margin=TRIM_CONTENT_MARGIN)
     return im.crop((left, top, right, bottom))
 
 
-def build_sheet(paths, out_path, canvas_w, canvas_h, gap, margin, trim):
+MIN_USEFUL_TILE_H = 300  # px; below this a character tile is too small for VACE to hold identity
+
+
+def _fit_row(tiles, row_h, max_row_w, gap):
+    """Scale `tiles` to height row_h, then shrink uniformly if the row would
+    exceed max_row_w. Returns the scaled tiles."""
+    scaled = []
+    for im in tiles:
+        w, h = im.size
+        scaled.append(im.resize((max(1, round(w * (row_h / h))), row_h), Image.LANCZOS))
+    row_w = sum(im.width for im in scaled) + gap * (len(scaled) - 1)
+    if row_w > max_row_w:
+        scale = (max_row_w - gap * (len(scaled) - 1)) / sum(im.width for im in scaled)
+        if scale <= 0:
+            sys.exit("too many images / too small a canvas for --gap and --margin")
+        new_h = max(1, round(row_h * scale))
+        scaled = [im.resize((max(1, round(im.width * scale)), new_h), Image.LANCZOS) for im in scaled]
+    return scaled
+
+
+def build_sheet(paths, out_path, canvas_w, canvas_h, gap, margin, trim, rows=0):
+    """rows=0 -> auto: one row for up to 4 tiles, two rows for 5-8, three for
+    9-12. More tiles per sheet = smaller tiles = weaker identity; the script
+    warns when any tile ends up under MIN_USEFUL_TILE_H px tall."""
     tiles = []
     for p in paths:
         im = Image.open(p)
@@ -66,37 +92,42 @@ def build_sheet(paths, out_path, canvas_w, canvas_h, gap, margin, trim):
 
     if not tiles:
         sys.exit("no input images given")
+    n = len(tiles)
+    if rows <= 0:
+        rows = 1 if n <= 4 else (2 if n <= 8 else 3)
+    rows = min(rows, n)
 
-    # Common height: the canvas height minus the outer margin on top+bottom.
-    common_h = canvas_h - 2 * margin
-    if common_h <= 0:
-        sys.exit("--margin too large for --size")
-
-    scaled = []
-    for im in tiles:
-        w, h = im.size
-        new_w = max(1, round(w * (common_h / h)))
-        scaled.append(im.resize((new_w, common_h), Image.LANCZOS))
-
-    row_w = sum(im.width for im in scaled) + gap * (len(scaled) - 1)
+    inner_h = canvas_h - 2 * margin - gap * (rows - 1)
+    row_h = inner_h // rows
+    if row_h <= 0:
+        sys.exit("--margin/--rows too large for --size")
     max_row_w = canvas_w - 2 * margin
-    if row_w > max_row_w:
-        # Shrink every tile uniformly so the row (including gaps) fits.
-        scale = (max_row_w - gap * (len(scaled) - 1)) / sum(im.width for im in scaled)
-        if scale <= 0:
-            sys.exit("too many images / too small a canvas for --gap and --margin")
-        new_h = max(1, round(common_h * scale))
-        scaled = [im.resize((max(1, round(im.width * scale)), new_h), Image.LANCZOS) for im in scaled]
-        row_w = sum(im.width for im in scaled) + gap * (len(scaled) - 1)
+
+    # Distribute tiles across rows as evenly as possible, in input order.
+    per_row = [n // rows + (1 if i < n % rows else 0) for i in range(rows)]
+    row_tiles, idx = [], 0
+    for cnt in per_row:
+        row_tiles.append(_fit_row(tiles[idx:idx + cnt], row_h, max_row_w, gap))
+        idx += cnt
 
     canvas = Image.new("RGB", (canvas_w, canvas_h), (255, 255, 255))
-    row_h = max(im.height for im in scaled)
-    x = (canvas_w - row_w) // 2
-    y = (canvas_h - row_h) // 2
-    for im in scaled:
-        tile_y = y + (row_h - im.height) // 2
-        canvas.paste(im, (x, tile_y))
-        x += im.width + gap
+    total_h = sum(max(im.height for im in r) for r in row_tiles) + gap * (rows - 1)
+    y = (canvas_h - total_h) // 2
+    smallest = None
+    for r in row_tiles:
+        r_h = max(im.height for im in r)
+        r_w = sum(im.width for im in r) + gap * (len(r) - 1)
+        x = (canvas_w - r_w) // 2
+        for im in r:
+            canvas.paste(im, (x, y + (r_h - im.height) // 2))
+            x += im.width + gap
+            smallest = im.height if smallest is None else min(smallest, im.height)
+        y += r_h + gap
+
+    if smallest is not None and smallest < MIN_USEFUL_TILE_H:
+        print("WARNING: smallest tile is %d px tall (< %d): %d images on one %dx%d sheet is too many for VACE to hold "
+              "identity -- put only the characters that are in the shot on the sheet, or split the shot"
+              % (smallest, MIN_USEFUL_TILE_H, n, canvas_w, canvas_h))
 
     os.makedirs(os.path.dirname(os.path.abspath(out_path)) or ".", exist_ok=True)
     canvas.save(out_path)
@@ -111,6 +142,7 @@ def main():
     ap.add_argument("--gap", type=int, default=24)
     ap.add_argument("--margin", type=int, default=24, help="outer white margin on the canvas")
     ap.add_argument("--no-trim", action="store_true", help="skip auto-trimming white margins")
+    ap.add_argument("--rows", type=int, default=0, help="rows of tiles (default auto: 1 for <=4 images, 2 for 5-8, 3 for 9-12)")
     a = ap.parse_args()
 
     try:
@@ -118,7 +150,7 @@ def main():
     except Exception:
         sys.exit("--size must look like 1280x720")
 
-    out = build_sheet(a.images, a.out, w, h, a.gap, a.margin, trim=not a.no_trim)
+    out = build_sheet(a.images, a.out, w, h, a.gap, a.margin, trim=not a.no_trim, rows=a.rows)
     print("wrote", out)
 
 

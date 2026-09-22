@@ -25,6 +25,36 @@ Native ComfyUI takes ONE reference image and centre-crops it to the output aspec
 with white padding (`comfy/make_ref_sheet.py`). Four views (front/back/left/right) held Minnu's identity; one lawn
 front view held Mintu's. Two characters in one shot: both sheets side by side in one 1280×720 image.
 
+## 3b · Big casts (5+ characters in a song)
+The song can have any number of characters (`songs/<slug>/characters.txt` + the `cast` column take any list), but
+**a shot should not**. Two hard limits sit behind the runner's warnings:
+- **One 1280×720 sheet per shot.** `make_ref_sheet.py` wraps 5–8 images onto two rows, but every extra tile makes
+  every tile smaller; it warns under ~300 px. Put on the sheet only the characters that are in *that* shot — 1–3
+  is the sweet spot, 4 the ceiling. Sheets are per shot, not per song: `refs/appa-minnu-16x9.png`,
+  `refs/family-wide-16x9.png`.
+- **512 text-encoder tokens — a hard budget, not a guideline.** Wan was trained with a 512-token umt5 context.
+  The official Wan code truncates there; ComfyUI sends the whole prompt, so an over-long one is not cut — it is
+  outside the trained range and every detail gets a thinner slice of attention (the "rain disappeared" mechanism).
+  The lock lines sit at the END of the prompt, so they lose first. The runner estimates tokens at 1.4/word,
+  prints `~tokens=` in `--dry-run`, and **refuses to submit an over-budget shot** (`--allow-long` overrides).
+  The first two planned songs came in at 530–1090 tokens per shot before trimming, so plan to these budgets from
+  the start (words; ×1.4 ≈ tokens):
+
+  | block | max words | notes |
+  |---|---|---|
+  | `world.txt` line 1 (place clause) | 25 | where the camera is and where the characters may be — one sentence |
+  | assembled shot paragraph (ATMOSPHERE ×2 + ANGLE + SHOT + POSE + MOTION) | 120 | ATMOSPHERE ≤ 15 words since it is said twice; NOT-lines count |
+  | `style.txt` | 30 | the look in one breath: "Pixar-soft 3D, rounded shapes, matte, saturated, shallow depth of field, smooth eased animation" |
+  | `world.txt` lines 2+ (WORLD block) | 70 | only the set elements a shot can see or touch; décor that no shot names is wasted tokens |
+  | each character lock line | 30 | the reference sheet carries the identity; the lock line names the 4–5 non-negotiables + "keep exactly as in the reference image" |
+  | cast per shot | 3 | three locks ≈ 130 tokens; a 4th does not fit |
+
+  That totals ≈ 480 tokens with three characters. Fixes when a shot is still over: cut décor from WORLD first, then
+  adjectives from POSE/MOTION, then a character from the shot — never the camera/framing lines.
+- Crowd/family beats: plan them as an establishing wide (cast=none or the two leads only, others described in one
+  clause as "family members" without lock lines) plus close two-shots that carry the identities. A preschooler
+  reads the wide as "everyone is there" and the close-ups as who they are.
+
 ## 4 · Distilled sampling (lightx2v LoRA): 4–6 steps, cfg 1.0, shift 5, lcm/simple
 - 4 steps is clean; 6 is a touch smoother. Never needed 30 again.
 - At cfg 1.0 the negative prompt is ignored and adherence to secondary details drops: **the rain disappeared** from

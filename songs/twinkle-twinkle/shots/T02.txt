@@ -1,0 +1,6 @@
+ATMOSPHERE: night, indigo sky full of small white stars, one star clearly larger and brighter
+ANGLE: high in the open sky, completely locked off, no camera movement
+SHOT: entirely open night sky edge to edge, the one bright star slightly above and right of centre, the crescent moon smaller in the upper left
+POSE: nothing but sky — no ground, no horizon, no rooftop, no tree, no person, no creature
+MOTION: the small stars twinkle slowly out of time, the bright star swells gently brighter and settles once, a thin lilac cloud drifts slowly across
+NEGATIVE: ground, horizon, rooftops, buildings, trees, people, children, any character, face on the star, arms on the star, camera movement

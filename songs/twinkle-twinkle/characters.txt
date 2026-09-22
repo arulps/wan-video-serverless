@@ -1,0 +1,3 @@
+# Per-song cast for Twinkle Twinkle. Mintu and Minnu come from PROMPT-PLAYBOOK.md section 8.
+Thangam: small cartoon star, butter-yellow, big glossy black eyes, stubby arms, no legs, always floats, never stands; keep exactly as in the reference image; do not restyle, recolour or resize.
+Minmini: firefly, cream television-set head, face on screen, pale teal body, golden antennae, amber wings, yellow-green tail lantern, grey feet; keep exactly as in the reference image; do not restyle, recolour or resize.

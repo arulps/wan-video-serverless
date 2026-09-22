@@ -93,6 +93,8 @@ self-hosted generation work; keep the 5B/VACE endpoints for post-processing and 
 - Any change to the repo's worker code. Commit only this dispatch and the two ref sheets' provenance note.
 
 ## 6 · Pod vs serverless for production (decision input for 4e)
+> **Superseded 2026-09-22 (4e rev 2):** the network volume is replaced by the existing Cloudflare R2 bucket as the model origin (`scripts/pod_bootstrap.sh`): ~$0.60/mo, zero egress, any datacenter, ~10 min boot instead of ~2. See `CC-DISPATCH-phase4e-batch-2026-09-22.md` §2.
+
 Pod H100 80 GB ≈ $3–4/h regardless of load; serverless H100 ≈ $4.2/h of *active* time plus a cold model load
 (~1–2 min) per scale-up and idle-timeout tail. For batch production (4 songs ≈ 100 shots in one sitting) a pod with a
 **network volume** holding the models + ComfyUI (40 GB ≈ $3/month) is cheaper per clip, has no cold starts, and can run

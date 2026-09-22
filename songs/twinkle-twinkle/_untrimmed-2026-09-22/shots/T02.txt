@@ -1,0 +1,6 @@
+ATMOSPHERE: night, a deep indigo sky graduating to soft violet, crowded with many small bright white stars, one single star clearly larger and brighter than every other star in frame, drifting lilac clouds, a thin pale crescent moon
+ANGLE: the camera is high in the open sky pointing straight out into it, completely locked off, no camera movement of any kind
+SHOT: the frame is entirely open night sky from edge to edge, with the one bright star sitting slightly above and right of centre and the crescent moon smaller in the upper left
+POSE: nothing but sky — no ground, no horizon, no rooftop, no tree, no person and no creature anywhere in frame
+MOTION: the small stars twinkle slowly and softly out of time with one another, the one bright star swells gently brighter and settles back once, and a thin lilac cloud drifts slowly across the lower frame; smooth fluid 3D animation, eased in and out, never choppy
+NEGATIVE: ground, horizon, rooftops, buildings, trees, people, children, any character, face on the star, arms on the star, camera movement

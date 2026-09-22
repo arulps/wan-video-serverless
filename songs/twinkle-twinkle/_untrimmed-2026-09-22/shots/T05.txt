@@ -1,0 +1,6 @@
+ATMOSPHERE: night, the sleeping village far below and beyond the terrace railing, almost everything dark, one or two windows still warm amber, a deep indigo starry sky above, a thin crescent moon
+ANGLE: the camera stands on the terrace deck at the balustrade at a child's eye height, looking out between the turned balusters and away over the village, locked off, no camera movement
+SHOT: wide shot with the cream balustrade running across the very bottom of frame, the dark rounded shapes of the sleeping pastel houses and trees beyond it in the middle band, and the starry sky filling the upper half
+POSE: no people and no creatures in frame at all; the village is still and asleep
+MOTION: one distant warm window goes dark; the stars twinkle slowly above; a thin lilac cloud drifts; nothing else moves; smooth fluid 3D animation, eased in and out, never choppy
+NEGATIVE: people, children, any character, any creature, lit streets, traffic, movement in the village, daylight, camera movement

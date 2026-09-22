@@ -1,0 +1,6 @@
+ATMOSPHERE: night, a deep indigo sky full of small white stars, drifting lilac clouds, a thin crescent moon, and one large bright golden star high above
+ANGLE: the camera is high in the open sky, locked off, facing the open sky with the bright star near the top of frame and empty sky below it, no camera movement
+SHOT: wide shot of open sky only, with Minmini small in the lower part of frame and the one bright star high above him, clear sky between them
+POSE: Minmini is already in flight in the open sky, well clear of everything, his body tilted upward toward the bright star above him, his amber wings beating, his yellow-green tail lantern lit
+MOTION: he climbs slowly and steadily upward through the frame toward the bright star, his tail lantern pulsing in a slow rhythm as he goes, a soft yellow-green trail of light curving behind him; the stars twinkle around him; smooth, unhurried motion, no darting; smooth fluid 3D animation, eased in and out, never choppy
+NEGATIVE: ground, horizon, rooftops, buildings, trees, people, children, hands, fingers, arms, fast motion, darting, camera shake, motion blur streaks, falling

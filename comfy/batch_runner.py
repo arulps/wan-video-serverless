@@ -71,32 +71,59 @@ def log(*a):
 
 # ---------------------------------------------------------------- prompt bits
 
+LOCK_NAME_RE = re.compile(r"^([A-Z][A-Za-z0-9_-]*):")
+
+
+def _parse_lock_lines(body, where):
+    """Parse 'Name: lock line' blocks. A line starting 'Name:' opens a new
+    character; wrapped continuation lines are joined onto it. Blank lines and
+    lines starting '#' are ignored."""
+    groups = {}
+    cur_name, cur_lines = None, []
+    for raw in body.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        mm = LOCK_NAME_RE.match(line)
+        if mm:
+            if cur_name:
+                groups[cur_name] = " ".join(cur_lines)
+            cur_name, cur_lines = mm.group(1), [line]
+        elif cur_name:
+            cur_lines.append(line)
+        else:
+            raise ValueError("%s: text before any 'Name:' lock line: %r" % (where, line[:60]))
+    if cur_name:
+        groups[cur_name] = " ".join(cur_lines)
+    return groups
+
+
 def parse_character_lines(playbook_path):
     """Extract the verbatim CHARACTERS lock lines from PROMPT-PLAYBOOK.md
     section 8, joining each character's wrapped markdown lines into one
-    line."""
+    line. These are the channel-wide characters; a song adds or overrides
+    its own in songs/<slug>/characters.txt."""
     text = open(playbook_path, encoding="utf-8").read()
     m = re.search(r"^## 8.*?\n(.*?)(?=\n## |\Z)", text, re.S | re.M)
     if not m:
         raise RuntimeError("could not find '## 8' character-lock section in " + playbook_path)
-    body = m.group(1)
-    lines = [l for l in body.splitlines() if l.strip()]
-    groups = {}
-    cur_name, cur_lines = None, []
-    for l in lines:
-        mm = re.match(r"^(Mintu|Minnu):", l)
-        if mm:
-            if cur_name:
-                groups[cur_name] = " ".join(cur_lines)
-            cur_name, cur_lines = mm.group(1), [l]
-        else:
-            cur_lines.append(l)
-    if cur_name:
-        groups[cur_name] = " ".join(cur_lines)
+    groups = _parse_lock_lines(m.group(1), playbook_path + " section 8")
     for want in ("Mintu", "Minnu"):
         if want not in groups:
             raise RuntimeError("PROMPT-PLAYBOOK.md section 8 is missing the %s line" % want)
     return groups
+
+
+def song_character_lines(song_dir, base):
+    """songs/<slug>/characters.txt -- per-song character lock lines in the same
+    'Name: ...' format as PROMPT-PLAYBOOK.md section 8. A name defined here
+    overrides section 8 for this song; new names (Appa, Thangam, an animal) are
+    added to the cast this song may use. The file is optional."""
+    out = dict(base)
+    p = os.path.join(song_dir, "characters.txt")
+    if os.path.exists(p):
+        out.update(_parse_lock_lines(open(p, encoding="utf-8").read(), p))
+    return out
 
 
 def extract_nth_paragraph(text, n):
@@ -154,15 +181,54 @@ def parse_shot_file(text):
     return " ".join(parts), fields.get("NEGATIVE", "").strip()
 
 
+# Wan was trained with a 512-token umt5 context. The official Wan code hard-
+# truncates the prompt there; ComfyUI's WanT5 tokenizer (min_length=512,
+# max_length unbounded) sends the whole thing instead, so an over-long prompt
+# is not cut -- it is out of the trained range and every detail gets a thinner
+# slice of cross-attention (the "rain disappeared" mechanism). Either way the
+# lock lines + NO_TEXT_LINE at the END of our prompt are the first casualties.
+# Over-budget shots are refused before any GPU time unless --allow-long.
+T5_TOKEN_LIMIT = 512
+T5_TOKENS_PER_WORD = 1.4   # sentencepiece on English prose with punctuation, dashes, numbers (calibrate from the pod)
+
+
+def estimate_t5_tokens(text):
+    return int(len(re.findall(r"\S+", text)) * T5_TOKENS_PER_WORD) + 2
+
+
+def token_budget_warning(prompt_text, cast):
+    """Return a warning string (or None) when the assembled prompt is near or
+    over the encoder limit -- printed in --dry-run and before every submit; it
+    does not block, because the estimate is approximate."""
+    est = estimate_t5_tokens(prompt_text)
+    n_cast = 0 if not cast or cast.strip().lower() == "none" else len([n for n in cast.split("+") if n.strip()])
+    if est > T5_TOKEN_LIMIT:
+        return ("OVER BUDGET ~%d tokens > %d trained context: the tail (%d character lock(s), no-text line) is what "
+                "loses adherence -- shorten world/style/lock lines or split into shots with fewer characters "
+                "(playbook 3b budgets)" % (est, T5_TOKEN_LIMIT, n_cast))
+    if est > int(T5_TOKEN_LIMIT * 0.9):
+        return "note ~%d tokens, close to the %d limit (%d cast) -- trim if the next shot adds anyone" % (est, T5_TOKEN_LIMIT, n_cast)
+    return None
+
+
 def characters_lines(cast, char_lines):
+    """cast is 'none' (or blank), a single name, or names joined with '+'
+    (e.g. 'Appa+Minnu+Mintu'). Lock lines come back in cast order, deduped."""
     cast = (cast or "").strip()
     if not cast or cast.lower() == "none":
         return []
-    if cast == "Minnu+Mintu" or cast == "Mintu+Minnu":
-        return [char_lines["Mintu"], char_lines["Minnu"]]
-    if cast in char_lines:
-        return [char_lines[cast]]
-    raise ValueError("unknown cast value %r (expected Minnu, Mintu, Minnu+Mintu or none)" % cast)
+    out, seen = [], set()
+    for name in [n.strip() for n in cast.split("+") if n.strip()]:
+        if name not in char_lines:
+            raise ValueError(
+                "unknown cast name %r (known: %s). Add it to the song's "
+                "characters.txt or to PROMPT-PLAYBOOK.md section 8."
+                % (name, ", ".join(sorted(char_lines)) or "<none>"))
+        if name in seen:
+            continue
+        seen.add(name)
+        out.append(char_lines[name])
+    return out
 
 
 def resolve_path(song_dir, p):
@@ -200,7 +266,7 @@ class SongContext:
         self.default_negative_path = os.path.join(song_dir, "negative.txt")
         self._world_cache = {}
         self._style_text = None
-        self.char_lines = parse_character_lines(PLAYBOOK)
+        self.char_lines = song_character_lines(song_dir, parse_character_lines(PLAYBOOK))
 
         self.wf_base = __import__("json").load(open(workflow_path, encoding="utf-8"))
         self.save_node_id, self.crf_key = self._find_crf_slot()
@@ -356,6 +422,12 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
     try:
         prompt_text = ctx.assemble_prompt(row)
         negative_text = ctx.negative_text(row)
+        warn = token_budget_warning(prompt_text, row.get("cast", ""))
+        if warn:
+            log("[%s] %s" % (row["shot_id"], warn))
+            if warn.startswith("OVER BUDGET") and not args.allow_long:
+                raise RuntimeError("refused before GPU time: prompt over the 512-token budget "
+                                   "(trim per playbook 3b, or rerun with --allow-long to spend anyway)")
         p = shot_params(ctx, row)
         cast = (row.get("cast", "") or "").strip()
         if not p["ref"] and cast.lower() != "none":
@@ -458,6 +530,8 @@ def main():
     ap.add_argument("--workflow", default=os.path.join(HERE, "vace_ref2v_api.json"))
     ap.add_argument("--crf", type=int, default=None)
     ap.add_argument("--timeout-min", type=int, default=60, help="per-shot ComfyUI timeout")
+    ap.add_argument("--allow-long", action="store_true",
+                    help="submit shots whose prompt estimate exceeds the 512-token budget instead of failing them")
     args = ap.parse_args()
 
     song_dir = args.song
@@ -486,6 +560,8 @@ def main():
         if not pending:
             log("nothing pending.")
             return
+        missing_refs = []
+        over_budget = []
         for row in pending:
             log("=" * 70)
             log("shot_id:", row["shot_id"], " cast:", row.get("cast"))
@@ -497,12 +573,39 @@ def main():
                 log("  ERROR assembling prompt:", e)
                 continue
             log("--- params ---")
-            log("steps=%d cfg=%g seed=%d size=%dx%d frames=%d ref=%s" %
-                (p["steps"], p["cfg"], p["seed"], p["width"], p["height"], p["frames"], p["ref"]))
+            log("steps=%d cfg=%g seed=%d size=%dx%d frames=%d ref=%s ~tokens=%d" %
+                (p["steps"], p["cfg"], p["seed"], p["width"], p["height"], p["frames"], p["ref"],
+                 estimate_t5_tokens(prompt_text)))
+            warn = token_budget_warning(prompt_text, row.get("cast", ""))
+            if warn:
+                log("  " + warn)
+                if warn.startswith("OVER BUDGET"):
+                    over_budget.append((row["shot_id"], estimate_t5_tokens(prompt_text)))
+            # a missing sheet only surfaces at run time otherwise, so --dry-run
+            # would pass a song that cannot actually shoot a single shot
+            if p["ref"] and not os.path.exists(p["ref"]):
+                missing_refs.append((row["shot_id"], p["ref"]))
+                log("  !! REF MISSING: %s" % p["ref"])
+            elif not p["ref"] and (row.get("cast", "") or "").strip().lower() not in ("", "none"):
+                missing_refs.append((row["shot_id"], "<no ref column value>"))
+                log("  !! cast=%s but no ref given" % row.get("cast"))
             log("--- prompt (blocks separated by blank lines, in assembly order) ---")
             log(prompt_text)
             log("--- negative ---")
             log(negative_text)
+        if over_budget:
+            log("")
+            log("=" * 70)
+            log("%d shot(s) over the 512-token prompt budget (would be refused at run time without --allow-long):" % len(over_budget))
+            log("  " + "  ".join("%s~%d" % t for t in over_budget))
+        if missing_refs:
+            log("")
+            log("=" * 70)
+            log("%d shot(s) point at a reference sheet that does not exist yet:" % len(missing_refs))
+            for sid, ref in missing_refs:
+                log("  %-6s %s" % (sid, ref))
+            log("Build them (scripts/build_song_refs.py) before running the batch --")
+            log("every one of these shots would fail at run time.")
         return
 
     if not pending:

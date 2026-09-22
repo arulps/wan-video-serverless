@@ -1,0 +1,6 @@
+ATMOSPHERE: night, blue moonlight, starry sky, one brighter star, ember on rail
+ANGLE: at the deck's far corner at a child's eye height, facing the balustrade and sky, locked off, no camera movement
+SHOT: wide shot of the whole terrace — glass door and mint wall left, sleeping children on the mat mid-deck, balustrade along the far edge, sky above
+POSE: the children asleep on their backs; Minmini a small dark shape on the top rail, tail an ember
+MOTION: stars twinkle, the bright star swells once, the ember pulses softly, the children breathe once; otherwise still
+NEGATIVE: waking, sitting up, standing up, eyes open, open mouth, people arriving, adults, extra children, close-up faces, camera movement, zoom, daylight

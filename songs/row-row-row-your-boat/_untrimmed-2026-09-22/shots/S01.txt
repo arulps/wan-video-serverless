@@ -1,0 +1,6 @@
+ATMOSPHERE: bright warm morning light on a calm blue storybook river, dew sparkling on the reeds, soft white clouds in a blue sky
+ANGLE: the camera is out over the water at head height and drifts very slowly forward and down toward a small rounded wooden jetty on the grassy bank, one continuous gentle glide, no cuts
+SHOT: wide establishing shot of the river, the bank and the jetty, the small wooden rowing boat tied at the jetty on the right of frame, plenty of sky above
+POSE: the boat is empty and tied to the jetty post, both oars already shipped and resting inside it; no people in frame at all
+MOTION: only the slow forward glide of the camera; the boat rocks very gently on the water, the reeds sway once, ripples spread slowly from the jetty post; smooth fluid 3D animation, eased in and out, never choppy
+NEGATIVE: people, children, adults, any character, any creature, camera shake, whip pan, empty black frame
