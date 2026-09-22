@@ -7,7 +7,7 @@ T05,none,,shots/T05.txt,,5,6,1.0,,1280x720,,,ACT1 - the sleeping village; t2v; P
 T06,Thangam,refs/thangam-16x9.png,shots/T06.txt,world-sky.txt,5,6,1.0,,1280x720,,,ACT2 - THANGAM REVEAL: the star has a face
 T07,Minnu+Mintu,refs/kids-16x9.png,shots/T07.txt,,5,6,1.0,,1280x720,,,ACT2 - the children wave back
 T08,Minmini,refs/minmini-4view-16x9.png,shots/T08.txt,,5,6,1.0,,1280x720,,,"ACT2 - Minmini wakes on the rail, lantern comes up"
-T09a,Minmini,refs/minmini-wink-16x9.png,shots/T09a.txt,,5,6,1.0,,1280x720,,,ACT2 - THE WINK. ref = neutral front + wink front (playbook 2 pose-reference fix)
+T09a,Minmini,refs/minmini-wink-16x9.png,shots/T09a.txt,,5,4,1.0,,832x480,,done,ACT2 - THE WINK. ref = neutral front + wink front (playbook 2 pose-reference fix)
 T09b,Minmini,refs/minmini-4view-16x9.png,shots/T09b.txt,,5,6,1.0,,1280x720,,,"ACT2 - tail double-pulse, then launch; children are small blurred back-views in frame, deliberately not locked"
 T10,Minmini,refs/minmini-4view-16x9.png,shots/T10.txt,world-sky.txt,5,6,1.0,,1280x720,,,ACT2 - the flight up toward the star
 T11,Minmini+Thangam,refs/minmini-thangam-16x9.png,shots/T11.txt,world-sky.txt,5,6,1.0,,1280x720,,,ACT3 - the meeting; two lights pulse at each other
