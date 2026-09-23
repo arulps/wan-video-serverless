@@ -1,6 +1,6 @@
 ATMOSPHERE: night, blue moonlight, yellow-green glow from below, blurred starry sky
 ANGLE: on the deck directly in front of Minmini at his eye height, facing his screen square on, locked off, no camera movement
-SHOT: close-up on Minmini's television head filling most of the frame — screen face clearly readable, both antennae and wing tops in frame, never crop the antennae
-POSE: Minmini faces the camera square on, both round blue eyes open, brows up, closed smile
-MOTION: his left eye closes into a happy curved arc in one clear wink, his right eye stays wide open, his smile widens a little, he holds the wink; antennae bounce once; nothing else moves
-NEGATIVE: both eyes closed, both eyes open, blinking with both eyes, open mouth, teeth, talking, blank screen, television static, text on the screen, turning away, flying, arms, hands, fingers, children in frame
+SHOT: close-up, Minmini's television head fills most of the frame, screen face readable, both antennae and wing tops in frame, never crop the antennae
+POSE: Minmini faces the camera square on, already winking: his left eye closed in a happy curved arc, his right eye wide open and round, closed smile
+MOTION: he holds the wink steady for the whole shot, the left eye stays closed and the right eye stays open; his smile widens a little; antennae bounce once; nothing else moves
+NEGATIVE: both eyes closed, both eyes open, blinking with both eyes, symmetrical blink, open mouth, teeth, talking, blank screen, television static, text on the screen, turning away, flying, arms, hands, fingers, sleeves, extra wings, children in frame

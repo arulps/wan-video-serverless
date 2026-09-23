@@ -1,0 +1,2 @@
+# selftest: short Minnu lock so the plumbing test stays inside the 512-token budget (section 8 line is 39 words)
+Minnu: girl, 6-8, jet-black pigtails with red ribbon bows, warm brown skin, violet dungarees over a cream t-shirt, white canvas shoes; keep exactly as in the reference image.

@@ -25,6 +25,7 @@ songs/<song-slug>/
 | `steps` | no | default 6 (distilled). 4 for blocking tests. |
 | `cfg` | no | default 1.0 (distilled LoRA). 1.5–2.0 only when adherence needs help (costs 2×). |
 | `mode` | no | `distilled` (default: lightx2v LoRA, lcm) or `full` (no LoRA, uni_pc, defaults 30 steps / cfg 5 — ~8× slower). `full` is for the shots where the distilled sampler will not follow the text: an expression, who holds what, look-alike children (playbook §3e). |
+| `keyframe` | no | image pinned as frame 0 of the clip (VACE first-frame-to-video), e.g. `keyframes/T09a-wink-480.png` — for expressions the sampler will not produce on cue; the prompt then holds/continues what the frame shows. Same aspect as `size`. |
 | `seed` | no | default: song seed from `batch_runner --seed`; set per shot only for retakes. |
 | `size` | no | `1280x720` (default) or `832x480` for blocking tests. |
 | `world` | no | per-shot world file (e.g. `world-snow.txt`) when this shot's place differs from `world.txt`. One place per shot, pinned, never described loosely. |

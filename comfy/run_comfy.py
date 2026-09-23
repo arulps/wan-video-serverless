@@ -102,6 +102,22 @@ def build_workflow(wf, prompt, negative, ref_name, width, height, length, seed, 
     return wf
 
 
+def add_first_frame_keyframe(wf, keyframe_name, width, height):
+    """Pin frame 0 of the clip to an uploaded image (VACE first-frame-to-video).
+    Verified against ComfyUI's WanVaceToVideo (comfy_extras/nodes_wan.py):
+    a control_video shorter than `length` is padded with 0.5 (neutral) and a
+    control_masks batch shorter than `length` is padded with 1.0 (= generate),
+    so ONE keyframe image + ONE all-zero mask frame pins exactly frame 0 and
+    leaves every other frame free. The reference sheet stays on
+    `reference_image` for identity. Node ids 15/16 are free in
+    vace_ref2v_api.json."""
+    wf["15"] = {"class_type": "LoadImage", "inputs": {"image": keyframe_name}}
+    wf["16"] = {"class_type": "SolidMask", "inputs": {"value": 0.0, "width": width, "height": height}}
+    wf["9"]["inputs"]["control_video"] = ["15", 0]
+    wf["9"]["inputs"]["control_masks"] = ["16", 0]
+    return wf
+
+
 def submit_and_wait(host, wf, prefix, out_dir, timeout_min):
     """Queue `wf` on `host`, poll until it finishes, download the video to
     `out_dir/<prefix>.mp4`. Returns {"dest", "wall_s", "bytes", "server_file",

@@ -1,22 +1,22 @@
-shot_id,cast,ref,prompt,world,duration_s,steps,cfg,seed,size,negative,status,notes
-S01,none,,shots/S01.txt,world-jetty.txt,6.3,6,1.0,,1280x720,,,0:01.347 INTRO - empty boat at the jetty; t2v; trim to 6.002
-S02,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S02.txt,,6.3,6,1.0,,1280x720,,,0:07.349 INTRO - push off from the jetty
-S03,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S03.txt,,6.3,4,1.0,,832x480,,done,0:13.351 V1 L1-2 - GENERATE FIRST (look-lock); camera tracks = boat static in frame
-S04,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S04.txt,,6.3,6,1.0,,1280x720,negative-reaction.txt,,0:19.353 V1 L3-4 - arms already up + blossom daydream
-S05,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S05.txt,,6.3,6,1.0,,1280x720,,,0:25.355 V2 L1-2 - green bulge under the water; Modhu not yet surfaced
-S06,Minnu+Mintu+Modhu,refs/kids-modhu-16x9.png,shots/S06.txt,,6.3,6,1.0,,1280x720,negative-reaction.txt,,0:31.357 V2 L3-4 - SCREAM lands 35.56; pose starts at the peak; Appa out of frame
-S07,Minnu+Mintu+Modhu,refs/kids-modhu-16x9.png,shots/S07.txt,,6.3,6,1.0,,1280x720,,,0:37.359 INTERLUDE 1a - Modhu waves from the bank; NO singing
-S08,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S08.txt,,6.3,6,1.0,,1280x720,,,0:43.361 INTERLUDE 1b - reeds and songbird; NO singing
-S09,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S09.txt,world-grass.txt,6.3,6,1.0,,1280x720,,,0:49.363 V3 L1-2 - mane bobbing above the grass; Singa not yet revealed
-S10,Minnu+Mintu+Singa,refs/kids-singa-16x9.png,shots/S10.txt,world-grass.txt,6.3,6,1.0,,1280x720,negative-reaction.txt,,0:55.365 V3 L3-4 - ROAR lands 59.47; pose starts at the peak; Appa out of frame
-S11,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S11.txt,world-grass.txt,6.3,6,1.0,,1280x720,,,1:01.367 INTERLUDE 2a - dance break as a shared rowing pull (no standing up)
-S12,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S12.txt,world-grass.txt,6.3,6,1.0,,1280x720,,,1:07.369 INTERLUDE 2b - hands in the water; cross-fade into the snow world
-S13,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S13.txt,world-snow.txt,6.3,6,1.0,,1280x720,,,"1:13.371 V4 L1-2 - snow banks, white shape ahead"
-S14,Minnu+Mintu+Karadi,refs/kids-karadi-16x9.png,shots/S14.txt,world-snow.txt,6.3,6,1.0,,1280x720,,,1:19.373 V4 L3-4 - SHIVER lands 83.60; shiver is a repeating small motion; Appa out of frame
-S15,Modhu+Singa+Karadi,refs/animals-3up-16x9.png,shots/S15.txt,,6.3,6,1.0,,1280x720,,,"1:25.375 INTERLUDE 3a - all three wave; children are small blurred back-views, not locked"
-S16,none,,shots/S16.txt,,6.3,6,1.0,,1280x720,,,"1:31.377 INTERLUDE 3b - valley beauty crane; t2v, faces too small to read"
-S17,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S17.txt,world-channel.txt,6.3,6,1.0,,1280x720,,,1:37.379 V5 L1-2 - the secret reedy channel
-S18,Minnu+Mintu+Chiku,refs/kids-chiku-16x9.png,shots/S18.txt,world-channel.txt,6.3,6,1.0,,1280x720,negative-reaction.txt,,1:43.381 V5 L3-4 - SQUEAK lands 107.50; tail rings to 111.2; Chiku ref is a T-POSE - guards in POSE and NEGATIVE
-S19,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S19.txt,world-golden.txt,6.3,6,1.0,,1280x720,,,"1:49.383 V6 L1-2 - out onto the golden river, heading home"
-S20,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S20.txt,world-golden.txt,6.3,6,1.0,,1280x720,negative-reaction.txt,,1:55.385 V6 L3-4 - the cheer; fireflies and petals
-S21,none,,shots/S21.txt,world-golden.txt,6.3,6,1.0,,1280x720,,,2:01.387 TAIL - generate 6.3s use first 2.17s; fade to black over the last 1.2s
+shot_id,cast,ref,prompt,world,duration_s,steps,cfg,mode,keyframe,seed,size,negative,status,notes
+S01,none,,shots/S01.txt,world-jetty.txt,6.3,6,1.0,,,,1280x720,,,0:01.347 INTRO - empty boat at the jetty; t2v; trim to 6.002
+S02,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S02.txt,,6.3,,,full,,,1280x720,,,0:07.349 INTRO - push off from the jetty
+S03,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S03.txt,,6.3,,,full,,,1280x720,,,0:13.351 V1 L1-2 - GENERATE FIRST (look-lock); camera tracks = boat static in frame
+S04,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S04.txt,,6.3,,,full,,,1280x720,negative-reaction.txt,,0:19.353 V1 L3-4 - arms already up + blossom daydream
+S05,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S05.txt,,6.3,,,full,,,1280x720,,,0:25.355 V2 L1-2 - green bulge under the water; Modhu not yet surfaced
+S06,Minnu+Mintu+Modhu,refs/kids-modhu-16x9.png,shots/S06.txt,,6.3,,,full,,,1280x720,negative-reaction.txt,,0:31.357 V2 L3-4 - SCREAM lands 35.56; pose starts at the peak; Appa out of frame
+S07,Minnu+Mintu+Modhu,refs/kids-modhu-16x9.png,shots/S07.txt,,6.3,,,full,,,1280x720,,,0:37.359 INTERLUDE 1a - Modhu waves from the bank; NO singing
+S08,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S08.txt,,6.3,,,full,,,1280x720,,,0:43.361 INTERLUDE 1b - reeds and songbird; NO singing
+S09,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S09.txt,world-grass.txt,6.3,,,full,,,1280x720,,,0:49.363 V3 L1-2 - mane bobbing above the grass; Singa not yet revealed
+S10,Minnu+Mintu+Singa,refs/kids-singa-16x9.png,shots/S10.txt,world-grass.txt,6.3,,,full,,,1280x720,negative-reaction.txt,,0:55.365 V3 L3-4 - ROAR lands 59.47; pose starts at the peak; Appa out of frame
+S11,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S11.txt,world-grass.txt,6.3,,,full,,,1280x720,,,1:01.367 INTERLUDE 2a - dance break as a shared rowing pull (no standing up)
+S12,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S12.txt,world-grass.txt,6.3,,,full,,,1280x720,,,1:07.369 INTERLUDE 2b - hands in the water; cross-fade into the snow world
+S13,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S13.txt,world-snow.txt,6.3,,,full,,,1280x720,,,"1:13.371 V4 L1-2 - snow banks, white shape ahead"
+S14,Minnu+Mintu+Karadi,refs/kids-karadi-16x9.png,shots/S14.txt,world-snow.txt,6.3,,,full,,,1280x720,,,1:19.373 V4 L3-4 - SHIVER lands 83.60; shiver is a repeating small motion; Appa out of frame
+S15,Modhu+Singa+Karadi,refs/animals-3up-16x9.png,shots/S15.txt,,6.3,6,1.0,,,,1280x720,,,"1:25.375 INTERLUDE 3a - all three wave; children are small blurred back-views, not locked"
+S16,none,,shots/S16.txt,,6.3,6,1.0,,,,1280x720,,,"1:31.377 INTERLUDE 3b - valley beauty crane; t2v, faces too small to read"
+S17,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S17.txt,world-channel.txt,6.3,,,full,,,1280x720,,,1:37.379 V5 L1-2 - the secret reedy channel
+S18,Minnu+Mintu+Chiku,refs/kids-chiku-16x9.png,shots/S18.txt,world-channel.txt,6.3,,,full,,,1280x720,negative-reaction.txt,,1:43.381 V5 L3-4 - SQUEAK lands 107.50; tail rings to 111.2; Chiku ref is a T-POSE - guards in POSE and NEGATIVE
+S19,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S19.txt,world-golden.txt,6.3,,,full,,,1280x720,,,"1:49.383 V6 L1-2 - out onto the golden river, heading home"
+S20,Appa+Minnu+Mintu,refs/appa-mintu-minnu-16x9.png,shots/S20.txt,world-golden.txt,6.3,,,full,,,1280x720,negative-reaction.txt,,1:55.385 V6 L3-4 - the cheer; fireflies and petals
+S21,none,,shots/S21.txt,world-golden.txt,6.3,6,1.0,,,,1280x720,,,2:01.387 TAIL - generate 6.3s use first 2.17s; fade to black over the last 1.2s

@@ -55,7 +55,7 @@ FALLBACK_NEGATIVE = os.path.join(REPO_ROOT, "prompts", "mazhai", "NEGATIVE.txt")
 PLAYBOOK = os.path.join(REPO_ROOT, "docs", "PROMPT-PLAYBOOK.md")
 NO_TEXT_LINE = "No text, no captions, no watermark."
 
-CSV_FIELDS = ["shot_id", "cast", "ref", "prompt", "duration_s", "steps", "cfg", "mode",
+CSV_FIELDS = ["shot_id", "cast", "ref", "prompt", "duration_s", "steps", "cfg", "mode", "keyframe",
               "seed", "size", "negative", "status", "notes"]
 
 print_lock = threading.Lock()
@@ -361,7 +361,11 @@ def shot_params(ctx, row):
         if not row.get("cfg", "").strip():
             cfg = 5.0
     return {"steps": steps, "cfg": cfg, "seed": seed, "width": w, "height": h,
-            "frames": frames, "ref": ref, "mode": mode}
+            "frames": frames, "ref": ref, "mode": mode,
+            # `keyframe` column: image pinned as frame 0 (VACE first-frame-to-video); the shot then
+            # only has to HOLD or continue what the frame shows -- the fix for expressions the
+            # sampler will not produce on cue (playbook 3d step 3). Must be the output aspect.
+            "keyframe": resolve_path(ctx.song_dir, row.get("keyframe", ""))}
 
 
 # --------------------------------------------------------------------- CSV
@@ -447,7 +451,10 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
 
         # cast=none with no ref = plain text-to-video through VACE (no LoadImage node);
         # a room/establishing frame may still be given as ref for continuity.
+        if p["keyframe"] and not os.path.exists(p["keyframe"]):
+            raise RuntimeError("keyframe file not found: %s" % p["keyframe"])
         ref_name = run_comfy.upload_image(host, p["ref"]) if p["ref"] else None
+        kf_name = run_comfy.upload_image(host, p["keyframe"]) if p["keyframe"] else None
         prefix = "%s-seed%d-s%d" % (shot_id, p["seed"], p["steps"])
         wf = run_comfy.build_workflow(
             ctx.wf_base, prompt=prompt_text, negative=negative_text, ref_name=ref_name,
@@ -455,6 +462,8 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
             steps=p["steps"], cfg=p["cfg"],
             sampler="uni_pc" if p["mode"] == "full" else "lcm", scheduler="simple", shift=5.0,
             lora=run_comfy.DEFAULT_LORA, lora_strength=1.0, no_lora=(p["mode"] == "full"), prefix=prefix)
+        if kf_name:
+            wf = run_comfy.add_first_frame_keyframe(wf, kf_name, p["width"], p["height"])
         if ctx.crf is not None and ctx.crf_key and ctx.save_node_id in wf:
             wf[ctx.save_node_id]["inputs"][ctx.crf_key] = ctx.crf
 
@@ -473,7 +482,7 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
                        "mode": p["mode"],
                        "sampler": "uni_pc" if p["mode"] == "full" else "lcm", "scheduler": "simple", "shift": 5.0,
                        "lora": None if p["mode"] == "full" else run_comfy.DEFAULT_LORA, "crf": ctx.crf},
-            "ref": p["ref"], "bytes": result["bytes"], "server_file": result["server_file"],
+            "ref": p["ref"], "keyframe": p["keyframe"], "bytes": result["bytes"], "server_file": result["server_file"],
             "prompt_id": result["prompt_id"],
         }
         import json as _json
@@ -601,6 +610,10 @@ def main():
             if p["ref"] and not os.path.exists(p["ref"]):
                 missing_refs.append((row["shot_id"], p["ref"]))
                 log("  !! REF MISSING: %s" % p["ref"])
+            if p["keyframe"]:
+                log("keyframe=%s%s" % (p["keyframe"], "" if os.path.exists(p["keyframe"]) else "  !! KEYFRAME MISSING"))
+                if not os.path.exists(p["keyframe"]):
+                    missing_refs.append((row["shot_id"], p["keyframe"]))
             elif not p["ref"] and (row.get("cast", "") or "").strip().lower() not in ("", "none"):
                 missing_refs.append((row["shot_id"], "<no ref column value>"))
                 log("  !! cast=%s but no ref given" % row.get("cast"))

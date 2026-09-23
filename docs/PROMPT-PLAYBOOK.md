@@ -87,6 +87,22 @@ Measured on T09a and S03 at 832×480, six rows:
   (~4 min at 480p, ~10–12 min at 720p on an A100). It is the next lever for exactly these three failure types; if
   full sampling also fails, the lever after it is VACE keyframes (§3d step 3) — a composed first frame with the right
   two children, or a painted wink frame, and the model only in-betweens.
+- **4h result (2026-09-22): full sampling DOES wink.** `T09a_full1` — single identity tile, no LoRA, 30 steps,
+  cfg 5, uni_pc — produced a clean one-eyed wink (left eye curved arc, right eye open, mouth closed, no ghost, no
+  extra wings) … in the last 0.4 s of the clip. The two-tile sheet at full sampling did not wink at all. Rules:
+  one identity tile per character; expression shots run `mode=full`; put the timing in MOTION ("within the first
+  second … holds to the very end") because the model otherwise leaves the action for the tail. Cost: ~725 s per
+  81-frame clip at 832×480 on an A100 (≈ 6× distilled) → budget ~25–30 min / ≈ $0.75 per 720p expression shot.
+- **4i result: two-child shots need full sampling.** `S03_full` — three distinct people, boy with his own short
+  hair, girl with pigtails, Appa alone rowing; the distilled cast-order row still gave the boy pigtails. Rule: every
+  row whose cast has both Minnu and Mintu runs `mode=full` (17 of 21 in Row, 7 of 21 in Twinkle). ~470 s per
+  101-frame clip on an H100 (≈ 730 s on an A100).
+- **4i result: the wink cannot be timed by prompt.** The "within the first second … holds" wording at full sampling
+  produced no wink at all (eyes degraded in the last second). So expressions use the **`keyframe` column** (§3d
+  step 3): frame 0 is pinned to a rendered frame that already shows the expression — for T09a the 4h clip's own last
+  frame, `keyframes/T09a-wink-480.png` — and the prompt only has to hold it. Verified against ComfyUI source: one
+  keyframe image + one all-zero mask on `WanVaceToVideo` pins exactly frame 0. Keyframes must be the output aspect;
+  a 480p keyframe under a 720p keeper is the next thing to test.
 - Cheap distilled lever still worth one row: cast order — the lock line that comes last loses first, so the
   character whose identity slipped goes first in `cast`.
 

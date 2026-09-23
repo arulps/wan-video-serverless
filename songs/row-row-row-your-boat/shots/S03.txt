@@ -1,6 +1,6 @@
 ATMOSPHERE: bright morning light, calm blue river sparkling, green banks behind
-ANGLE: at water level beside the boat, tracking at exactly the boat's speed: boat centred and still in frame, green banks sliding past behind
-SHOT: medium three-quarter, whole boat and all three, top of Appa's head to the waterline, room above heads, never crop a head, oars clearly visible
-POSE: Appa already mid-stroke, leaning back, both oars drawn to his chest; Minnu in the bow, Mintu in the stern, upright, hands on the gunwales
-MOTION: Appa completes one slow stroke and begins another; the children sway in time, smiling, mouths closed; ripples behind the oars; slow, steady motion
-NEGATIVE: standing up in the boat, open mouth, singing, rowing fast, splashing
+ANGLE: at water level beside the boat, tracking at the boat's speed: boat centred and still in frame, banks sliding past
+SHOT: medium three-quarter, whole boat and all three people, top of Appa's head to the waterline, never crop a head, oars visible
+POSE: Appa on the middle seat alone holds both oars, mid-stroke, leaning back; the girl in violet dungarees sits in the bow, the boy in the green dinosaur t-shirt in the stern, both upright, hands on the gunwales
+MOTION: Appa completes one slow stroke and begins another; the girl and the boy sway in time, mouths closed; ripples behind the oars
+NEGATIVE: T-pose, arms spread wide, arms outstretched, standing up in the boat, open mouth, singing, rowing fast, splashing, child holding an oar, two children merged, only two people, pigtails on the boy, dinosaur shirt on the girl
