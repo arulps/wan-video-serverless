@@ -20,11 +20,13 @@ songs/<song-slug>/
 | `shot_id` | yes | e.g. `I0`, `V1a`, `V2c`. Used for file names; unique. |
 | `cast` | yes | `none`, or one or more character names joined with `+` (`Minnu`, `Mintu`, `Minnu+Mintu`, `Appa+Minnu`, ...). Each name must have a `Name:` lock line in `docs/PROMPT-PLAYBOOK.md` §8 (standing cast) or in the song's `characters.txt`; lock lines are emitted in the order listed, deduped. An unknown name is a hard error at dry-run. |
 | `ref` | yes unless cast=none | reference sheet path (one image, 1280x720), built with `comfy/make_ref_sheet.py` — only the characters in this shot (1–3 ideal, 4 max; see playbook §3b). `--dry-run` reports sheets that do not exist yet. cast=none with no ref = text-to-video (establishing shots, rain detail); a room frame may still be given for continuity. |
+| | | **Separate references (2026-09-23):** several 1280x720 images joined with `\|`, e.g. `refs/minnu-body-16x9.png\|refs/mintu-front-16x9.png`, one tile per character in cast order. Each is encoded as its own reference — the fix under test for look-alike children on one sheet (`songs/_ab4-2026-09-23/`). Needs `comfy/custom_nodes/wan_vace_multiref.py` on the pod (`pod_bootstrap.sh pull` installs it) for `engine=vace`; core `WanVaceToVideo` would use only the first image. |
 | `prompt` | yes | path to the shot paragraph file, e.g. `shots/V1a.txt` |
 | `duration_s` | no | target seconds; converted to frames `4n+1` at 16 fps (5.0 → 81). Default 81 frames. |
 | `steps` | no | default 6 (distilled). 4 for blocking tests. |
 | `cfg` | no | default 1.0 (distilled LoRA). 1.5–2.0 only when adherence needs help (costs 2×). |
 | `mode` | no | `distilled` (default: lightx2v LoRA, lcm) or `full` (no LoRA, uni_pc, defaults 30 steps / cfg 5 — ~8× slower). `full` is for the shots where the distilled sampler will not follow the text: an expression, who holds what, look-alike children (playbook §3e). |
+| `engine` | no | `vace` (default; Wan2.1-VACE-14B, `comfy/vace_ref2v_api.json`) or `phantom` (Phantom-Wan-14B subject-to-video, `comfy/phantom_s2v_api.json`, up to 4 separate refs encoded natively, no `keyframe`; the model must be on the pod — `pod_bootstrap.sh model-get`). |
 | `keyframe` | no | image pinned as frame 0 of the clip (VACE first-frame-to-video), e.g. `keyframes/T09a-wink-480.png` — for expressions the sampler will not produce on cue; the prompt then holds/continues what the frame shows. Same aspect as `size`. |
 | `seed` | no | default: song seed from `batch_runner --seed`; set per shot only for retakes. |
 | `size` | no | `1280x720` (default) or `832x480` for blocking tests. |

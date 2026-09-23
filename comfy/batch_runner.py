@@ -12,7 +12,12 @@ docs/SHOT-LIST-SPEC.md) against one or more ComfyUI hosts.
     --max-minutes N         hard wall clock; stop-cmd runs when hit
     --crf 16                SaveVideo codec quality, only if the workflow's SaveVideo node has
                              a matching input
-    --workflow PATH         defaults to comfy/vace_ref2v_api.json
+    --workflow PATH         defaults to comfy/vace_ref2v_api.json (engine=vace rows);
+                             engine=phantom rows use comfy/phantom_s2v_api.json
+
+CSV `ref` = one sheet, or SEPARATE reference images joined with "|" (needs
+comfy/custom_nodes/wan_vace_multiref.py on the pod for engine=vace; Phantom
+encodes each image natively, max 4). `engine` = vace (default) | phantom.
 
 Prompt assembly (docs/SHOT-LIST-SPEC.md "How the runner builds the prompt"):
     world.txt line 1 (place clause) -> shot paragraph (plain, or assembled from
@@ -55,8 +60,15 @@ FALLBACK_NEGATIVE = os.path.join(REPO_ROOT, "prompts", "mazhai", "NEGATIVE.txt")
 PLAYBOOK = os.path.join(REPO_ROOT, "docs", "PROMPT-PLAYBOOK.md")
 NO_TEXT_LINE = "No text, no captions, no watermark."
 
-CSV_FIELDS = ["shot_id", "cast", "ref", "prompt", "duration_s", "steps", "cfg", "mode", "keyframe",
+CSV_FIELDS = ["shot_id", "cast", "ref", "prompt", "duration_s", "steps", "cfg", "mode", "engine", "keyframe",
               "seed", "size", "negative", "status", "notes"]
+
+# `ref` column: one sheet, or SEPARATE reference images joined with "|" (one
+# 16:9 tile per character; playbook 3c). Separate refs need node support: VACE
+# via comfy/custom_nodes/wan_vace_multiref.py, Phantom natively.
+REF_SEP = "|"
+# `engine` column: which conditioning model/workflow renders the row.
+ENGINES = {"vace": "vace_ref2v_api.json", "phantom": "phantom_s2v_api.json"}
 
 print_lock = threading.Lock()
 csv_lock = threading.Lock()
@@ -239,6 +251,12 @@ def resolve_path(song_dir, p):
     return p if os.path.isabs(p) else os.path.join(song_dir, p)
 
 
+def resolve_refs(song_dir, ref_cell):
+    """The `ref` cell -> list of paths (empty when blank). '|' separates
+    SEPARATE reference images."""
+    return [resolve_path(song_dir, part) for part in (ref_cell or "").split(REF_SEP) if part.strip()]
+
+
 def frames_for_duration(duration_s, default_frames=81):
     """4n+1 nearest to duration_s*16 fps; default_frames (81 = 5.0s) when
     duration_s is not given."""
@@ -255,7 +273,7 @@ class SongContext:
     """Everything shared across shots in one song: paths, cached file
     contents, the character lock lines, and the base workflow dict."""
 
-    def __init__(self, song_dir, seed, workflow_path, crf):
+    def __init__(self, song_dir, seed, workflow_path, crf, workflow_dir=HERE):
         self.song_dir = song_dir
         self.seed = seed
         self.world_path = os.path.join(song_dir, "world.txt")
@@ -268,12 +286,23 @@ class SongContext:
         self.char_lines = song_character_lines(song_dir, parse_character_lines(PLAYBOOK))
 
         self.wf_base = __import__("json").load(open(workflow_path, encoding="utf-8"))
+        # per-engine base workflows (comfy/<file>), loaded lazily; engine "vace" = --workflow
+        self.workflow_dir = workflow_dir
+        self._wf_by_engine = {"vace": self.wf_base}
         self.save_node_id, self.crf_key = self._find_crf_slot()
         self.crf = crf
         if crf is not None:
             if self.crf_key is None:
                 log("note: --crf %s given but the workflow's SaveVideo node has no "
                     "crf/quality-like input; leaving it alone." % crf)
+
+    def workflow_for(self, engine):
+        if engine not in self._wf_by_engine:
+            path = os.path.join(self.workflow_dir, ENGINES[engine])
+            if not os.path.exists(path):
+                raise RuntimeError("engine %r needs %s" % (engine, path))
+            self._wf_by_engine[engine] = __import__("json").load(open(path, encoding="utf-8"))
+        return self._wf_by_engine[engine]
 
     def _find_crf_slot(self):
         for nid, node in self.wf_base.items():
@@ -348,7 +377,14 @@ def shot_params(ctx, row):
         raise RuntimeError("bad size %r (expected e.g. 1280x720)" % row.get("size"))
     duration_s = float(row["duration_s"]) if row.get("duration_s", "").strip() else None
     frames = frames_for_duration(duration_s)
-    ref = resolve_path(ctx.song_dir, row.get("ref", ""))
+    refs = resolve_refs(ctx.song_dir, row.get("ref", ""))
+    # `engine` column: "vace" (default; Wan2.1-VACE-14B, one sheet or separate refs via the multi-ref node)
+    # or "phantom" (Phantom-Wan-14B subject-to-video: up to 4 separate refs, encoded one by one natively).
+    engine = (row.get("engine", "") or "").strip().lower() or "vace"
+    if engine not in ENGINES:
+        raise RuntimeError("bad engine %r (%s)" % (row.get("engine"), " | ".join(ENGINES)))
+    if engine == "phantom" and len(refs) > 4:
+        raise RuntimeError("phantom takes at most 4 reference images, got %d" % len(refs))
     # `mode` column: "distilled" (default: lightx2v LoRA, lcm, steps/cfg from the row) or
     # "full" (no LoRA, uni_pc/simple, defaults steps 30 / cfg 5 unless the row sets them --
     # ~8x slower, for the shots where cfg-1 adherence is not enough: expressions, who holds what).
@@ -361,7 +397,8 @@ def shot_params(ctx, row):
         if not row.get("cfg", "").strip():
             cfg = 5.0
     return {"steps": steps, "cfg": cfg, "seed": seed, "width": w, "height": h,
-            "frames": frames, "ref": ref, "mode": mode,
+            "frames": frames, "ref": refs[0] if len(refs) == 1 else (refs or None), "refs": refs,
+            "mode": mode, "engine": engine,
             # `keyframe` column: image pinned as frame 0 (VACE first-frame-to-video); the shot then
             # only has to HOLD or continue what the frame shows -- the fix for expressions the
             # sampler will not produce on cue (playbook 3d step 3). Must be the output aspect.
@@ -444,20 +481,24 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
                                    "(trim per playbook 3b, or rerun with --allow-long to spend anyway)")
         p = shot_params(ctx, row)
         cast = (row.get("cast", "") or "").strip()
-        if not p["ref"] and cast.lower() != "none":
+        if not p["refs"] and cast.lower() != "none":
             raise RuntimeError("ref is required for cast=%r but none given" % cast)
-        if p["ref"] and not os.path.exists(p["ref"]):
-            raise RuntimeError("ref file not found: %s" % p["ref"])
+        for r in p["refs"]:
+            if not os.path.exists(r):
+                raise RuntimeError("ref file not found: %s" % r)
 
         # cast=none with no ref = plain text-to-video through VACE (no LoadImage node);
         # a room/establishing frame may still be given as ref for continuity.
         if p["keyframe"] and not os.path.exists(p["keyframe"]):
             raise RuntimeError("keyframe file not found: %s" % p["keyframe"])
-        ref_name = run_comfy.upload_image(host, p["ref"]) if p["ref"] else None
+        ref_names = [run_comfy.upload_image(host, r) for r in p["refs"]]
+        ref_name = ref_names if len(ref_names) > 1 else (ref_names[0] if ref_names else None)
         kf_name = run_comfy.upload_image(host, p["keyframe"]) if p["keyframe"] else None
+        if kf_name and p["engine"] != "vace":
+            raise RuntimeError("keyframe is only supported by engine=vace")
         prefix = "%s-seed%d-s%d" % (shot_id, p["seed"], p["steps"])
         wf = run_comfy.build_workflow(
-            ctx.wf_base, prompt=prompt_text, negative=negative_text, ref_name=ref_name,
+            ctx.workflow_for(p["engine"]), prompt=prompt_text, negative=negative_text, ref_name=ref_name,
             width=p["width"], height=p["height"], length=p["frames"], seed=p["seed"],
             steps=p["steps"], cfg=p["cfg"],
             sampler="uni_pc" if p["mode"] == "full" else "lcm", scheduler="simple", shift=5.0,
@@ -467,8 +508,8 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
         if ctx.crf is not None and ctx.crf_key and ctx.save_node_id in wf:
             wf[ctx.save_node_id]["inputs"][ctx.crf_key] = ctx.crf
 
-        log("[%s] -> %s (steps=%d cfg=%g seed=%d frames=%d %dx%d)" %
-            (shot_id, host, p["steps"], p["cfg"], p["seed"], p["frames"], p["width"], p["height"]))
+        log("[%s] -> %s (engine=%s mode=%s steps=%d cfg=%g seed=%d frames=%d %dx%d refs=%d)" %
+            (shot_id, host, p["engine"], p["mode"], p["steps"], p["cfg"], p["seed"], p["frames"], p["width"], p["height"], len(p["refs"])))
         result = run_comfy.submit_and_wait(host, wf, prefix, out_dir, timeout_min)
         wall_s = result["wall_s"]
 
@@ -479,10 +520,10 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
             "prompt": prompt_text, "negative": negative_text,
             "params": {"steps": p["steps"], "cfg": p["cfg"], "seed": p["seed"],
                        "width": p["width"], "height": p["height"], "length": p["frames"],
-                       "mode": p["mode"],
+                       "mode": p["mode"], "engine": p["engine"],
                        "sampler": "uni_pc" if p["mode"] == "full" else "lcm", "scheduler": "simple", "shift": 5.0,
                        "lora": None if p["mode"] == "full" else run_comfy.DEFAULT_LORA, "crf": ctx.crf},
-            "ref": p["ref"], "keyframe": p["keyframe"], "bytes": result["bytes"], "server_file": result["server_file"],
+            "ref": p["ref"], "refs": p["refs"], "keyframe": p["keyframe"], "bytes": result["bytes"], "server_file": result["server_file"],
             "prompt_id": result["prompt_id"],
         }
         import json as _json
@@ -565,6 +606,11 @@ def main():
     fieldnames, rows = read_shots(csv_path)
 
     ctx = SongContext(song_dir, args.seed, args.workflow, args.crf)
+    try:
+        for row in rows:
+            ctx.workflow_for((row.get("engine", "") or "").strip().lower() or "vace")   # fail early, before any upload
+    except (KeyError, RuntimeError) as e:
+        sys.exit("engine column: %s" % e)
 
     only = {s.strip() for s in args.only.split(",") if s.strip()} or None
 
@@ -597,9 +643,12 @@ def main():
                 log("  ERROR assembling prompt:", e)
                 continue
             log("--- params ---")
-            log("mode=%s steps=%d cfg=%g seed=%d size=%dx%d frames=%d ref=%s ~tokens=%d" %
-                (p["mode"], p["steps"], p["cfg"], p["seed"], p["width"], p["height"], p["frames"], p["ref"],
-                 estimate_t5_tokens(prompt_text)))
+            log("engine=%s mode=%s steps=%d cfg=%g seed=%d size=%dx%d frames=%d ref=%s ~tokens=%d" %
+                (p["engine"], p["mode"], p["steps"], p["cfg"], p["seed"], p["width"], p["height"], p["frames"],
+                 (REF_SEP.join(p["refs"]) if len(p["refs"]) > 1 else p["ref"]), estimate_t5_tokens(prompt_text)))
+            if len(p["refs"]) > 1:
+                log("  %d SEPARATE references (%s)" % (len(p["refs"]),
+                    "WanVaceToVideoMultiRef custom node" if p["engine"] == "vace" else "Phantom native"))
             warn = token_budget_warning(prompt_text, row.get("cast", ""))
             if warn:
                 log("  " + warn)
@@ -607,14 +656,15 @@ def main():
                     over_budget.append((row["shot_id"], estimate_t5_tokens(prompt_text)))
             # a missing sheet only surfaces at run time otherwise, so --dry-run
             # would pass a song that cannot actually shoot a single shot
-            if p["ref"] and not os.path.exists(p["ref"]):
-                missing_refs.append((row["shot_id"], p["ref"]))
-                log("  !! REF MISSING: %s" % p["ref"])
+            for r in p["refs"]:
+                if not os.path.exists(r):
+                    missing_refs.append((row["shot_id"], r))
+                    log("  !! REF MISSING: %s" % r)
             if p["keyframe"]:
                 log("keyframe=%s%s" % (p["keyframe"], "" if os.path.exists(p["keyframe"]) else "  !! KEYFRAME MISSING"))
                 if not os.path.exists(p["keyframe"]):
                     missing_refs.append((row["shot_id"], p["keyframe"]))
-            elif not p["ref"] and (row.get("cast", "") or "").strip().lower() not in ("", "none"):
+            elif not p["refs"] and (row.get("cast", "") or "").strip().lower() not in ("", "none"):
                 missing_refs.append((row["shot_id"], "<no ref column value>"))
                 log("  !! cast=%s but no ref given" % row.get("cast"))
             log("--- prompt (blocks separated by blank lines, in assembly order) ---")

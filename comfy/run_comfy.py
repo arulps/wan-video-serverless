@@ -72,22 +72,54 @@ def upload_image(host, path):
     return (j.get("subfolder") + "/" if j.get("subfolder") else "") + j["name"]
 
 
+# Node 9 is the conditioning node; which input carries the reference image(s)
+# depends on its class. Multi-reference needs a node that encodes every image of
+# the batch on its own: core WanVaceToVideo uses only reference_image[:1]
+# (verified in comfy_extras/nodes_wan.py), so >1 refs switch it to our
+# comfy/custom_nodes/wan_vace_multiref.py node; WanPhantomSubjectToVideo
+# already loops over the batch.
+REF_INPUT_KEY = {"WanVaceToVideo": "reference_image", "WanVaceToVideoMultiRef": "reference_image",
+                 "WanPhantomSubjectToVideo": "images"}
+MULTIREF_CLASS = {"WanVaceToVideo": "WanVaceToVideoMultiRef"}
+# LoadImage / ImageBatch node ids used for the 2nd.. references (15/16 are the keyframe nodes)
+EXTRA_REF_NODE_BASE = 20
+
+
 def build_workflow(wf, prompt, negative, ref_name, width, height, length, seed, steps, cfg,
                     sampler, scheduler, shift, lora, lora_strength, no_lora, prefix):
-    """Patch a loaded vace_ref2v_api.json (or equivalent) workflow dict with
-    the shot's parameters. Returns a fresh deep copy -- the input `wf` is
-    never mutated, so the same base dict can be reused across shots."""
+    """Patch a loaded vace_ref2v_api.json / phantom_s2v_api.json workflow dict
+    with the shot's parameters. Returns a fresh deep copy -- the input `wf` is
+    never mutated, so the same base dict can be reused across shots.
+    `ref_name` is None (no reference), one uploaded filename (one sheet), or a
+    list of uploaded filenames (SEPARATE references, one per character tile:
+    they are batched with ImageBatch and node 9 is switched to a class that
+    encodes each image on its own)."""
     wf = copy.deepcopy(wf)
     wf["6"]["inputs"]["text"] = prompt
     wf["7"]["inputs"]["text"] = negative
-    if ref_name:
-        wf["8"]["inputs"]["image"] = ref_name
-    else:
-        # No reference (e.g. an empty-room establishing shot): WanVaceToVideo's
-        # reference_image is optional upstream, so drop the LoadImage node and
-        # the link; the shot becomes plain text-to-video through VACE.
+    cond_class = wf["9"]["class_type"]
+    ref_key = REF_INPUT_KEY.get(cond_class)
+    if ref_key is None:
+        raise RuntimeError("node 9 is %r; expected one of %s" % (cond_class, ", ".join(REF_INPUT_KEY)))
+    refs = [ref_name] if isinstance(ref_name, str) else list(ref_name or [])
+    if not refs:
+        # No reference (e.g. an empty-room establishing shot): the reference
+        # input is optional upstream, so drop the LoadImage node and the link;
+        # the shot becomes plain text-to-video.
         wf.pop("8", None)
-        wf["9"]["inputs"].pop("reference_image", None)
+        wf["9"]["inputs"].pop(ref_key, None)
+    else:
+        wf["8"]["inputs"]["image"] = refs[0]
+        last = ["8", 0]
+        for i, name in enumerate(refs[1:]):
+            load_id = str(EXTRA_REF_NODE_BASE + 2 * i)
+            batch_id = str(EXTRA_REF_NODE_BASE + 2 * i + 1)
+            wf[load_id] = {"class_type": "LoadImage", "inputs": {"image": name}}
+            wf[batch_id] = {"class_type": "ImageBatch", "inputs": {"image1": last, "image2": [load_id, 0]}}
+            last = [batch_id, 0]
+        wf["9"]["inputs"][ref_key] = last
+        if len(refs) > 1 and cond_class in MULTIREF_CLASS:
+            wf["9"]["class_type"] = MULTIREF_CLASS[cond_class]
     wf["9"]["inputs"].update({"width": width, "height": height, "length": length})
     wf["10"]["inputs"].update({"seed": seed, "steps": steps, "cfg": cfg,
                                "sampler_name": sampler, "scheduler": scheduler})
@@ -173,7 +205,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--host", default="http://127.0.0.1:8188")
     ap.add_argument("--workflow", default=os.path.join(HERE, "vace_ref2v_api.json"))
-    ap.add_argument("--ref", help="reference image (16:9 sheet); uploaded to ComfyUI/input")
+    ap.add_argument("--ref", action="append", help="reference image (16:9 sheet); uploaded to ComfyUI/input. "
+                    "Repeat for SEPARATE references (one tile per character; needs the multi-ref custom node)")
     ap.add_argument("--prompt-file"); ap.add_argument("--prompt", default="")
     ap.add_argument("--negative-file"); ap.add_argument("--negative", default="")
     ap.add_argument("--label", default="vace")
@@ -203,8 +236,9 @@ def main():
     if not a.ref: sys.exit("--ref required")
     if (a.length - 1) % 4: sys.exit("length must be 4n+1")
 
-    ref_name = upload_image(a.host, a.ref)
-    print("uploaded ref ->", ref_name, flush=True)
+    ref_names = [upload_image(a.host, r) for r in a.ref]
+    print("uploaded ref(s) ->", ", ".join(ref_names), flush=True)
+    ref_name = ref_names if len(ref_names) > 1 else ref_names[0]
 
     stamp = time.strftime("%Y%m%d-%H%M")
     prefix = "%s-%s-s%d-cfg%g-%dx%d" % (stamp, a.label, a.steps, a.cfg, a.width, a.height)

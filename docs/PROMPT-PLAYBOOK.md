@@ -63,6 +63,12 @@ thing in the prompt; two similar child tiles side by side on the sheet were read
 - On the sheet keep the two children apart — an adult or the animal between them (`minnu-appa-mintu-16x9.png`)
   is the A/B being tested; if it wins it becomes the rule for every kids+someone sheet.
 - Negatives only bite at cfg > 1: two-child shots run at cfg 1.5 if the cfg-1 pass merges them.
+- **Result of the 4h/4i/4j full-sampling runs:** one sheet with both children holds only ~50 % of the time even at
+  full sampling (T03/T07/T15 held; T17/T18/T20 did not — T17 gave the boy Minnu's pigtails and lost Minnu). The
+  structural fix is SEPARATE reference images, one per child (`ref` = `a.png|b.png`, spec): core `WanVaceToVideo`
+  encodes only the first image of a batch, so this needs `comfy/custom_nodes/wan_vace_multiref.py` (each image its own
+  reference latent, as in the original VACE `src_ref_images`) or Phantom-Wan-14B (`engine=phantom`). Under test in
+  `songs/_ab4-2026-09-23/` (2026-09-23); the result decides whether two-child shots stay in the pipeline.
 
 ## 3d · Expressions the model does not do on its own (the wink)
 T09a at 4 steps / cfg 1.0 blinked both eyes and opened the mouth — a symmetric blink is the model's default, and

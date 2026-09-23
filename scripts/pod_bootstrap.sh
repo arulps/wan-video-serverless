@@ -6,6 +6,8 @@
 #   pod_bootstrap.sh pull                 # every fresh pod: pull models + wan/ from R2, verify sizes, start ComfyUI
 #   pod_bootstrap.sh out-push songs/<slug>  # after a batch: copy songs/<slug>/out/ to R2 (laptop pulls from there)
 #   pod_bootstrap.sh wan-push             # from a pod (or laptop with rclone): refresh r2://.../wan/ from ./ (comfy, prompts, docs, songs)
+#   pod_bootstrap.sh model-get <url> <models-relpath>   # fetch an extra model (e.g. Phantom) onto the pod if not there yet
+#   pod_bootstrap.sh model-push <models-relpath>        # copy that model to R2 + add it to MANIFEST.txt (every later pull gets it)
 #
 # Env (same names the serverless worker uses -- set them as POD environment
 # variables in the RunPod console, never in the repo or the image):
@@ -155,17 +157,70 @@ cmd_pull() {
   else
     log "no $R2_PREFIX/wan/ on R2 -- copy comfy/, prompts/, docs/, songs/ to $WAN_ROOT by hand (or run 'wan-push' from the laptop)"
   fi
+  install_custom_nodes
 
   if [ "$START_COMFY" = 1 ]; then
     if ! curl -fsS -A "Mozilla/5.0 WanComfyDriver" "http://127.0.0.1:$COMFY_PORT/system_stats" >/dev/null 2>&1; then
       log "starting ComfyUI"
-      ( cd "$COMFY_ROOT" && nohup python main.py --listen 0.0.0.0 --port "$COMFY_PORT" > /workspace/comfyui.log 2>&1 & )
+      # some templates ship only python3 (found on pod v3tenww5xyms9f, 2026-09-23: nohup python ... failed silently)
+      local PY; PY="$(command -v python || command -v python3)" || die "no python/python3 on this pod"
+      ( cd "$COMFY_ROOT" && nohup "$PY" main.py --listen 0.0.0.0 --port "$COMFY_PORT" > /workspace/comfyui.log 2>&1 & )
+    else
+      log "ComfyUI already running -- custom nodes copied above only load after a restart (pkill -f 'main.py --listen' && rerun pull)"
     fi
     wait_ready
+    check_custom_nodes
   fi
   local T2; T2=$(date +%s)
   log "BOOT-TO-READY: models $(( T1 - T0 )) s, total $(( T2 - T0 )) s"
   log "next: cd $WAN_ROOT && python comfy/batch_runner.py --song songs/<slug> --hosts http://127.0.0.1:$COMFY_PORT --dry-run"
+}
+
+# comfy/custom_nodes/*.py in wan/ are single-file ComfyUI nodes (e.g. WanVaceToVideoMultiRef);
+# ComfyUI loads any .py dropped into <COMFY_ROOT>/custom_nodes/ at start-up.
+install_custom_nodes() {
+  local src="$WAN_ROOT/comfy/custom_nodes"
+  if ls "$src"/*.py >/dev/null 2>&1; then
+    mkdir -p "$COMFY_ROOT/custom_nodes"
+    cp "$src"/*.py "$COMFY_ROOT/custom_nodes/"
+    log "custom nodes installed: $(ls "$src"/*.py | xargs -n1 basename | tr '\n' ' ')"
+  fi
+}
+
+check_custom_nodes() {  # every node class our workflows may use must answer /object_info -- else the batch would fail on the first shot
+  local n ok=1
+  for n in WanVaceToVideoMultiRef WanPhantomSubjectToVideo ImageBatch; do
+    if curl -fsS -A "Mozilla/5.0 WanComfyDriver" "http://127.0.0.1:$COMFY_PORT/object_info/$n" 2>/dev/null | grep -q "\"$n\""; then
+      log "  node OK   $n"
+    else
+      log "  node MISSING $n  (see /workspace/comfyui.log; custom node import error or old ComfyUI)"; ok=0
+    fi
+  done
+  [ "$ok" = 1 ] || log "!! a node is missing -- do not start a batch that needs it"
+}
+
+cmd_model_get() {  # <url> <models-relpath>: download once onto the pod (resumable); prints the size
+  local url="${1:-}" rel="${2:-}"; [ -n "$url" ] && [ -n "$rel" ] || die "usage: model-get <url> <diffusion_models/x.safetensors>"
+  detect_comfy_root
+  local dst="$COMFY_ROOT/models/$rel"; mkdir -p "$(dirname "$dst")"
+  if [ -f "$dst" ]; then log "already present: $dst ($(file_size "$dst") B)"; return 0; fi
+  local t0; t0=$(date +%s)
+  wget -q --show-progress --progress=dot:giga -c -O "$dst.part" "$url" || die "download failed: $url"
+  mv "$dst.part" "$dst"
+  log "model-get done in $(( $(date +%s) - t0 )) s: $dst ($(file_size "$dst") B)"
+}
+
+cmd_model_push() {  # <models-relpath>: copy to R2 and add to the manifest so every later 'pull' fetches it
+  need_env; ensure_rclone; detect_comfy_root
+  local rel="${1:-}"; [ -n "$rel" ] || die "usage: model-push <diffusion_models/x.safetensors>"
+  local src="$COMFY_ROOT/models" dst="r2:$S3_BUCKET/$R2_PREFIX/models"
+  [ -f "$src/$rel" ] || die "missing $src/$rel"
+  rclone copyto "$src/$rel" "$dst/$rel" "${RC_FLAGS[@]}"
+  rclone copyto "$dst/$MANIFEST" "$src/$MANIFEST" || die "no manifest on R2"
+  grep -q " $rel\$" "$src/$MANIFEST" || printf '%s %s\n' "$(file_size "$src/$rel")" "$rel" >> "$src/$MANIFEST"
+  rclone copyto "$src/$MANIFEST" "$dst/$MANIFEST"
+  verify_remote "$dst" "$src/$MANIFEST"
+  log "model-push done -> $dst/$rel (manifest now $(wc -l < "$src/$MANIFEST") files)"
 }
 
 cmd_wan_push() {
@@ -180,8 +235,12 @@ cmd_wan_push() {
 cmd_out_push() {
   need_env; ensure_rclone
   local song="${1:-}"; [ -n "$song" ] || die "usage: out-push songs/<slug>"
-  [ -d "$song/out" ] || die "no $song/out"
   local slug; slug="$(basename "$song")"
+  # always ship the logs too: a batch that dies before its first clip leaves nothing else to diagnose from
+  # (item-02, 2026-09-23: pod removed, cause never recovered)
+  mkdir -p "$song/out/_debug"
+  for f in /workspace/comfyui.log /workspace/batch*.log; do [ -f "$f" ] && cp "$f" "$song/out/_debug/"; done
+  [ -d "$song/out" ] || die "no $song/out"
   rclone copy "$song/out/" "r2:$S3_BUCKET/songs/$slug/out/" --stats-one-line --progress
   rclone copyto "$song/shots.csv" "r2:$S3_BUCKET/songs/$slug/shots.csv"
   log "out/ pushed -> r2:$S3_BUCKET/songs/$slug/out/  (laptop: rclone copy r2:$S3_BUCKET/songs/$slug/out/ songs/$slug/out/)"
@@ -192,5 +251,7 @@ case "$CMD" in
   pull)        cmd_pull ;;
   wan-push)    cmd_wan_push ;;
   out-push)    cmd_out_push "$@" ;;
-  *) die "unknown command $CMD (models-push | pull | wan-push | out-push <song>)" ;;
+  model-get)   cmd_model_get "$@" ;;
+  model-push)  cmd_model_push "$@" ;;
+  *) die "unknown command $CMD (models-push | pull | wan-push | out-push <song> | model-get <url> <rel> | model-push <rel>)" ;;
 esac

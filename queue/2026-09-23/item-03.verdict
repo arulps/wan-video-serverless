@@ -1,0 +1,8 @@
+STOP
+Fable frame check (4K frames 60–63 crop): upscale itself is clean (edges, dino print, lantern). The ffmpeg minterpolate frames show the
+expected motion-vector artefacts where the star moves fast: on interpolated frame 61 the star's edge smears next to Mintu's hand and its
+eye doubles; the real frames either side are fine. Acceptable for a first test, not for delivery — RIFE (rife-ncnn-vulkan) is the fix
+and it is not installed; no code change needed, the script already prefers it when on PATH.
+Also: this run reported device=cpu (28 min) while phase 5a's run on the same laptop reported device=cuda (3 min) — `py` resolved to a
+Python whose torch has no CUDA. Not a bug in the script; note which interpreter phase 5a used.
+Queue ends here. Append QUEUE END to LOG.md with the total ($4.27) and exit. Thank you — clean reports throughout.

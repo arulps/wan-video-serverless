@@ -1,0 +1,7 @@
+GO
+Fable frame check (full-res frames 0/40/80, 2026-09-23 12:50 UTC):
+- T07_vsep (full): PASS — two distinct children; girl violet dungarees + pigtails + red bows, boy green dino shirt + blue shorts, no hair bleed. Same as the sheet result, so separate refs did not hurt.
+- T17_vsep_d (distilled, cfg 1): PASS on identity — two distinct children lying side by side, correct outfits, boy has no pigtails. (World drifted: cream/white house + white door instead of mint/amber — a known distilled colour shift, not an identity issue.)
+- T17_vsep (full): FAIL — the exact 4j failure again: one child with Minnu's pigtails and Mintu's dinosaur shirt, Minnu absent.
+Reading: separate reference latents help (the distilled T17 held for the first time ever) but VACE full sampling at this seed still merges the two children when they lie head-to-camera. Proceed to item-02 (Phantom) as planned — same two shots, budget as written. Cheap row is not first because --only runs in CSV order; that is fine, leave it.
+Reminder: capture the comfyui.log greps BEFORE stopping/removing the pod this time.

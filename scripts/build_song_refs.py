@@ -82,6 +82,12 @@ SHEETS = {
         "kids-thangam-16x9.png":     ["mintu_front", "minnu_body", "thangam"],
         "kids-minmini-16x9.png":     ["mintu_front", "minnu_body", "minmini_front"],
         "mintu-thangam-16x9.png":    ["mintu_front", "thangam"],
+        # 2026-09-23 (_ab4): SEPARATE one-tile sheets, one per child, for the multi-reference rows
+        # (ref column "minnu-body-16x9.png|mintu-front-16x9.png"); core WanVaceToVideo takes only one image,
+        # comfy/custom_nodes/wan_vace_multiref.py and Phantom take the batch
+        "mintu-front-16x9.png":      ["mintu_front"],
+        "minnu-body-16x9.png":       ["minnu_body"],
+        "minmini-sideA-16x9.png":    ["minmini_sideA"],   # _ab5: second Phantom ref for side-on mascot shots
     },
     "row-row-row-your-boat": {
         "appa-mintu-minnu-16x9.png": ["appa_front", "mintu_front", "minnu_body"],

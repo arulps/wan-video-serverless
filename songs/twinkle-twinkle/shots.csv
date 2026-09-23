@@ -1,22 +1,22 @@
 shot_id,cast,ref,prompt,world,duration_s,steps,cfg,mode,keyframe,seed,size,negative,status,notes
-T01,none,,shots/T01.txt,,5,6,1.0,,,,1280x720,,,ACT1 intro - empty terrace push-in; t2v; sits under the logo fade-up
-T02,none,,shots/T02.txt,world-sky.txt,5,6,1.0,,,,1280x720,,,"ACT1 intro - star field, one brighter; t2v; PING-PONG ok"
-T03,Minnu+Mintu,refs/kids-16x9.png,shots/T03.txt,,5,,,full,,,1280x720,,,"ACT1 - both at the balustrade, backs to camera"
-T04,Minnu,refs/minnu-4view-16x9.png,shots/T04.txt,,5,6,1.0,,,,1280x720,,,"ACT1 - close on Minnu, wondering"
-T05,none,,shots/T05.txt,,5,6,1.0,,,,1280x720,,,ACT1 - the sleeping village; t2v; PING-PONG ok
-T06,Thangam,refs/thangam-16x9.png,shots/T06.txt,world-sky.txt,5,6,1.0,,,,1280x720,,,ACT2 - THANGAM REVEAL: the star has a face
-T07,Minnu+Mintu,refs/kids-16x9.png,shots/T07.txt,,5,,,full,,,1280x720,,,ACT2 - the children wave back
-T08,Minmini,refs/minmini-4view-16x9.png,shots/T08.txt,,5,6,1.0,,,,1280x720,,,"ACT2 - Minmini wakes on the rail, lantern comes up"
-T09a,Minmini,refs/minmini-front-16x9.png,shots/T09a.txt,,5,,,full,keyframes/T09a-wink-480.png,,1280x720,,,"ACT2 - THE WINK. frame 0 pinned to the 4h full-sampling wink frame (keyframes/), single neutral tile ref, mode=full: the shot only has to hold the wink"
-T09b,Minmini,refs/minmini-4view-16x9.png,shots/T09b.txt,,5,6,1.0,,,,1280x720,,,"ACT2 - tail double-pulse, then launch; children are small blurred back-views in frame, deliberately not locked"
-T10,Minmini,refs/minmini-4view-16x9.png,shots/T10.txt,world-sky.txt,5,6,1.0,,,,1280x720,,,ACT2 - the flight up toward the star
-T11,Minmini+Thangam,refs/minmini-thangam-16x9.png,shots/T11.txt,world-sky.txt,5,6,1.0,,,,1280x720,,,ACT3 - the meeting; two lights pulse at each other
-T12,Minmini+Thangam,refs/minmini-thangam-16x9.png,shots/T12.txt,world-sky.txt,5,6,1.0,,,,1280x720,,,"ACT3 - Thangam spins, scatters light; Minmini loops"
-T13,Minmini+Thangam,refs/minmini-thangam-16x9.png,shots/T13.txt,world-sky.txt,5,6,1.0,,,,1280x720,,,ACT3 - widest shot; both tiny; PING-PONG ok
-T14,Minmini+Thangam,refs/minmini-thangam-16x9.png,shots/T14.txt,world-sky.txt,5,6,1.0,,,,1280x720,,,ACT4 - the two descend together
-T15,Minnu+Mintu+Thangam,refs/kids-thangam-16x9.png,shots/T15.txt,,5,,,full,,,1280x720,,,"ACT4 - Thangam settles on the rail; 3-up sheet, the cap"
-T16,Mintu+Thangam,refs/mintu-thangam-16x9.png,shots/T16.txt,,5,6,1.0,,,,1280x720,,,ACT4 - she touches his open palm; watch the hand
-T17,Minnu+Mintu,refs/kids-16x9.png,shots/T17.txt,,5,,,full,,,1280x720,,,"ACT4 - lying on the mat, eyelids going"
-T18,Minnu+Mintu+Minmini,refs/kids-minmini-16x9.png,shots/T18.txt,,5,,,full,,,1280x720,,,"ACT4 - asleep; Minmini keeps watch; 3-up sheet, the cap"
-T19,Minmini,refs/minmini-4view-16x9.png,shots/T19.txt,,5,6,1.0,,,,1280x720,,,"ACT4 outro - lantern down to an ember, Thangam rises behind"
-T20,Minnu+Mintu+Minmini,refs/kids-minmini-16x9.png,shots/T20.txt,,5,,,full,,,1280x720,,,ACT4 outro - final wide hold; cast locked because this is the last image of the song; hold last frame
+T01,none,,shots/T01.txt,,5,6,1.0,,,,1280x720,,done,ACT1 intro - empty terrace push-in; t2v; sits under the logo fade-up
+T02,none,,shots/T02.txt,world-sky.txt,5,6,1.0,,,,1280x720,,done,"ACT1 intro - star field, one brighter; t2v; PING-PONG ok"
+T03,Minnu+Mintu,refs/kids-16x9.png,shots/T03.txt,,5,,,full,,,1280x720,,done,"ACT1 - both at the balustrade, backs to camera"
+T04,Minnu,refs/minnu-4view-16x9.png,shots/T04.txt,,5,6,1.0,,,,1280x720,,done,"ACT1 - close on Minnu, wondering"
+T05,none,,shots/T05.txt,,5,6,1.0,,,4242,1280x720,,,"ACT1 - the sleeping village; t2v; PING-PONG ok | RETAKE 2026-09-23: 4j had a person at the door; framing cut the door out, seed 4242"
+T06,Thangam,refs/thangam-16x9.png,shots/T06.txt,world-sky.txt,5,6,1.0,,,,1280x720,,done,ACT2 - THANGAM REVEAL: the star has a face
+T07,Minnu+Mintu,refs/kids-16x9.png,shots/T07.txt,,5,,,full,,,1280x720,,done,ACT2 - the children wave back
+T08,Minmini,refs/minmini-4view-16x9.png,shots/T08.txt,,5,6,1.0,,,,1280x720,,done,"ACT2 - Minmini wakes on the rail, lantern comes up"
+T09a,Minmini,refs/minmini-front-16x9.png,shots/T09a.txt,,5,,,full,keyframes/T09a-wink-480.png,,1280x720,,done,"ACT2 - THE WINK. frame 0 pinned to the 4h full-sampling wink frame (keyframes/), single neutral tile ref, mode=full: the shot only has to hold the wink"
+T09b,Minmini,refs/minmini-4view-16x9.png,shots/T09b.txt,,5,,,full,,,1280x720,,,"ACT2 - tail double-pulse, then launch; children are small blurred back-views in frame, deliberately not locked | RETAKE: 4j Minmini rendered orange in profile at distilled -> full"
+T10,Minmini,refs/minmini-4view-16x9.png,shots/T10.txt,world-sky.txt,5,,,full,,,1280x720,,,ACT2 - the flight up toward the star | RETAKE: 4j had two Minminis -> single-Minmini wording + full
+T11,Minmini+Thangam,refs/minmini-thangam-16x9.png,shots/T11.txt,world-sky.txt,5,6,1.0,,,,1280x720,,done,ACT3 - the meeting; two lights pulse at each other
+T12,Minmini+Thangam,refs/minmini-thangam-16x9.png,shots/T12.txt,world-sky.txt,5,6,1.0,,,,1280x720,,done,"ACT3 - Thangam spins, scatters light; Minmini loops"
+T13,Minmini+Thangam,refs/minmini-thangam-16x9.png,shots/T13.txt,world-sky.txt,5,6,1.0,,,,1280x720,,done,ACT3 - widest shot; both tiny; PING-PONG ok
+T14,Minmini+Thangam,refs/minmini-thangam-16x9.png,shots/T14.txt,world-sky.txt,5,6,1.0,,,,1280x720,,done,ACT4 - the two descend together
+T15,Minnu+Mintu+Thangam,refs/kids-thangam-16x9.png,shots/T15.txt,,5,,,full,,,1280x720,,done,"ACT4 - Thangam settles on the rail; 3-up sheet, the cap"
+T16,Mintu+Thangam,refs/mintu-thangam-16x9.png,shots/T16.txt,,5,6,1.0,,,,1280x720,,done,ACT4 - she touches his open palm; watch the hand
+T17,Minnu+Mintu,refs/kids-16x9.png,shots/T17.txt,,5,,,full,,,1280x720,,done,"ACT4 - lying on the mat, eyelids going"
+T18,Minnu+Mintu+Minmini,refs/kids-minmini-16x9.png,shots/T18.txt,,5,,,full,,,1280x720,,done,"ACT4 - asleep; Minmini keeps watch; 3-up sheet, the cap"
+T19,Minmini,refs/minmini-4view-16x9.png,shots/T19.txt,,5,,,full,,,1280x720,,,"ACT4 outro - lantern down to an ember, Thangam rises behind | RETAKE: 4j drew a hand lantern prop -> tail glow wording + full"
+T20,Minnu+Mintu+Minmini,refs/kids-minmini-16x9.png,shots/T20.txt,,5,,,full,,,1280x720,,done,ACT4 outro - final wide hold; cast locked because this is the last image of the song; hold last frame

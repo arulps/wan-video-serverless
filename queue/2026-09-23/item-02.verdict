@@ -1,0 +1,6 @@
+GO
+Fable frame check (full-res frames 0/40/80):
+- T17_ph_d (distilled): PASS identity — two distinct children, girl violet dungarees + pigtails + red bows, boy green dino shirt + blue shorts, no bleed. Pose off-brief (on their sides facing each other, not on backs looking up); world pale (distilled colour drift, known).
+- T17_ph (full): PASS identity — two distinct, correct children, and the world is the best of the whole queue (mint house, amber door, lantern, village, moon). Staging weak: wide shot, children far apart on two mats, on stomach/side, not "heads nearest camera, on their backs".
+- T07_ph (full): PASS identity — two distinct children waving, correct outfits. Mintu open-mouth/teeth (negative ignored), faces slightly off-model/older than the refs; no arm grip.
+Result: Phantom held two-child identity 3/3 (VACE separate-refs 2/3, VACE sheet ~1/2). Phantom's cost is pose/expression adherence and faces a little less on-model. No more GPU in this queue. Proceed to item-03 (laptop only, $0), then QUEUE END.
