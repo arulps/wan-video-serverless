@@ -6,3 +6,6 @@ __pycache__/
 out/
 refs/
 *.mp4
+/outputs/
+logs.txt
+nil

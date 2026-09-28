@@ -4,8 +4,8 @@
 **Repo under work:** `C:\Projects\opencode\video_image` → `github.com/arulps/wan-video-serverless`
 **HEAD at handoff:** `7e9f193` · **working tree: DIRTY, nothing committed, nothing pushed**
 **UPDATE 2026-09-21 ~12:00 (Fable):** Phase 0/1 is committed as `92b31d3` and deployed (CI run #14).
-Phase 2 was committed and deployed ~12:30 and the cached model attached. First live job ran: sampling OK,
-VAE decode OOM. Phase 2b (fix) is in the working tree — see §10; §9–§10 supersede §1–§2.
+Phase 2 was committed and deployed ~12:30 and the cached model attached. First live job: VAE decode OOM. Phase 2b
+(committed `2f76d58`, deployed) fixed it. **13:41: first video produced.** See §11; §9–§11 supersede §1–§2.
 **No RunPod API calls were made. No GPU was spent.**
 
 > This file is the local copy, kept beside `CC-DISPATCH-phase01-2026-09-21.md`.
@@ -233,3 +233,91 @@ Report `vae_decode_retried` — it decides whether bf16 decode becomes the defau
 
 ### 10.5 If it fails again at decode (do not loop)
 bf16 decode by default → 48 GB GPU first in `gpuTypeIds` (L40S) → tiled VAE decode.
+
+---
+
+## 11 · FIRST VIDEO — 2026-09-21 13:41 (Phase 2b image `2f76d58`)
+
+`outputs\20260921-134106-ti2v-5B-seed30313-81f-20s.mp4` — 196,449 B, h264 1280×704, 81 f @ 24 fps (3.375 s),
++ `.json` sidecar with effective parameters. Coherent picture-book scene: yellow duckling in a raincoat
+walking toward camera down a village lane past a puddle, slow push-in.
+
+Job `13d179ba-282d-4426-bee5-fcf1d6bdfc6f-u1`, ti2v-5B, seed 30313, 20 steps, guide 5.0:
+
+| metric | value | note |
+|---|---|---|
+| `t_weights_s` | 0 | RunPod cached model, snapshot `921dbaf3…` |
+| `t_load_s` | 148.1 | pipeline init on a cold worker (34 GB from host disk + model build); ~0 on a warm worker |
+| `t_sample_s` | 370.7 | 20 steps × 81 f @ 1280×704 on RTX 4090 ≈ 18.5 s/step → 50 steps ≈ 15.5 min |
+| `t_total_s` | 526.8 | |
+| `vae_decode_dtype` / `retried` | float32 / false | expandable segments alone fixed the OOM; bf16 stays a fallback, not the default |
+| delivery | inline, libx264 crf 23 | raw 2,289,208 B → 196,449 B |
+| cost | ≈ $0.05–0.10 | two real jobs today ≈ $0.10–0.20 total |
+
+Selftest on that worker: `alloc_conf=expandable_segments:True`, patched bindings include
+`wan.modules.model.flash_attention`, huggingface_hub 0.36.2.
+
+**One operational finding:** the first Part-B attempt was refused by the script because the selftest ran
+on a stale FlashBoot worker (empty `alloc_conf`). `deploy.sh`'s 30 s drain does not retire warm idle
+workers; CC scaled to 0 by hand, waited for 0, restored 0/3. The guard did its job — no GPU time lost.
+Fix is written (uncommitted): `deploy.sh` now polls `/health` until every worker count is 0
+(`ROTATE_MAX_WAIT_SEC`, default 420) before restoring.
+
+### 11.1 Phase 3 — what the numbers say to do next (in order)
+
+1. **`deploy.sh`**: poll-until-drained rotation (written, uncommitted) + pass `--model-reference
+   https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B:main` on update so a deploy can never drop the cache.
+2. **Object storage** (S3 or Cloudflare R2 via `S3_ENDPOINT_URL`): the raw quality-8 file (2.3 MB here)
+   is what production should keep; the crf-23 inline copy is a review proxy. Env only — code is ready.
+3. **`executionTimeoutSec`**: 1800 s is tight. Cold worker 148 s load + 50 steps ≈ 930 s + decode ≈ 1150 s
+   at 81 f; 121 f (Wan's default, 5 s) ≈ 1400 s sampling alone. Raise to 3600 before production defaults.
+4. **Production defaults**: derive from 18.5 s/step: 30–40 steps is the realistic 4090 budget per clip;
+   50 steps only for hero shots. Measure quality vs steps on the same seed before deciding.
+5. **GPU priority list** (`gpuTypeIds`: 4090 first, L40S fallback) for capacity, not memory — memory is solved.
+6. **Container disk** 200 → ~50 GB now the download path is unused.
+7. **Worker warmth**: `idleTimeoutSec` 300 keeps the loaded pipeline (148 s) for back-to-back clips; for a
+   batch session, submit clips within that window. `workersMax` 3 = three clips in parallel.
+
+---
+
+## 12 · Phase 3a / 3a.2 landed — 2026-09-21 14:30 (HEAD `cb44bf5`)
+
+**State of the endpoint `wv9oneserd7vj6` (verified by CC via `serverless get` + a fresh-worker selftest, ~$0.02):**
+template `25514mi5ae` → image `cb44bf5…`, `executionTimeoutMs 3600000`, `containerDiskInGb 50`, GPU 4090,
+workers 0/3, `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` on a fresh worker, cached snapshot
+`921dbaf3…` found (model reference survived two deploys), `wan.modules.model.flash_attention` patched.
+
+**What `deploy.sh` now does on every push:** upsert template (image + env) → `serverless update` with
+`--template-id`, workers, idle timeout, `--model-reference` → **REST `PATCH /v1/endpoints/{id}`** with
+`executionTimeoutMs` + `gpuTypeIds` (fails the deploy on non-2xx) → scale to 0 → poll `/health` until
+every worker count is 0 → restore min/max. Commits `c34ce4d`, `f1ea752`, `cb44bf5`.
+
+**Corrections to earlier notes:** runpodctl 2.14.0 `serverless update` has no `--execution-timeout`
+(create only) — that is why the REST PATCH exists. `serverless get` does not print `modelReferences`;
+the selftest's `weights.runpod_cached_snapshot` is the only proof of the cached model.
+
+### 12.1 Phase 3b — Arul's decisions (nothing dispatched until decided)
+1. **Object storage**: S3 or Cloudflare R2? Then five GitHub secrets (`TPL_ENV_S3_BUCKET`,
+   `TPL_ENV_S3_ENDPOINT_URL` for R2, `TPL_ENV_AWS_REGION`, `TPL_ENV_AWS_ACCESS_KEY_ID`,
+   `TPL_ENV_AWS_SECRET_ACCESS_KEY`) and one push. Code path is live. Production keeps the raw
+   quality-8 file; the crf-23 inline copy stays the review proxy.
+2. **Step ladder**: seed 30313, same prompt, 20 / 30 / 40 / 50 steps (≈ 18.5 s/step + 148 s cold load
+   once; ≈ $0.35 total if batched inside one idle window) → pick production defaults by eye.
+3. **48 GB fallback**: append `"NVIDIA L40S"` to `endpoint.gpuTypeIds` — one line, ~2× $/s when it
+   triggers. Capacity insurance only; memory is solved on the 4090.
+4. **Batching**: submit a song's clips within the 300 s idle window; `workersMax 3` runs three in parallel.
+
+## §13 Phase 4 — VACE-14B reference-to-video (2026-09-21 ~22:00)
+
+- Frame check vs OpenArt (`outputs\ladder\_qc\openart-vs-ours-2026-09-21.png`): OpenArt = reference-conditioned
+  generation (saved characters: Minnu 4 views, Mintu 1 lawn front view) + ~150-word runsheet prompt; first frames come
+  from text. Our 5B I2V-from-cut-out cannot do that (no reference input in any Wan 2.2 open model). Decision (Arul):
+  Phase 4 = `Wan-AI/Wan2.1-VACE-14B` on a second 80 GB endpoint. The 5B endpoint stays.
+- Written (tests green offline): `WAN_REPO` build arg, `vace-14B` task in models/generator/handler, bf16 weight load,
+  ref flattening, `config/endpoint-vace.json`, `deploy.sh ENDPOINT_CONFIG`, `scripts/vace_shot.ps1`, `prompts/mazhai/*`,
+  `tests/test_generator_vace.py`, RUNBOOK §10. Dispatch: `CC-DISPATCH-phase4-vace-2026-09-21.md` (CC writes the
+  `build-deploy-vace.yml` workflow by hand, verifies GPU id strings, runs the workflow, PATCHes timeout/GPUs on the new
+  endpoint, adds `WAN_VACE_ENDPOINT_ID` to `.env`, runs selftest → V1a only → stop for review).
+- Refs on disk: `Turnarounds\Minnu\{front,back,left,right}.png` (1600² transparent) and
+  `Turnarounds\Mintu\Gemini_Generated_Image_fxwpvvfxwpvvfxwp.jpeg` (the exact OpenArt reference, no mark).
+- Superseded: phase3e A/B (not run).
