@@ -1,0 +1,22 @@
+[T04_w3] -> wan3 wan3.0-video 720P 16:9 5s refs=2 first=False last=False est $0.50
+[T07_w3] -> wan3 wan3.0-video 720P 16:9 5s refs=3 first=False last=False est $0.50
+[T08_w3] -> wan3 wan3.0-video 720P 16:9 5s refs=3 first=False last=False est $0.50
+  wan3 submitted task cea3ca0c-2174-44c1-ae5f-b8103302129f
+  wan3 submitted task 38371c07-f182-4f21-bfb4-4c196b3953ab
+  wan3 task cea3ca0c-2174-44c1-ae5f-b8103302129f: RUNNING
+  wan3 task 38371c07-f182-4f21-bfb4-4c196b3953ab: RUNNING
+  wan3 submitted task 8195eb38-99c7-4e19-9698-fb1a324fdbd3
+  wan3 task 8195eb38-99c7-4e19-9698-fb1a324fdbd3: RUNNING
+  wan3 task cea3ca0c-2174-44c1-ae5f-b8103302129f: SUCCEEDED
+  wan3 task 38371c07-f182-4f21-bfb4-4c196b3953ab: SUCCEEDED
+  wan3 task 8195eb38-99c7-4e19-9698-fb1a324fdbd3: SUCCEEDED
+[T08_w3] done in 153.0s -> songs/_ab7-2026-09-28-wan3\out\T08_w3-seed30313-w3.mp4 (running list-price estimate $1.50)
+[T04_w3] done in 151.5s -> songs/_ab7-2026-09-28-wan3\out\T04_w3-seed30313-w3.mp4 (running list-price estimate $1.50)
+[T07_w3] done in 152.6s -> songs/_ab7-2026-09-28-wan3\out\T07_w3-seed30313-w3.mp4 (running list-price estimate $1.50)
+
+SHOT       STATUS       WALL_S  FILE
+T08_w3     done          153.0  songs/_ab7-2026-09-28-wan3\out\T08_w3-seed30313-w3.mp4
+T04_w3     done          151.5  songs/_ab7-2026-09-28-wan3\out\T04_w3-seed30313-w3.mp4
+T07_w3     done          152.6  songs/_ab7-2026-09-28-wan3\out\T07_w3-seed30313-w3.mp4
+
+total GPU-minutes (done shots): 7.6
