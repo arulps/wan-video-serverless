@@ -9,3 +9,4 @@ L01_flf_f,Minnu,,shots/L01-flf.txt,,5,,,full,flf2v,keyframes/L01-start.png,,,,30
 L01_w3,Minnu,,shots/L01-flf.txt,,5,,,standard,wan3,keyframes/L01-start.png,keyframes/L01-start.png,,,30313,720x1280,,,Wan 3.0 loop: same still as first and last frame (face-out peekaboo); twin of L01_flf_*
 L01_w3r,Minnu,refs/minnu-body-9x16.png,shots/L01-w3.txt,,5,,,standard,wan3,,,Minnu,,30313,720x1280,,done,Wan 3.0 pass 1: Minnu reference + prompt; the best face-out frame becomes the loop still for pass 2
 L01_w3v,Minnu,refs/minnu-body-9x16.png,shots/L01-w3-voice.txt,,5,,,standard,wan3,,,Minnu,yes,30313,720x1280,,done,Wan 3.0 pass 1 with sound: she says Peekaboo in a little girl voice (audio test)
+L01_w3m,Minnu,refs/minnu-body-9x16.png,shots/L01-w3-music.txt,,5,,,standard,wan3,,,Minnu,yes,30313,720x1280,,done,Wan 3.0 music test: loopable toddler melody + her Peekaboo
