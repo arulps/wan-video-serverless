@@ -134,6 +134,48 @@ def build_workflow(wf, prompt, negative, ref_name, width, height, length, seed, 
     return wf
 
 
+# Wan2.2-I2V-A14B first-last-frame-to-video (comfy/wan22_flf2v_api.json): two experts,
+# high-noise then low-noise, each a KSamplerAdvanced over its share of one schedule.
+# distilled = lightx2v Wan2.2-Lightning I2V 4-step LoRA pair; settings from its own
+# NativeComfy workflow (lightx2v/Wan2.2-Lightning, Seko-V1): 4 steps split 2/2, cfg 1,
+# euler/simple, shift 5. full = no LoRA; ComfyUI's Wan2.2 14B I2V/FLF2V template values:
+# 20 steps split 10/10, cfg 3.5, euler/simple, shift 8.
+FLF2V_MODES = {
+    "distilled": {"steps": 4, "cfg": 1.0, "shift": 5.0, "sampler": "euler", "scheduler": "simple", "lora": True},
+    "full":      {"steps": 20, "cfg": 3.5, "shift": 8.0, "sampler": "euler", "scheduler": "simple", "lora": False},
+}
+
+
+def build_flf2v_workflow(wf, prompt, negative, start_name, end_name, width, height, length, seed,
+                         steps, cfg, shift, sampler, scheduler, use_lora, prefix):
+    """Patch a loaded wan22_flf2v_api.json with the shot's parameters (deep copy; `wf` is not
+    mutated). start_name/end_name are uploaded images: the clip's frame 0 and its last frame
+    (the same image for a seamless loop). The high-noise expert runs steps [0, steps//2),
+    the low-noise expert the rest, as in both reference workflows."""
+    wf = copy.deepcopy(wf)
+    if wf.get("13", {}).get("class_type") != "WanFirstLastFrameToVideo":
+        raise RuntimeError("node 13 is not WanFirstLastFrameToVideo -- wrong workflow file for engine=flf2v")
+    wf["9"]["inputs"]["text"] = prompt
+    wf["10"]["inputs"]["text"] = negative
+    wf["11"]["inputs"]["image"] = start_name
+    wf["12"]["inputs"]["image"] = end_name or start_name
+    wf["13"]["inputs"].update({"width": width, "height": height, "length": length})
+    split = max(1, steps // 2)
+    for nid in ("14", "15"):
+        wf[nid]["inputs"].update({"noise_seed": seed, "steps": steps, "cfg": cfg,
+                                  "sampler_name": sampler, "scheduler": scheduler})
+    wf["14"]["inputs"].update({"start_at_step": 0, "end_at_step": split})
+    wf["15"]["inputs"].update({"start_at_step": split, "end_at_step": 10000})
+    wf["7"]["inputs"]["shift"] = shift
+    wf["8"]["inputs"]["shift"] = shift
+    if not use_lora:
+        wf["7"]["inputs"]["model"] = ["1", 0]
+        wf["8"]["inputs"]["model"] = ["2", 0]
+        wf.pop("5", None); wf.pop("6", None)
+    wf["18"]["inputs"]["filename_prefix"] = "video/" + prefix
+    return wf
+
+
 def add_first_frame_keyframe(wf, keyframe_name, width, height):
     """Pin frame 0 of the clip to an uploaded image (VACE first-frame-to-video).
     Verified against ComfyUI's WanVaceToVideo (comfy_extras/nodes_wan.py):

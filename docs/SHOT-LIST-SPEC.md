@@ -27,7 +27,9 @@ songs/<song-slug>/
 | `cfg` | no | default 1.0 (distilled LoRA). 1.5–2.0 only when adherence needs help (costs 2×). |
 | `mode` | no | `distilled` (default: lightx2v LoRA, lcm) or `full` (no LoRA, uni_pc, defaults 30 steps / cfg 5 — ~8× slower). `full` is for the shots where the distilled sampler will not follow the text: an expression, who holds what, look-alike children (playbook §3e). |
 | `engine` | no | `vace` (default; Wan2.1-VACE-14B, `comfy/vace_ref2v_api.json`) or `phantom` (Phantom-Wan-14B subject-to-video, `comfy/phantom_s2v_api.json`, up to 4 separate refs encoded natively, no `keyframe`; the model must be on the pod — `pod_bootstrap.sh model-get`). |
+| | | **`flf2v` (2026-09-28):** Wan2.2-I2V-A14B first-last-frame-to-video (`comfy/wan22_flf2v_api.json`, high-noise + low-noise experts). Needs `keyframe` (frame 0; also the last frame unless `lastframe` is set); `ref` is unused — identity comes from the stills. `distilled` = Wan2.2-Lightning I2V 4-step LoRA pair (4 steps, cfg 1, euler, shift 5); `full` = 20 steps, cfg 3.5, euler, shift 8. Pods pull only its models with `PULL_SKIP='Phantom|vace|lightx2v_cfg_step_distill'`. |
 | `keyframe` | no | image pinned as frame 0 of the clip (VACE first-frame-to-video), e.g. `keyframes/T09a-wink-480.png` — for expressions the sampler will not produce on cue; the prompt then holds/continues what the frame shows. Same aspect as `size`. |
+| `lastframe` | no | engine=flf2v only: image pinned as the LAST frame. Blank = the keyframe again, i.e. a seamless loop (YT Shorts). Same aspect as `size`. |
 | `seed` | no | default: song seed from `batch_runner --seed`; set per shot only for retakes. |
 | `size` | no | `1280x720` (default) or `832x480` for blocking tests. |
 | `world` | no | per-shot world file (e.g. `world-snow.txt`) when this shot's place differs from `world.txt`. One place per shot, pinned, never described loosely. |

@@ -31,6 +31,7 @@ needs Pillow.
 """
 import argparse
 import csv
+import json
 import os
 import queue
 import re
@@ -44,6 +45,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import run_comfy  # noqa: E402  (comfy/run_comfy.py -- HTTP helpers, build_workflow, submit_and_wait)
+import wan3_api  # noqa: E402  (comfy/wan3_api.py -- Alibaba Model Studio Wan 3.0, engine=wan3)
 
 # Shot text (negative prompts especially) carries non-ASCII (the tuned Chinese
 # negative default). Windows' console defaults stdout/stderr to the system
@@ -62,7 +64,7 @@ PLAYBOOK = os.path.join(REPO_ROOT, "docs", "PROMPT-PLAYBOOK.md")
 NO_TEXT_LINE = "No text, no captions, no watermark."
 
 CSV_FIELDS = ["shot_id", "cast", "ref", "prompt", "duration_s", "steps", "cfg", "mode", "engine", "keyframe",
-              "lastframe", "seed", "size", "negative", "status", "notes"]
+              "lastframe", "ref_labels", "seed", "size", "negative", "status", "notes"]
 
 # `ref` column: one sheet, or SEPARATE reference images joined with "|" (one
 # 16:9 tile per character; playbook 3c). Separate refs need node support: VACE
@@ -71,7 +73,14 @@ REF_SEP = "|"
 # `engine` column: which conditioning model/workflow renders the row.
 # flf2v = Wan2.2-I2V-A14B first-last-frame-to-video: `keyframe` = frame 0, `lastframe` = last frame
 # (blank -> the keyframe again = a seamless loop); identity comes from those stills, `ref` is unused.
-ENGINES = {"vace": "vace_ref2v_api.json", "phantom": "phantom_s2v_api.json", "flf2v": "wan22_flf2v_api.json"}
+# wan3 = Wan 3.0 over Alibaba's API (no ComfyUI, no pod): up to 10 `ref` images named "Image 1.." in the
+# prompt (labels from `ref_labels`, else cast names + "the set"), OR `keyframe`/`lastframe` as first/last frame
+# (the API forbids mixing the two). `mode` = standard | prime. Hosts are ignored: --hosts api,api,api = 3 tasks
+# in parallel. Needs --max-usd (list-price estimate) and DASHSCOPE_API_KEY + DASHSCOPE_WORKSPACE_ID in env/.env.
+ENGINES = {"vace": "vace_ref2v_api.json", "phantom": "phantom_s2v_api.json", "flf2v": "wan22_flf2v_api.json",
+           "wan3": None}
+spend_lock = threading.Lock()
+SPEND = {"usd": 0.0}
 
 print_lock = threading.Lock()
 csv_lock = threading.Lock()
@@ -300,6 +309,8 @@ class SongContext:
                     "crf/quality-like input; leaving it alone." % crf)
 
     def workflow_for(self, engine):
+        if engine in ENGINES and ENGINES[engine] is None:
+            return None          # API engine, no ComfyUI workflow
         if engine not in self._wf_by_engine:
             path = os.path.join(self.workflow_dir, ENGINES[engine])
             if not os.path.exists(path):
@@ -391,9 +402,14 @@ def shot_params(ctx, row):
     # `mode` column: "distilled" (default: lightx2v LoRA, lcm, steps/cfg from the row) or
     # "full" (no LoRA, uni_pc/simple, defaults steps 30 / cfg 5 unless the row sets them --
     # ~8x slower, for the shots where cfg-1 adherence is not enough: expressions, who holds what).
-    mode = (row.get("mode", "") or "").strip().lower() or "distilled"
-    if mode not in ("distilled", "full"):
-        raise RuntimeError("bad mode %r (distilled | full)" % row.get("mode"))
+    if engine == "wan3":
+        mode = (row.get("mode", "") or "").strip().lower() or "standard"
+        if mode not in wan3_api.MODELS:
+            raise RuntimeError("bad mode %r for engine=wan3 (%s)" % (row.get("mode"), " | ".join(wan3_api.MODELS)))
+    else:
+        mode = (row.get("mode", "") or "").strip().lower() or "distilled"
+        if mode not in ("distilled", "full"):
+            raise RuntimeError("bad mode %r (distilled | full)" % row.get("mode"))
     if engine == "flf2v":
         d = run_comfy.FLF2V_MODES[mode]
         if not row.get("steps", "").strip():
@@ -409,15 +425,57 @@ def shot_params(ctx, row):
     lastframe = resolve_path(ctx.song_dir, row.get("lastframe", "")) or (keyframe if engine == "flf2v" else "")
     if engine == "flf2v" and not keyframe:
         raise RuntimeError("engine=flf2v needs a keyframe (the first frame; also the last unless lastframe is set)")
-    if lastframe and engine != "flf2v":
-        raise RuntimeError("lastframe is only supported by engine=flf2v")
+    if lastframe and engine not in ("flf2v", "wan3"):
+        raise RuntimeError("lastframe is only supported by engine=flf2v and engine=wan3")
+    ref_labels = []
+    wan3 = None
+    if engine == "wan3":
+        if refs and (keyframe or lastframe):
+            raise RuntimeError("engine=wan3: ref images and keyframe/lastframe cannot be combined (API rule)")
+        if len(refs) > wan3_api.MAX_REFS:
+            raise RuntimeError("engine=wan3 takes at most %d ref images, got %d" % (wan3_api.MAX_REFS, len(refs)))
+        ref_labels = [x.strip() for x in (row.get("ref_labels", "") or "").split(REF_SEP) if x.strip()]
+        cast_names = [c.strip() for c in (row.get("cast", "") or "").split("+") if c.strip() and c.strip().lower() != "none"]
+        if refs and not ref_labels:
+            if len(refs) == len(cast_names):
+                ref_labels = cast_names
+            elif len(refs) == len(cast_names) + 1:
+                ref_labels = cast_names + ["the set: the place, exactly as shown"]
+            else:
+                raise RuntimeError("engine=wan3: %d refs for cast %r -- set ref_labels (one label per ref, joined with |)"
+                                   % (len(refs), row.get("cast")))
+        if refs and len(ref_labels) != len(refs):
+            raise RuntimeError("engine=wan3: ref_labels has %d labels for %d refs" % (len(ref_labels), len(refs)))
+        res, ratio = wan3_api.size_to_resolution(w, h)
+        dur = int(round(duration_s)) if duration_s else 5
+        wan3 = {"resolution": res, "ratio": ratio, "duration": dur, "est_usd": wan3_api.estimate_usd(res, dur, mode),
+                "model": wan3_api.MODELS[mode]}
     return {"steps": steps, "cfg": cfg, "seed": seed, "width": w, "height": h,
             "frames": frames, "ref": refs[0] if len(refs) == 1 else (refs or None), "refs": refs,
             "mode": mode, "engine": engine,
             # `keyframe` column: image pinned as frame 0 (VACE first-frame-to-video); the shot then
             # only has to HOLD or continue what the frame shows -- the fix for expressions the
             # sampler will not produce on cue (playbook 3d step 3). Must be the output aspect.
-            "keyframe": keyframe, "lastframe": lastframe}
+            "keyframe": keyframe, "lastframe": lastframe, "ref_labels": ref_labels, "wan3": wan3}
+
+
+def wan3_prompt(ctx, row, p):
+    """engine=wan3 prompt: a reference legend naming Image 1..n (the API's own convention), the normal
+    assembled prompt, and the shot's NEGATIVE: line as an 'Avoid:' sentence (the API has no negative prompt;
+    the long song negative file is Wan2.x-specific and is not sent)."""
+    body = ctx.assemble_prompt(row)
+    legend = ""
+    if p["ref_labels"]:
+        legend = "Reference images: " + "; ".join("Image %d is %s" % (i + 1, lab) for i, lab in enumerate(p["ref_labels"])) + \
+                 ". Keep every character exactly as in their reference image."
+    elif p["keyframe"]:
+        legend = "The video starts on the given first frame" + \
+                 (" and ends exactly on the given last frame." if p["lastframe"] else ".") + \
+                 " Keep every character exactly as it appears there."
+    shot_path = resolve_path(ctx.song_dir, row.get("prompt", ""))
+    shot_neg = parse_shot_file(open(shot_path, encoding="utf-8").read())[1] if shot_path and os.path.exists(shot_path) else ""
+    avoid = ("Avoid: " + shot_neg.rstrip(" ,.") + ".") if shot_neg else ""
+    return "\n\n".join(x for x in (legend, body, avoid) if x)
 
 
 # --------------------------------------------------------------------- CSV
@@ -486,6 +544,9 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
     shot_id = row["shot_id"]
     t0 = time.time()
     try:
+        p0 = shot_params(ctx, row)
+        if p0["engine"] == "wan3":
+            return process_wan3_shot(ctx, row, p0, args, csv_path, fieldnames, rows, results, out_dir, qc_dir, timeout_min)
         prompt_text = ctx.assemble_prompt(row)
         negative_text = ctx.negative_text(row)
         warn = token_budget_warning(prompt_text, row.get("cast", ""))
@@ -575,6 +636,49 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
         log("[%s] FAILED on %s: %s" % (shot_id, host, e))
 
 
+def process_wan3_shot(ctx, row, p, args, csv_path, fieldnames, rows, results, out_dir, qc_dir, timeout_min):
+    shot_id = row["shot_id"]
+    t0 = time.time()
+    try:
+        for f in p["refs"] + [x for x in (p["keyframe"], p["lastframe"]) if x]:
+            if not os.path.exists(f):
+                raise RuntimeError("file not found: %s" % f)
+        est = p["wan3"]["est_usd"]
+        with spend_lock:
+            if SPEND["usd"] + est > args.max_usd + 1e-9:
+                raise RuntimeError("--max-usd %.2f would be exceeded (spent ~%.2f + this row ~%.2f); not submitted"
+                                   % (args.max_usd, SPEND["usd"], est))
+            SPEND["usd"] += est          # reserve before submitting, so parallel workers cannot overshoot
+        prompt_text = wan3_prompt(ctx, row, p)
+        body = wan3_api.build_request(prompt_text, refs=p["refs"], first_frame=p["keyframe"] or None,
+                                      last_frame=p["lastframe"] or None, resolution=p["wan3"]["resolution"],
+                                      ratio=p["wan3"]["ratio"], duration=p["wan3"]["duration"], seed=p["seed"],
+                                      mode=p["mode"], prompt_extend=args.wan3_prompt_extend, audio=False)
+        prefix = "%s-seed%d-w3%s" % (shot_id, p["seed"], "p" if p["mode"] == "prime" else "")
+        dest = os.path.join(out_dir, prefix + ".mp4")
+        log("[%s] -> wan3 %s %s %s %ds refs=%d first=%s last=%s est $%.2f" % (
+            shot_id, p["wan3"]["model"], p["wan3"]["resolution"], p["wan3"]["ratio"], p["wan3"]["duration"],
+            len(p["refs"]), bool(p["keyframe"]), bool(p["lastframe"]), est))
+        result = wan3_api.render(body, dest, timeout_min=timeout_min, log=log)
+        sidecar = {"shot_id": shot_id, "engine": "wan3", "wall_s": result["wall_s"], "prompt": prompt_text,
+                   "params": {"model": p["wan3"]["model"], "resolution": p["wan3"]["resolution"],
+                              "ratio": body["parameters"]["ratio"], "duration": p["wan3"]["duration"], "seed": p["seed"],
+                              "prompt_extend": args.wan3_prompt_extend, "audio": False},
+                   "refs": p["refs"], "ref_labels": p["ref_labels"], "keyframe": p["keyframe"], "lastframe": p["lastframe"],
+                   "task_id": result["task_id"], "usage": result["usage"], "est_usd_list_price": est, "bytes": result["bytes"]}
+        json.dump(sidecar, open(dest[:-4] + ".json", "w", encoding="utf-8"), indent=1)
+        write_qc_strip(dest, os.path.join(qc_dir, "%s-strip.png" % shot_id))
+        set_status(csv_path, fieldnames, rows, row, "done")
+        with print_lock:
+            results.append({"shot_id": shot_id, "status": "done", "wall_s": result["wall_s"], "file": dest})
+        log("[%s] done in %.1fs -> %s (running list-price estimate $%.2f)" % (shot_id, result["wall_s"], dest, SPEND["usd"]))
+    except Exception as e:
+        set_status(csv_path, fieldnames, rows, row, "failed")
+        with print_lock:
+            results.append({"shot_id": shot_id, "status": "failed", "wall_s": round(time.time() - t0, 1), "file": str(e)})
+        log("[%s] FAILED (wan3): %s" % (shot_id, e))
+
+
 def stop_requested(args):
     """Graceful stop: a STOP file (default <song>/STOP) or SIGTERM lets the row in flight finish and
     starts no new row. Found in production (phase 6a): SIGINT sent to a runner started with
@@ -640,6 +744,10 @@ def main():
     ap.add_argument("--timeout-min", type=int, default=60, help="per-shot ComfyUI timeout")
     ap.add_argument("--stop-file", default=None,
                     help="graceful stop: when this file exists no new row starts (default: <song>/STOP)")
+    ap.add_argument("--max-usd", type=float, default=None,
+                    help="engine=wan3: hard cap on the list-price estimate of this run (required for wan3 rows)")
+    ap.add_argument("--wan3-prompt-extend", action="store_true",
+                    help="engine=wan3: let Alibaba rewrite/extend the prompt (default off: our prompt is sent as written)")
     ap.add_argument("--allow-long", action="store_true",
                     help="submit shots whose prompt estimate exceeds the 512-token budget instead of failing them")
     args = ap.parse_args()
@@ -688,6 +796,7 @@ def main():
             return
         missing_refs = []
         over_budget = []
+        wan3_total = [0.0]
         for row in pending:
             log("=" * 70)
             log("shot_id:", row["shot_id"], " cast:", row.get("cast"))
@@ -705,7 +814,14 @@ def main():
             if len(p["refs"]) > 1:
                 log("  %d SEPARATE references (%s)" % (len(p["refs"]),
                     "WanVaceToVideoMultiRef custom node" if p["engine"] == "vace" else "Phantom native"))
-            warn = token_budget_warning(prompt_text, row.get("cast", ""))
+            warn = None if p["engine"] == "wan3" else token_budget_warning(prompt_text, row.get("cast", ""))
+            if p["engine"] == "wan3":
+                w = p["wan3"]
+                wan3_total[0] += w["est_usd"]
+                log("  wan3: %s %s %s %ds, est $%.2f (list price); refs=%d labels=%s first=%s last=%s" % (
+                    w["model"], w["resolution"], w["ratio"], w["duration"], w["est_usd"], len(p["refs"]),
+                    p["ref_labels"], p["keyframe"] or "-", p["lastframe"] or "-"))
+                prompt_text = wan3_prompt(ctx, row, p)
             if warn:
                 log("  " + warn)
                 if warn.startswith("OVER BUDGET"):
@@ -734,6 +850,11 @@ def main():
             log(prompt_text)
             log("--- negative ---")
             log(negative_text)
+        if wan3_total[0]:
+            log("")
+            log("=" * 70)
+            log("engine=wan3 rows: estimated $%.2f at list price (a launch discount may lower it); run with --max-usd >= that"
+                % wan3_total[0])
         if over_budget:
             log("")
             log("=" * 70)
@@ -757,6 +878,12 @@ def main():
     hosts = [h.strip() for h in args.hosts.split(",") if h.strip()]
     if not hosts:
         sys.exit("--hosts required")
+    wan3_rows = [r for r in pending if (r.get("engine", "") or "").strip().lower() == "wan3"]
+    if wan3_rows:
+        if args.max_usd is None:
+            sys.exit("engine=wan3 rows pending: --max-usd is required (list-price cap for this run)")
+        if not wan3_api.credentials_present():
+            sys.exit("engine=wan3 rows pending: DASHSCOPE_API_KEY and DASHSCOPE_WORKSPACE_ID must be set (env or .env)")
 
     out_dir = os.path.join(song_dir, "out")
     qc_dir = os.path.join(out_dir, "_qc")

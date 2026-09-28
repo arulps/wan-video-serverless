@@ -1,8 +1,9 @@
-shot_id,cast,ref,prompt,world,duration_s,steps,cfg,mode,engine,keyframe,seed,size,negative,status,notes
-L01_480q,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,6,1.0,distilled,phantom,,30313,480x832,,done,Peekaboo; 480p quick (A/B cell 1 of 4)
-L01_720q,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,6,1.0,distilled,phantom,,30313,720x1280,,done,Peekaboo; 720p quick (A/B cell 2 of 4)
-L01_480f,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,,,full,phantom,,30313,480x832,,done,Peekaboo; 480p full (A/B cell 3 of 4)
-L01_720f,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,,,full,phantom,,30313,720x1280,,done,Peekaboo; 720p full (A/B cell 4 of 4)
-L01_flf_d,Minnu,,shots/L01-flf.txt,,5,,,distilled,flf2v,keyframes/L01-start.png,30313,720x1280,,,Peekaboo loop on Wan2.2 first-last-frame (same still first and last); Lightning 4-step
-L01_flf_d2,Minnu,,shots/L01-flf.txt,,5,,,distilled,flf2v,keyframes/L01-start.png,4242,720x1280,,,same as L01_flf_d with a second seed
-L01_flf_f,Minnu,,shots/L01-flf.txt,,5,,,full,flf2v,keyframes/L01-start.png,30313,720x1280,,,same shot with full sampling (20 steps cfg 3.5)
+shot_id,cast,ref,prompt,world,duration_s,steps,cfg,mode,engine,keyframe,lastframe,ref_labels,seed,size,negative,status,notes
+L01_480q,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,6,1.0,distilled,phantom,,,,30313,480x832,,done,Peekaboo; 480p quick (A/B cell 1 of 4)
+L01_720q,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,6,1.0,distilled,phantom,,,,30313,720x1280,,done,Peekaboo; 720p quick (A/B cell 2 of 4)
+L01_480f,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,,,full,phantom,,,,30313,480x832,,done,Peekaboo; 480p full (A/B cell 3 of 4)
+L01_720f,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,,,full,phantom,,,,30313,720x1280,,done,Peekaboo; 720p full (A/B cell 4 of 4)
+L01_flf_d,Minnu,,shots/L01-flf.txt,,5,,,distilled,flf2v,keyframes/L01-start.png,,,30313,720x1280,,,Peekaboo loop on Wan2.2 first-last-frame (same still first and last); Lightning 4-step
+L01_flf_d2,Minnu,,shots/L01-flf.txt,,5,,,distilled,flf2v,keyframes/L01-start.png,,,4242,720x1280,,,same as L01_flf_d with a second seed
+L01_flf_f,Minnu,,shots/L01-flf.txt,,5,,,full,flf2v,keyframes/L01-start.png,,,30313,720x1280,,,same shot with full sampling (20 steps cfg 3.5)
+L01_w3,Minnu,,shots/L01-flf.txt,,5,,,standard,wan3,keyframes/L01-start.png,keyframes/L01-start.png,,30313,720x1280,,,Wan 3.0 loop: same still as first and last frame (face-out peekaboo); twin of L01_flf_*
