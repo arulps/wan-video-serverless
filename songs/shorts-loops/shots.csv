@@ -10,3 +10,22 @@ L01_w3,Minnu,,shots/L01-flf.txt,,5,,,standard,wan3,keyframes/L01-start.png,keyfr
 L01_w3r,Minnu,refs/minnu-body-9x16.png,shots/L01-w3.txt,,5,,,standard,wan3,,,Minnu,,30313,720x1280,,done,Wan 3.0 pass 1: Minnu reference + prompt; the best face-out frame becomes the loop still for pass 2
 L01_w3v,Minnu,refs/minnu-body-9x16.png,shots/L01-w3-voice.txt,,5,,,standard,wan3,,,Minnu,yes,30313,720x1280,,done,Wan 3.0 pass 1 with sound: she says Peekaboo in a little girl voice (audio test)
 L01_w3m,Minnu,refs/minnu-body-9x16.png,shots/L01-w3-music.txt,,5,,,standard,wan3,,,Minnu,yes,30313,720x1280,,done,Wan 3.0 music test: loopable toddler melody + her Peekaboo
+L02_w3,Amma+Mintu,refs/amma-front-9x16.png|refs/mintu-front-9x16.png,shots/L02-w3.txt,world-kitchen.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L02 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L03_w3,Thatha+Mintu+Minnu,refs/thatha-front-9x16.png|refs/mintu-front-9x16.png|refs/minnu-body-9x16.png,shots/L03-w3.txt,world-rain.txt,6,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L03 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L04_w3,Minnu,refs/minnu-body-9x16.png,shots/L04-w3.txt,,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L04 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L05_w3,Mintu,refs/mintu-front-9x16.png,shots/L05-w3.txt,,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L05 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L06_w3,Mintu,refs/mintu-front-9x16.png,shots/L06-w3.txt,world-bathroom.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L06 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L07_w3,Minnu,refs/minnu-body-9x16.png,shots/L07-w3.txt,world-kitchen.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L07 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L08_w3,Mintu,refs/mintu-front-9x16.png,shots/L08-w3.txt,world-kitchen.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L08 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L09_w3,Paati+Mintu,refs/paati-front-9x16.png|refs/mintu-front-9x16.png,shots/L09-w3.txt,world-kitchen.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L09 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L10_w3,Mintu,refs/mintu-front-9x16.png,shots/L10-w3.txt,world-rain.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L10 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L11_w3,Minnu,refs/minnu-body-9x16.png,shots/L11-w3.txt,world-garden.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L11 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L12_w3,Thatha+Minnu,refs/thatha-front-9x16.png|refs/minnu-body-9x16.png,shots/L12-w3.txt,,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L12 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L13_w3,Mintu,refs/mintu-front-9x16.png,shots/L13-w3.txt,world-bedroom.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L13 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L14_w3,Mintu,refs/mintu-front-9x16.png,shots/L14-w3.txt,,6,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L14 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L15_w3,Minnu,refs/minnu-body-9x16.png,shots/L15-w3.txt,world-bathroom.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L15 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L16_w3,Mintu+Amma,refs/mintu-front-9x16.png|refs/amma-front-9x16.png,shots/L16-w3.txt,world-garden.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L16 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L17_w3,Mintu,refs/mintu-front-9x16.png,shots/L17-w3.txt,,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L17 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L18_w3,Minnu,refs/minnu-body-9x16.png,shots/L18-w3.txt,world-kitchen.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L18 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L19_w3,Minnu,refs/minnu-body-9x16.png,shots/L19-w3.txt,world-bathroom.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L19 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L20_w3,Thatha+Mintu,refs/thatha-front-9x16.png|refs/mintu-front-9x16.png,shots/L20-w3.txt,,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L20 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
