@@ -9,3 +9,7 @@ refs/
 /outputs/
 logs.txt
 nil
+
+# 3D queue / 3D-C: outputs/logs.txt/nil already covered above; this adds the
+# per-run QC subfolder pattern used anywhere in the tree, not only under outputs/.
+**/_qc/
