@@ -188,6 +188,16 @@ def main():
             model = model.half()
     else:
         model, up = None, MODELS[a.model][3]
+        # realesr-animevideov3 ships x2/x3/x4 ncnn models: use the smallest scale that reaches the
+        # target (720p -> 2160 is exactly x3, ~2x less work than x4 + downscale), if that model file exists.
+        if a.model == "animevideov3":
+            exe_dir = os.path.dirname(shutil.which("realesrgan-ncnn-vulkan") or "")
+            for s_ in (2, 3, 4):
+                if info["h"] * s_ >= target_h and info["w"] * s_ >= target_w and (
+                        s_ == 4 or os.path.exists(os.path.join(exe_dir, "models", "realesr-animevideov3-x%d.param" % s_))):
+                    up = s_
+                    break
+        log("ncnn scale x%d" % up)
 
     work = tempfile.mkdtemp(prefix="upscale-")
     src_frames = os.path.join(work, "src"); os.makedirs(src_frames)

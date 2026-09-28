@@ -62,14 +62,16 @@ PLAYBOOK = os.path.join(REPO_ROOT, "docs", "PROMPT-PLAYBOOK.md")
 NO_TEXT_LINE = "No text, no captions, no watermark."
 
 CSV_FIELDS = ["shot_id", "cast", "ref", "prompt", "duration_s", "steps", "cfg", "mode", "engine", "keyframe",
-              "seed", "size", "negative", "status", "notes"]
+              "lastframe", "seed", "size", "negative", "status", "notes"]
 
 # `ref` column: one sheet, or SEPARATE reference images joined with "|" (one
 # 16:9 tile per character; playbook 3c). Separate refs need node support: VACE
 # via comfy/custom_nodes/wan_vace_multiref.py, Phantom natively.
 REF_SEP = "|"
 # `engine` column: which conditioning model/workflow renders the row.
-ENGINES = {"vace": "vace_ref2v_api.json", "phantom": "phantom_s2v_api.json"}
+# flf2v = Wan2.2-I2V-A14B first-last-frame-to-video: `keyframe` = frame 0, `lastframe` = last frame
+# (blank -> the keyframe again = a seamless loop); identity comes from those stills, `ref` is unused.
+ENGINES = {"vace": "vace_ref2v_api.json", "phantom": "phantom_s2v_api.json", "flf2v": "wan22_flf2v_api.json"}
 
 print_lock = threading.Lock()
 csv_lock = threading.Lock()
@@ -392,18 +394,30 @@ def shot_params(ctx, row):
     mode = (row.get("mode", "") or "").strip().lower() or "distilled"
     if mode not in ("distilled", "full"):
         raise RuntimeError("bad mode %r (distilled | full)" % row.get("mode"))
-    if mode == "full":
+    if engine == "flf2v":
+        d = run_comfy.FLF2V_MODES[mode]
+        if not row.get("steps", "").strip():
+            steps = d["steps"]
+        if not row.get("cfg", "").strip():
+            cfg = d["cfg"]
+    elif mode == "full":
         if not row.get("steps", "").strip():
             steps = 30
         if not row.get("cfg", "").strip():
             cfg = 5.0
+    keyframe = resolve_path(ctx.song_dir, row.get("keyframe", ""))
+    lastframe = resolve_path(ctx.song_dir, row.get("lastframe", "")) or (keyframe if engine == "flf2v" else "")
+    if engine == "flf2v" and not keyframe:
+        raise RuntimeError("engine=flf2v needs a keyframe (the first frame; also the last unless lastframe is set)")
+    if lastframe and engine != "flf2v":
+        raise RuntimeError("lastframe is only supported by engine=flf2v")
     return {"steps": steps, "cfg": cfg, "seed": seed, "width": w, "height": h,
             "frames": frames, "ref": refs[0] if len(refs) == 1 else (refs or None), "refs": refs,
             "mode": mode, "engine": engine,
             # `keyframe` column: image pinned as frame 0 (VACE first-frame-to-video); the shot then
             # only has to HOLD or continue what the frame shows -- the fix for expressions the
             # sampler will not produce on cue (playbook 3d step 3). Must be the output aspect.
-            "keyframe": resolve_path(ctx.song_dir, row.get("keyframe", ""))}
+            "keyframe": keyframe, "lastframe": lastframe}
 
 
 # --------------------------------------------------------------------- CSV
@@ -482,7 +496,7 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
                                    "(trim per playbook 3b, or rerun with --allow-long to spend anyway)")
         p = shot_params(ctx, row)
         cast = (row.get("cast", "") or "").strip()
-        if not p["refs"] and cast.lower() != "none":
+        if not p["refs"] and cast.lower() != "none" and p["engine"] != "flf2v":
             raise RuntimeError("ref is required for cast=%r but none given" % cast)
         for r in p["refs"]:
             if not os.path.exists(r):
@@ -494,18 +508,34 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
             raise RuntimeError("keyframe file not found: %s" % p["keyframe"])
         ref_names = [run_comfy.upload_image(host, r) for r in p["refs"]]
         ref_name = ref_names if len(ref_names) > 1 else (ref_names[0] if ref_names else None)
+        if p["lastframe"] and not os.path.exists(p["lastframe"]):
+            raise RuntimeError("lastframe file not found: %s" % p["lastframe"])
         kf_name = run_comfy.upload_image(host, p["keyframe"]) if p["keyframe"] else None
-        if kf_name and p["engine"] != "vace":
-            raise RuntimeError("keyframe is only supported by engine=vace")
+        if kf_name and p["engine"] not in ("vace", "flf2v"):
+            raise RuntimeError("keyframe is only supported by engine=vace and engine=flf2v")
         prefix = "%s-seed%d-s%d" % (shot_id, p["seed"], p["steps"])
-        wf = run_comfy.build_workflow(
-            ctx.workflow_for(p["engine"]), prompt=prompt_text, negative=negative_text, ref_name=ref_name,
-            width=p["width"], height=p["height"], length=p["frames"], seed=p["seed"],
-            steps=p["steps"], cfg=p["cfg"],
-            sampler="uni_pc" if p["mode"] == "full" else "lcm", scheduler="simple", shift=5.0,
-            lora=run_comfy.DEFAULT_LORA, lora_strength=1.0, no_lora=(p["mode"] == "full"), prefix=prefix)
-        if kf_name:
-            wf = run_comfy.add_first_frame_keyframe(wf, kf_name, p["width"], p["height"])
+        if p["engine"] == "flf2v":
+            d = run_comfy.FLF2V_MODES[p["mode"]]
+            lf_name = kf_name if p["lastframe"] == p["keyframe"] else run_comfy.upload_image(host, p["lastframe"])
+            wf = run_comfy.build_flf2v_workflow(
+                ctx.workflow_for("flf2v"), prompt=prompt_text, negative=negative_text,
+                start_name=kf_name, end_name=lf_name, width=p["width"], height=p["height"], length=p["frames"],
+                seed=p["seed"], steps=p["steps"], cfg=p["cfg"], shift=d["shift"], sampler=d["sampler"],
+                scheduler=d["scheduler"], use_lora=d["lora"], prefix=prefix)
+            sampler_used, shift_used = d["sampler"], d["shift"]
+            lora_used = "wan22_i2v_lightning_4step_high/low" if d["lora"] else None
+        else:
+            sampler_used, shift_used = ("uni_pc" if p["mode"] == "full" else "lcm"), 5.0
+            lora_used = None if p["mode"] == "full" else run_comfy.DEFAULT_LORA
+        if p["engine"] != "flf2v":
+            wf = run_comfy.build_workflow(
+                ctx.workflow_for(p["engine"]), prompt=prompt_text, negative=negative_text, ref_name=ref_name,
+                width=p["width"], height=p["height"], length=p["frames"], seed=p["seed"],
+                steps=p["steps"], cfg=p["cfg"],
+                sampler="uni_pc" if p["mode"] == "full" else "lcm", scheduler="simple", shift=5.0,
+                lora=run_comfy.DEFAULT_LORA, lora_strength=1.0, no_lora=(p["mode"] == "full"), prefix=prefix)
+            if kf_name:
+                wf = run_comfy.add_first_frame_keyframe(wf, kf_name, p["width"], p["height"])
         if ctx.crf is not None and ctx.crf_key and ctx.save_node_id in wf:
             wf[ctx.save_node_id]["inputs"][ctx.crf_key] = ctx.crf
 
@@ -522,9 +552,9 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
             "params": {"steps": p["steps"], "cfg": p["cfg"], "seed": p["seed"],
                        "width": p["width"], "height": p["height"], "length": p["frames"],
                        "mode": p["mode"], "engine": p["engine"],
-                       "sampler": "uni_pc" if p["mode"] == "full" else "lcm", "scheduler": "simple", "shift": 5.0,
-                       "lora": None if p["mode"] == "full" else run_comfy.DEFAULT_LORA, "crf": ctx.crf},
-            "ref": p["ref"], "refs": p["refs"], "keyframe": p["keyframe"], "bytes": result["bytes"], "server_file": result["server_file"],
+                       "sampler": sampler_used, "scheduler": "simple", "shift": shift_used,
+                       "lora": lora_used, "crf": ctx.crf},
+            "ref": p["ref"], "refs": p["refs"], "keyframe": p["keyframe"], "lastframe": p["lastframe"], "bytes": result["bytes"], "server_file": result["server_file"],
             "prompt_id": result["prompt_id"],
         }
         import json as _json
@@ -690,6 +720,13 @@ def main():
                 log("keyframe=%s%s" % (p["keyframe"], "" if os.path.exists(p["keyframe"]) else "  !! KEYFRAME MISSING"))
                 if not os.path.exists(p["keyframe"]):
                     missing_refs.append((row["shot_id"], p["keyframe"]))
+                if p["engine"] == "flf2v":
+                    if p["lastframe"] == p["keyframe"]:
+                        log("lastframe=<same as keyframe> (seamless loop)")
+                    else:
+                        log("lastframe=%s%s" % (p["lastframe"], "" if os.path.exists(p["lastframe"]) else "  !! LASTFRAME MISSING"))
+                        if not os.path.exists(p["lastframe"]):
+                            missing_refs.append((row["shot_id"], p["lastframe"]))
             elif not p["refs"] and (row.get("cast", "") or "").strip().lower() not in ("", "none"):
                 missing_refs.append((row["shot_id"], "<no ref column value>"))
                 log("  !! cast=%s but no ref given" % row.get("cast"))

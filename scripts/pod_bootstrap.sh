@@ -132,11 +132,12 @@ verify_local() {  # <local models dir> <manifest>
   [ "$ok" = 1 ] || die "local model files do not match the manifest -- do not start a batch"
 }
 
-wait_ready() {  # blocks until /object_info/UNETLoader lists the VACE UNET, or 15 min
+wait_ready() {  # blocks until /object_info/UNETLoader lists READY_MODEL (a pulled diffusion model), or 15 min
   local url="http://127.0.0.1:$COMFY_PORT/object_info/UNETLoader" t0; t0=$(date +%s)
+  local want="${READY_MODEL:-\"UNETLoader\"}"
   while [ $(( $(date +%s) - t0 )) -lt 900 ]; do
-    if curl -fsS -A "Mozilla/5.0 WanComfyDriver" "$url" 2>/dev/null | grep -q "wan2.1_vace_14B_fp16.safetensors"; then
-      log "ComfyUI ready on :$COMFY_PORT (UNETLoader lists the VACE model)"; return 0
+    if curl -fsS -A "Mozilla/5.0 WanComfyDriver" "$url" 2>/dev/null | grep -q "$want"; then
+      log "ComfyUI ready on :$COMFY_PORT (UNETLoader lists $want)"; return 0
     fi
     sleep 5
   done
@@ -149,14 +150,26 @@ cmd_pull() {
   local src="r2:$S3_BUCKET/$R2_PREFIX/models" dst="$COMFY_ROOT/models"
   mkdir -p "$dst/diffusion_models" "$dst/text_encoders" "$dst/vae" "$dst/loras"
   rclone copyto "$src/$MANIFEST" "$dst/$MANIFEST" || die "no $MANIFEST on R2 -- run 'models-push' once first"
+  # PULL_SKIP (optional, extended regex): manifest entries to leave on R2 for this pod, so a
+  # batch only downloads its own engine's models, e.g.
+  #   phantom batch: PULL_SKIP='wan2\.2_i2v|wan22_i2v_lightning|vace'
+  #   flf2v batch:   PULL_SKIP='Phantom|vace|lightx2v_cfg_step_distill'
+  local man="$dst/$MANIFEST"
+  if [ -n "${PULL_SKIP:-}" ]; then
+    grep -Ev "$PULL_SKIP" "$dst/$MANIFEST" > "$dst/$MANIFEST.pull" || true
+    man="$dst/$MANIFEST.pull"
+    log "PULL_SKIP='$PULL_SKIP': pulling $(wc -l < "$man") of $(wc -l < "$dst/$MANIFEST") manifest files"
+  fi
+  [ -s "$man" ] || die "PULL_SKIP left nothing to pull"
+  export READY_MODEL="${READY_MODEL:-$(awk '$2 ~ /^diffusion_models\// {sub(/^diffusion_models\//, "", $2); print $2; exit}' "$man")}"
   # rclone copy skips files that already match by size+modtime, so a re-run on a
   # warm pod (or a pod whose disk kept the files) costs seconds.
   while read -r _ f; do
     rclone copyto "$src/$f" "$dst/$f" "${RC_FLAGS[@]}"
-  done < "$dst/$MANIFEST"
+  done < "$man"
   local T1; T1=$(date +%s)
   log "models pulled in $(( T1 - T0 )) s; verifying"
-  verify_local "$dst" "$dst/$MANIFEST"
+  verify_local "$dst" "$man"
 
   # runner + prompts + songs, so the batch runs on the pod against 127.0.0.1 (no proxy, no 403)
   mkdir -p "$WAN_ROOT"
@@ -198,7 +211,7 @@ install_custom_nodes() {
 
 check_custom_nodes() {  # every node class our workflows may use must answer /object_info -- else the batch would fail on the first shot
   local n ok=1
-  for n in WanVaceToVideoMultiRef WanPhantomSubjectToVideo ImageBatch; do
+  for n in WanVaceToVideoMultiRef WanPhantomSubjectToVideo ImageBatch WanFirstLastFrameToVideo KSamplerAdvanced; do
     if curl -fsS -A "Mozilla/5.0 WanComfyDriver" "http://127.0.0.1:$COMFY_PORT/object_info/$n" 2>/dev/null | grep -q "\"$n\""; then
       log "  node OK   $n"
     else
