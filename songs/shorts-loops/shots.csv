@@ -1,0 +1,5 @@
+shot_id,cast,ref,prompt,world,duration_s,steps,cfg,mode,engine,keyframe,seed,size,negative,status,notes
+L01_480q,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,6,1.0,distilled,phantom,,30313,480x832,,done,Peekaboo; 480p quick (A/B cell 1 of 4)
+L01_720q,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,6,1.0,distilled,phantom,,30313,720x1280,,done,Peekaboo; 720p quick (A/B cell 2 of 4)
+L01_480f,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,,,full,phantom,,30313,480x832,,done,Peekaboo; 480p full (A/B cell 3 of 4)
+L01_720f,Minnu,refs/minnu-body-9x16.png,shots/L01.txt,,5,,,full,phantom,,30313,720x1280,,done,Peekaboo; 720p full (A/B cell 4 of 4)
