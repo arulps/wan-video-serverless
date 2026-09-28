@@ -1,0 +1,5 @@
+# Per-song cast for Twinkle Twinkle. Mintu and Minnu are overridden below (shorter than section 8) to fit the 512-token budget.
+Thangam: small cartoon star, butter-yellow, big glossy black eyes, stubby arms, no legs, always floats, never stands; keep exactly as in the reference image.
+Minmini: firefly, cream television-set head with a face on the screen, pale teal body, golden antennae, amber wings, yellow-green tail lantern, grey feet; keep exactly as in the reference image.
+Mintu: little boy, 4-5, black hair with a cowlick, warm brown skin, green dinosaur t-shirt, blue shorts; keep exactly as in the reference image.
+Minnu: girl, 6-8, jet-black pigtails with red ribbon bows, warm brown skin, violet dungarees over a cream t-shirt; keep exactly as in the reference image.

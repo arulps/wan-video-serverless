@@ -34,6 +34,7 @@ import csv
 import os
 import queue
 import re
+import signal
 import subprocess
 import sys
 import threading
@@ -544,8 +545,20 @@ def process_shot(host, ctx, row, args, csv_path, fieldnames, rows, results, out_
         log("[%s] FAILED on %s: %s" % (shot_id, host, e))
 
 
+def stop_requested(args):
+    """Graceful stop: a STOP file (default <song>/STOP) or SIGTERM lets the row in flight finish and
+    starts no new row. Found in production (phase 6a): SIGINT sent to a runner started with
+    `nohup ... &` from a non-interactive shell is ignored (inherited SIG_IGN), so the runner kept
+    going into an unwanted ~$0.65 full-sampling row. `touch songs/<slug>/STOP` always works."""
+    if os.path.exists(args.stop_file):
+        if not stop_event.is_set():
+            log("STOP file found (%s): finishing the row in flight, starting no new row." % args.stop_file)
+        stop_event.set()
+    return stop_event.is_set()
+
+
 def worker(host, work_q, ctx, args, csv_path, fieldnames, rows, results, out_dir, qc_dir, timeout_min):
-    while not stop_event.is_set():
+    while not stop_requested(args):
         try:
             row = work_q.get_nowait()
         except queue.Empty:
@@ -595,11 +608,24 @@ def main():
     ap.add_argument("--workflow", default=os.path.join(HERE, "vace_ref2v_api.json"))
     ap.add_argument("--crf", type=int, default=None)
     ap.add_argument("--timeout-min", type=int, default=60, help="per-shot ComfyUI timeout")
+    ap.add_argument("--stop-file", default=None,
+                    help="graceful stop: when this file exists no new row starts (default: <song>/STOP)")
     ap.add_argument("--allow-long", action="store_true",
                     help="submit shots whose prompt estimate exceeds the 512-token budget instead of failing them")
     args = ap.parse_args()
 
     song_dir = args.song
+    args.stop_file = args.stop_file or os.path.join(song_dir, "STOP")
+    if os.path.exists(args.stop_file) and not args.dry_run:
+        os.remove(args.stop_file)      # a stale STOP from an earlier run must not end this one
+        print("removed stale stop file %s" % args.stop_file, flush=True)
+    # Ctrl-C must raise KeyboardInterrupt even when started in the background (SIGINT may be
+    # inherited as SIG_IGN); SIGTERM = graceful stop after the row in flight.
+    signal.signal(signal.SIGINT, signal.default_int_handler)
+    try:
+        signal.signal(signal.SIGTERM, lambda *_: (log("SIGTERM: finishing the row in flight, starting no new row."), stop_event.set()))
+    except (ValueError, AttributeError):
+        pass
     csv_path = os.path.join(song_dir, "shots.csv")
     if not os.path.exists(csv_path):
         sys.exit("no shots.csv at %s" % csv_path)

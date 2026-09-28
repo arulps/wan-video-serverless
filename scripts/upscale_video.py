@@ -13,12 +13,22 @@ the model trained for animation video; x4 then a lanczos resize to the exact
 target) -> optional RIFE (rife-ncnn-vulkan if on PATH) or ffmpeg minterpolate
 -> libx264/libx265 crf 16 -> audio copied from the source untouched.
 
-Self-contained: the network is defined here (SRVGGNetCompact, ~40 lines), so
-there is no basicsr/realesrgan package dependency -- those break on current
-torchvision. Needs: torch, numpy, Pillow, ffmpeg. GPU strongly recommended
-(a 5 s 720p clip is ~120 frames; ~0.3 s/frame on an A100 at 4K, tens of
-seconds per frame on a CPU). Weights (16 MB) are downloaded once into
-~/.cache/wan-upscale/ from the Real-ESRGAN GitHub release.
+Two backends for the Real-ESRGAN pass (same model, realesr-animevideov3):
+  --backend torch  the network defined here (SRVGGNetCompact, ~40 lines; no
+                   basicsr/realesrgan package -- those break on current
+                   torchvision). Fast on an NVIDIA GPU (~0.3 s/frame at 4K on
+                   an A100), very slow on a CPU (~29 s/frame for 720p->4K:
+                   the Patti intro, 600 frames, took 4.8 h).
+  --backend ncnn   realesrgan-ncnn-vulkan (xinntao's release binary + its
+                   models folder). Vulkan runs on ANY GPU incl. Intel Iris Xe /
+                   AMD, so this is the backend for machines without CUDA.
+  --backend auto   (default) torch if CUDA is available, else ncnn if
+                   realesrgan-ncnn-vulkan is on PATH, else torch on CPU.
+Frame interpolation: RIFE (rife-ncnn-vulkan, model rife-v4.6, which supports
+an arbitrary target frame count, so 16->30 fps is real RIFE) if on PATH,
+otherwise ffmpeg minterpolate (visible ghosting on fast motion).
+Needs: numpy, Pillow, ffmpeg (+ torch for the torch backend). Weights (16 MB)
+are downloaded once into ~/.cache/wan-upscale/ for the torch backend.
 """
 import argparse
 import json
@@ -142,25 +152,42 @@ def main():
     ap.add_argument("--weights", default=None, help="local .pth instead of the cached download")
     ap.add_argument("--tile", type=int, default=512)
     ap.add_argument("--frames-dir", default=None, help="keep the upscaled PNG frames here")
-    ap.add_argument("--device", default=None, help="cuda | cpu (default: cuda if available)")
+    ap.add_argument("--device", default=None, help="torch backend: cuda | cpu (default: cuda if available)")
+    ap.add_argument("--backend", choices=["auto", "torch", "ncnn"], default="auto",
+                    help="auto = torch on CUDA, else realesrgan-ncnn-vulkan (Vulkan: Intel/AMD GPUs) if on PATH, else torch on CPU")
+    ap.add_argument("--ncnn-gpu", default="auto", help="realesrgan/rife-ncnn-vulkan -g gpu id (auto = let the tool pick)")
     ap.add_argument("--limit", type=int, default=0, help="only the first N frames (smoke test)")
     a = ap.parse_args()
 
     import numpy as np
-    import torch
     from PIL import Image
 
-    device = a.device or ("cuda" if torch.cuda.is_available() else "cpu")
+    try:
+        import torch
+        has_cuda = torch.cuda.is_available()
+    except ImportError:
+        torch, has_cuda = None, False
+    backend = a.backend
+    if backend == "auto":
+        backend = "torch" if (has_cuda or not shutil.which("realesrgan-ncnn-vulkan")) else "ncnn"
+    if backend == "ncnn" and not shutil.which("realesrgan-ncnn-vulkan"):
+        sys.exit("--backend ncnn needs realesrgan-ncnn-vulkan on PATH")
+    if backend == "torch" and torch is None:
+        sys.exit("torch is not installed; install realesrgan-ncnn-vulkan and use --backend ncnn")
+    device = "vulkan" if backend == "ncnn" else (a.device or ("cuda" if has_cuda else "cpu"))
     info = probe(a.src)
     target_h = a.height
     target_w = round(info["w"] * target_h / info["h"] / 2) * 2
     log("source %dx%d @ %.3f fps, %.2f s, audio=%s -> target %dx%d @ %s fps on %s" %
         (info["w"], info["h"], info["fps"], info["dur"], info["audio"], target_w, target_h, a.fps or "%.3f" % info["fps"], device))
 
-    model, up = load_weights(a.model, a.weights)
-    model = model.to(device)
-    if device == "cuda":
-        model = model.half()
+    if backend == "torch":
+        model, up = load_weights(a.model, a.weights)
+        model = model.to(device)
+        if device == "cuda":
+            model = model.half()
+    else:
+        model, up = None, MODELS[a.model][3]
 
     work = tempfile.mkdtemp(prefix="upscale-")
     src_frames = os.path.join(work, "src"); os.makedirs(src_frames)
@@ -174,7 +201,22 @@ def main():
     log("decoded %d frames in %.1fs" % (len(names), time.time() - t0))
 
     t1 = time.time()
-    for i, n in enumerate(names):
+    if backend == "ncnn":
+        # realesrgan-ncnn-vulkan upscales the whole folder x4 (Vulkan), then ONE ffmpeg pass
+        # resizes every frame to the exact target with lanczos (x4 of 1280x720 = 5120x2880).
+        raw = os.path.join(work, "x4"); os.makedirs(raw)
+        cmd = ["realesrgan-ncnn-vulkan", "-i", src_frames, "-o", raw, "-n", "realesr-animevideov3", "-s", str(up), "-f", "png"]
+        if a.ncnn_gpu != "auto":
+            cmd += ["-g", a.ncnn_gpu]
+        log("Real-ESRGAN x%d via realesrgan-ncnn-vulkan (%d frames)" % (up, len(names)))
+        run(cmd)
+        run(["ffmpeg", "-v", "error", "-y", "-i", os.path.join(raw, "f%06d.png"),
+             "-vf", "scale=%d:%d:flags=lanczos" % (target_w, target_h), "-start_number", "1",
+             os.path.join(out_frames, "f%06d.png")])
+        shutil.rmtree(raw, ignore_errors=True)
+        el = time.time() - t1
+        log("upscaled %d frames in %.1fs (%.2fs/frame)" % (len(names), el, el / max(1, len(names))))
+    for i, n in (enumerate(names) if backend == "torch" else []):
         img = np.asarray(Image.open(os.path.join(src_frames, n)).convert("RGB"))
         if device == "cuda":
             with torch.autocast("cuda", dtype=torch.float16):
@@ -193,14 +235,19 @@ def main():
     vf = []
     interp_note = "none"
     if a.fps and abs(a.fps - fps_in) > 1e-3:
-        if shutil.which("rife-ncnn-vulkan") and abs(a.fps / fps_in - round(a.fps / fps_in)) < 1e-6 and int(round(a.fps / fps_in)) in (2, 4, 8):
-            factor = int(round(a.fps / fps_in))
+        if shutil.which("rife-ncnn-vulkan"):
+            # rife-v4.x models take an arbitrary target frame count (-n), so any ratio works
+            # (16 -> 30 fps is 1.875x); v2/v3 models only double. Frame count keeps the duration.
+            n_out = int(round(len(names) * a.fps / fps_in))
             rife_out = os.path.join(work, "rife"); os.makedirs(rife_out)
-            log("RIFE x%d via rife-ncnn-vulkan" % factor)
-            run(["rife-ncnn-vulkan", "-i", out_frames, "-o", rife_out, "-n", str(len(names) * factor), "-f", "f%06d.png"])
+            log("RIFE %d -> %d frames (%.3f -> %g fps) via rife-ncnn-vulkan rife-v4.6" % (len(names), n_out, fps_in, a.fps))
+            cmd = ["rife-ncnn-vulkan", "-i", out_frames, "-o", rife_out, "-n", str(n_out), "-f", "f%06d.png", "-m", "rife-v4.6"]
+            if a.ncnn_gpu != "auto":
+                cmd += ["-g", a.ncnn_gpu]
+            run(cmd)
             out_frames = rife_out
             fps_in = a.fps
-            interp_note = "rife-ncnn-vulkan x%d" % factor
+            interp_note = "rife-ncnn-vulkan rife-v4.6 %d->%d frames" % (len(names), n_out)
         else:
             vf.append("minterpolate=fps=%g:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" % a.fps)
             interp_note = "ffmpeg minterpolate -> %g fps" % a.fps
@@ -223,7 +270,7 @@ def main():
         shutil.rmtree(work, ignore_errors=True)
     out = probe(a.dst)
     meta = {"src": a.src, "dst": a.dst, "source": info, "output": out, "model": a.model, "upscale_factor": up,
-            "interpolation": interp_note, "codec": a.codec, "crf": a.crf, "device": device,
+            "interpolation": interp_note, "codec": a.codec, "crf": a.crf, "device": device, "backend": backend,
             "seconds": {"decode": round(t1 - t0, 1), "upscale": round(t2 - t1, 1), "encode": round(time.time() - t2, 1)}}
     json.dump(meta, open(a.dst + ".json", "w"), indent=1)
     log("DONE %s: %dx%d @ %.3f fps, %.2f s, %.1f MB" % (a.dst, out["w"], out["h"], out["fps"], out["dur"], os.path.getsize(a.dst) / 1e6))

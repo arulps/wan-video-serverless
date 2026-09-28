@@ -45,6 +45,15 @@ die() { log "ERROR: $*"; exit 1; }
 
 need_env() {
   local missing=0
+  # Some RunPod templates set pod env vars only on PID 1: SSH sessions (and /etc/rp_environment)
+  # do not see them (phase 6a, pod xc7bsejzkoyk3j). Import any missing one from /proc/1/environ,
+  # silently -- values are never printed.
+  for v in S3_BUCKET S3_ENDPOINT_URL AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY RUNPOD_POD_ID RUNPOD_API_KEY; do
+    if [ -z "${!v:-}" ] && [ -r /proc/1/environ ]; then
+      local val; val="$(tr '\0' '\n' < /proc/1/environ | sed -n "s/^${v}=//p" | head -1)"
+      [ -n "$val" ] && export "$v=$val"
+    fi
+  done
   for v in S3_BUCKET S3_ENDPOINT_URL AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY; do
     [ -n "${!v:-}" ] || { log "missing env $v"; missing=1; }
   done
