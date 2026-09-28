@@ -64,7 +64,7 @@ PLAYBOOK = os.path.join(REPO_ROOT, "docs", "PROMPT-PLAYBOOK.md")
 NO_TEXT_LINE = "No text, no captions, no watermark."
 
 CSV_FIELDS = ["shot_id", "cast", "ref", "prompt", "duration_s", "steps", "cfg", "mode", "engine", "keyframe",
-              "lastframe", "ref_labels", "seed", "size", "negative", "status", "notes"]
+              "lastframe", "ref_labels", "audio", "seed", "size", "negative", "status", "notes"]
 
 # `ref` column: one sheet, or SEPARATE reference images joined with "|" (one
 # 16:9 tile per character; playbook 3c). Separate refs need node support: VACE
@@ -448,8 +448,11 @@ def shot_params(ctx, row):
             raise RuntimeError("engine=wan3: ref_labels has %d labels for %d refs" % (len(ref_labels), len(refs)))
         res, ratio = wan3_api.size_to_resolution(w, h)
         dur = int(round(duration_s)) if duration_s else 5
+        audio_cell = (row.get("audio", "") or "").strip().lower()
+        if audio_cell not in ("", "yes", "no", "true", "false", "1", "0"):
+            raise RuntimeError("bad audio %r (yes | no)" % row.get("audio"))
         wan3 = {"resolution": res, "ratio": ratio, "duration": dur, "est_usd": wan3_api.estimate_usd(res, dur, mode),
-                "model": wan3_api.MODELS[mode]}
+                "model": wan3_api.MODELS[mode], "audio": audio_cell in ("yes", "true", "1")}
     return {"steps": steps, "cfg": cfg, "seed": seed, "width": w, "height": h,
             "frames": frames, "ref": refs[0] if len(refs) == 1 else (refs or None), "refs": refs,
             "mode": mode, "engine": engine,
@@ -653,7 +656,7 @@ def process_wan3_shot(ctx, row, p, args, csv_path, fieldnames, rows, results, ou
         body = wan3_api.build_request(prompt_text, refs=p["refs"], first_frame=p["keyframe"] or None,
                                       last_frame=p["lastframe"] or None, resolution=p["wan3"]["resolution"],
                                       ratio=p["wan3"]["ratio"], duration=p["wan3"]["duration"], seed=p["seed"],
-                                      mode=p["mode"], prompt_extend=args.wan3_prompt_extend, audio=False)
+                                      mode=p["mode"], prompt_extend=args.wan3_prompt_extend, audio=p["wan3"]["audio"])
         prefix = "%s-seed%d-w3%s" % (shot_id, p["seed"], "p" if p["mode"] == "prime" else "")
         dest = os.path.join(out_dir, prefix + ".mp4")
         log("[%s] -> wan3 %s %s %s %ds refs=%d first=%s last=%s est $%.2f" % (
@@ -663,7 +666,7 @@ def process_wan3_shot(ctx, row, p, args, csv_path, fieldnames, rows, results, ou
         sidecar = {"shot_id": shot_id, "engine": "wan3", "wall_s": result["wall_s"], "prompt": prompt_text,
                    "params": {"model": p["wan3"]["model"], "resolution": p["wan3"]["resolution"],
                               "ratio": body["parameters"]["ratio"], "duration": p["wan3"]["duration"], "seed": p["seed"],
-                              "prompt_extend": args.wan3_prompt_extend, "audio": False},
+                              "prompt_extend": args.wan3_prompt_extend, "audio": p["wan3"]["audio"]},
                    "refs": p["refs"], "ref_labels": p["ref_labels"], "keyframe": p["keyframe"], "lastframe": p["lastframe"],
                    "task_id": result["task_id"], "usage": result["usage"], "est_usd_list_price": est, "bytes": result["bytes"]}
         json.dump(sidecar, open(dest[:-4] + ".json", "w", encoding="utf-8"), indent=1)
@@ -818,8 +821,8 @@ def main():
             if p["engine"] == "wan3":
                 w = p["wan3"]
                 wan3_total[0] += w["est_usd"]
-                log("  wan3: %s %s %s %ds, est $%.2f (list price); refs=%d labels=%s first=%s last=%s" % (
-                    w["model"], w["resolution"], w["ratio"], w["duration"], w["est_usd"], len(p["refs"]),
+                log("  wan3: %s %s %s %ds audio=%s, est $%.2f (list price); refs=%d labels=%s first=%s last=%s" % (
+                    w["model"], w["resolution"], w["ratio"], w["duration"], "on" if w["audio"] else "off", w["est_usd"], len(p["refs"]),
                     p["ref_labels"], p["keyframe"] or "-", p["lastframe"] or "-"))
                 prompt_text = wan3_prompt(ctx, row, p)
             if warn:

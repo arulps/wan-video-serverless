@@ -79,13 +79,13 @@ def main():
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     env = dict(os.environ, DASHSCOPE_API_KEY="sk-test", DASHSCOPE_BASE_URL="http://127.0.0.1:%d" % H.port, WAN3_POLL_S="0.05")
     runner = [sys.executable, os.path.join(REPO, "comfy", "batch_runner.py"), "--song", song]
-    d = subprocess.run(runner + ["--hosts", "api", "--dry-run"], capture_output=True, text=True, env=env)
+    d = subprocess.run(runner + ["--hosts", "api", "--dry-run"], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
     assert "estimated $" in d.stdout and "Image 1 is Minnu" in d.stdout, d.stdout[-1500:]
     # no --max-usd -> refused before any submission
-    n = subprocess.run(runner + ["--hosts", "api"], capture_output=True, text=True, env=env)
+    n = subprocess.run(runner + ["--hosts", "api"], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
     assert n.returncode != 0 and "--max-usd is required" in (n.stdout + n.stderr) and not BODIES
     # cap $1.20: R2 (standard 720p $0.50) + LOOP (prime 720p $0.70) fit, CAP (1080p, $1.00) must be refused; BAD fails on the API rule
-    r = subprocess.run(runner + ["--hosts", "api,api", "--max-usd", "1.20"], capture_output=True, text=True, env=env)
+    r = subprocess.run(runner + ["--hosts", "api,api", "--max-usd", "1.20"], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
     out = r.stdout + r.stderr
     print(out[-3000:])
     rows = {l.split(",")[0]: l.rsplit(",", 1)[-1] for l in open(os.path.join(song, "shots.csv")).read().splitlines()[1:]}
