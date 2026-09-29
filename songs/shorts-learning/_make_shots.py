@@ -1,7 +1,7 @@
 """Generate songs/shorts-learning shot files, world files and shots.csv rows from
 C:\\Channel Contents\\MinMiniKids\\YT Shorts\\LOOP-SHORTS-LEARNING-RUNSHEET.md (rev 3).
 Wan 3.0, 720x1280, 5 s, audio on: soft music + an off-screen English voice at the runsheet marks.
-Colours and fruits are object-only (no character, no ref) per Arul 2026-09-29. Animals (A1-A6) are skipped for now.
+Colours/fruits/vegetables keep the kids as in the runsheet (Arul 2026-09-29). Animals (A1-A6) are skipped for now.
 Re-running overwrites shot files and rewrites the shots.csv rows it owns, keeping any status cells already set."""
 import csv, os, re, sys
 
@@ -65,6 +65,9 @@ TIMING_REVEAL = ("The reveal comes at about one and a half seconds and is held s
 TIMING_ACTION = ("The key moment happens between about one and a half and three and a half seconds; "
                  "by four and a half seconds everything is back exactly as at the start")
 REVEAL_SERIES = ("C", "F", "VG", "FD", "FM", "V")
+# Arul 2026-09-29: colours and fruits keep Minnu/Mintu exactly as in the runsheet (the object itself is prompt-only, no
+# object reference image). The object-only variant is kept behind this switch; C1/F3 object-only renders are *-objectonly.
+OBJECT_ONLY = False
 
 
 def sentences(x):
@@ -89,7 +92,7 @@ def build(it):
     cast = [] if it["cast"] in ("none", "—", "") else [c.strip() for c in it["cast"].split(",")]
     cast = ["Kollu-Thatha" if c == "Kollu Thatha" else c for c in cast]
     avoid = ["on-screen text or letters", "a second object competing for attention", "extra people", "camera movement"]
-    if series in ("C", "F"):
+    if series in ("C", "F") and OBJECT_ONLY:
         obj = re.sub(r"^one ", "a ", re.search(r"takes out (.+?) and holds it up", it["scene"]).group(1))
         cast = []
         if series == "C":
@@ -123,6 +126,11 @@ def build(it):
             pose = "one thing is the hero of the shot: large, centred and clearly visible; the background stays soft and uncluttered"
         if series == "D":
             avoid += ["travelling across the frame", "turning away from the camera"]
+        if series == "C":
+            wfile = "world-living-plain.txt"
+            avoid += ["the hero object changing colour"]
+        if series in ("F", "VG"):
+            avoid += ["the fruit or vegetable changing shape or colour"]
     timing = TIMING_REVEAL if series in REVEAL_SERIES else TIMING_ACTION
     motion = f"{motion}. {timing}; one simple action, slow gentle motion. {sound(id_, series, bool(cast))}"
     txt = (f"ATMOSPHERE: {atmos}\nANGLE: the camera is at a child's eye height, square-on, locked off: no zoom, no pan\n"

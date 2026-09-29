@@ -1,0 +1,12 @@
+# item-01 — check and render 69 rows (≤ $36.00 list, ~1 h)
+
+1. Credentials check as in the pilot → True.
+2. Dry-run: `python comfy\batch_runner.py --song songs\shorts-learning --hosts api --dry-run --only C1_w3,C2_w3,C3_w3,C4_w3,C5_w3,C6_w3,F1_w3,F2_w3,F3_w3,F4_w3,F5_w3,F6_w3,V1_w3,V3_w3,V4_w3,B1_w3,B2_w3,B3_w3,B4_w3,FM1_w3,FM2_w3,FM3_w3,FM4_w3,FM5_w3,SN1_w3,SN2_w3,SN3_w3,SN4_w3,SN5_w3,SN6_w3,FD2_w3,FD3_w3,FD4_w3,FD5_w3,FD6_w3,AC1_w3,AC3_w3,AC4_w3,AC5_w3,FE1_w3,FE2_w3,FE3_w3,FE4_w3,FE5_w3,OP1_w3,OP2_w3,OP3_w3,OP4_w3,OP5_w3,MN1_w3,MN2_w3,MN3_w3,MN4_w3,VG1_w3,VG2_w3,VG3_w3,VG4_w3,VG5_w3,VG6_w3,D1_w3,D2_w3,D3_w3,D4_w3,D5_w3,D6_w3,D7_w3,D8_w3,D9_w3,D10_w3w3,C3_w3,C4_w3,C5_w3,C6_w3,F1_w3,F2_w3,F4_w3,F5_w3,F6_w3,V1_w3,V3_w3,V4_w3,B1_w3,B2_w3,B3_w3,B4_w3,FM1_w3,FM2_w3,FM3_w3,FM4_w3,FM5_w3,SN1_w3,SN2_w3,SN3_w3,SN4_w3,SN5_w3,SN6_w3,FD2_w3,FD3_w3,FD4_w3,FD5_w3,FD6_w3,AC1_w3,AC3_w3,AC4_w3,AC5_w3,FE1_w3,FE2_w3,FE3_w3,FE4_w3,FE5_w3,OP1_w3,OP2_w3,OP3_w3,OP4_w3,OP5_w3,MN1_w3,MN2_w3,MN3_w3,MN4_w3,VG1_w3,VG2_w3,VG3_w3,VG4_w3,VG5_w3,VG6_w3,D1_w3,D2_w3,D3_w3,D4_w3,D5_w3,D6_w3,D7_w3,D8_w3,D9_w3,D10_w3`
+   → 69 rows, all `audio=on`, "estimated $34.50", no MISSING/ERROR. Anything else → **blocked**.
+3. Render, 3 in parallel:
+   ```
+   python comfy\batch_runner.py --song songs\shorts-learning --only C1_w3,C2_w3,C3_w3,C4_w3,C5_w3,C6_w3,F1_w3,F2_w3,F3_w3,F4_w3,F5_w3,F6_w3,V1_w3,V3_w3,V4_w3,B1_w3,B2_w3,B3_w3,B4_w3,FM1_w3,FM2_w3,FM3_w3,FM4_w3,FM5_w3,SN1_w3,SN2_w3,SN3_w3,SN4_w3,SN5_w3,SN6_w3,FD2_w3,FD3_w3,FD4_w3,FD5_w3,FD6_w3,AC1_w3,AC3_w3,AC4_w3,AC5_w3,FE1_w3,FE2_w3,FE3_w3,FE4_w3,FE5_w3,OP1_w3,OP2_w3,OP3_w3,OP4_w3,OP5_w3,MN1_w3,MN2_w3,MN3_w3,MN4_w3,VG1_w3,VG2_w3,VG3_w3,VG4_w3,VG5_w3,VG6_w3,D1_w3,D2_w3,D3_w3,D4_w3,D5_w3,D6_w3,D7_w3,D8_w3,D9_w3,D10_w3w3,C3_w3,C4_w3,C5_w3,C6_w3,F1_w3,F2_w3,F4_w3,F5_w3,F6_w3,V1_w3,V3_w3,V4_w3,B1_w3,B2_w3,B3_w3,B4_w3,FM1_w3,FM2_w3,FM3_w3,FM4_w3,FM5_w3,SN1_w3,SN2_w3,SN3_w3,SN4_w3,SN5_w3,SN6_w3,FD2_w3,FD3_w3,FD4_w3,FD5_w3,FD6_w3,AC1_w3,AC3_w3,AC4_w3,AC5_w3,FE1_w3,FE2_w3,FE3_w3,FE4_w3,FE5_w3,OP1_w3,OP2_w3,OP3_w3,OP4_w3,OP5_w3,MN1_w3,MN2_w3,MN3_w3,MN4_w3,VG1_w3,VG2_w3,VG3_w3,VG4_w3,VG5_w3,VG6_w3,D1_w3,D2_w3,D3_w3,D4_w3,D5_w3,D6_w3,D7_w3,D8_w3,D9_w3,D10_w3 --hosts api,api,api --max-usd 36.00 --timeout-min 30 2>&1 | tee songs\shorts-learning\batch_learning1.log
+   ```
+   Auth/region/model/quota failure → stop, **blocked**. Content failures are recorded and skipped.
+
+**item-01.report.md:** dry-run total; run window UTC + Toronto; table of all 69 rows (status, task id, wall s, est); total; failures verbatim.
