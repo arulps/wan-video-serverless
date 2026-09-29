@@ -80,3 +80,10 @@ D10_w3,Mintu,refs/mintu-front-9x16.png,shots/D10-w3.txt,world-living.txt,5,,,sta
 MN1_w3b,Mintu,refs/mintu-front-9x16.png,shots/MN1-w3b.txt,world-living.txt,5,,,standard,wan3,,,Mintu,yes,4242,720x1280,,done,Retake: batch-1 clip starts/ends with arms spread (T-pose from the ref)
 MN3_w3b,Mintu,refs/mintu-front-9x16.png,shots/MN3-w3b.txt,world-living.txt,5,,,standard,wan3,,,Mintu,yes,4242,720x1280,,done,Retake: batch-1 clip starts/ends with arms spread (T-pose from the ref)
 VG3_w3b,Minnu,refs/minnu-body-9x16.png,shots/VG3-w3b.txt,world-kitchen.txt,5,,,standard,wan3,,,Minnu,yes,4242,720x1280,,done,Retake: batch-1 drumstick looked like a thick pale cucumber
+SN1_w3b,none,,shots/SN1-w3b.txt,world-kitchen.txt,5,,,standard,wan3,,,,yes,4242,720x1280,,done,"Retake: cooker looked real, not animated (Arul)"
+SN2_w3b,none,,shots/SN2-w3b.txt,world-living.txt,5,,,standard,wan3,,,,yes,4242,720x1280,,done,"Retake: bell looked real, not animated (Arul)"
+SN3_w3b,none,,shots/SN3-w3b.txt,world-living.txt,5,,,standard,wan3,,,,yes,4242,720x1280,,done,Retake: clock looked real (same fix as SN1/SN2/SN6)
+SN4_w3b,none,,shots/SN4-w3b.txt,world-living-rain.txt,5,,,standard,wan3,,,,yes,4242,720x1280,,done,Retake: window/rain looked real (same fix)
+SN6_w3b,none,,shots/SN6-w3b.txt,world-kitchen.txt,5,,,standard,wan3,,,,yes,4242,720x1280,,done,"Retake: mixie looked real, not animated (Arul)"
+A3_w3b,none,,shots/A3-w3b.txt,world-garden-gate.txt,5,,,standard,wan3,,,,yes,4242,720x1280,,done,Retake: cuts to a closer shot mid-clip
+A6_w3b,none,,shots/A6-w3b.txt,world-garden-gate.txt,5,,,standard,wan3,,,,yes,4242,720x1280,,done,Retake: cuts to a closer shot mid-clip
