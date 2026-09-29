@@ -29,3 +29,6 @@ L17_w3,Mintu,refs/mintu-front-9x16.png,shots/L17-w3.txt,,5,,,standard,wan3,,,,ye
 L18_w3,Minnu,refs/minnu-body-9x16.png,shots/L18-w3.txt,world-kitchen.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L18 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
 L19_w3,Minnu,refs/minnu-body-9x16.png,shots/L19-w3.txt,world-bathroom.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L19 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
 L20_w3,Thatha+Mintu,refs/thatha-front-9x16.png|refs/mintu-front-9x16.png,shots/L20-w3.txt,,5,,,standard,wan3,,,,yes,30313,720x1280,,done,"YT Short L20 (runsheet), Wan 3.0, voice/SFX + soft music, one version"
+L03_w3b,Thatha+Mintu+Minnu,refs/thatha-front-9x16.png|refs/mintu-front-9x16.png|refs/minnu-body-9x16.png,shots/L03-w3b.txt,world-rain.txt,6,,,standard,wan3,,,,yes,4242,720x1280,,done,Retake of L03 yawn: new seed + stronger loop wording (seam was 30)
+L04_w3b,Minnu,refs/minnu-body-9x16.png,shots/L04-w3b.txt,,5,,,standard,wan3,,,,yes,30313,720x1280,,done,Retake of L04 sneeze: clean nose / no white mark
+L10_w3b,Mintu,refs/mintu-front-9x16.png,shots/L10-w3b.txt,world-garden-rain.txt,5,,,standard,wan3,,,,yes,30313,720x1280,,done,Retake of L10 raindrop: outdoors in the garden rain under a colocasia leaf
