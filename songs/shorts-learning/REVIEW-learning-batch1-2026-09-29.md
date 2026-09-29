@@ -40,3 +40,8 @@ Queue: 2026-09-29-learning-batch3 (7 rows, $3.50 list).
 - SN3 clock w3b: chunkier, but the clock hands turn a lot → loop jump (seam 28.2).
 - SN4 window w3b: Wan invented a blue cartoon creature at the window — wrong; the first SN4 is the better one.
 Conclusion: without a character (or a style reference image) Wan 3.0 renders household objects realistically. Proposal to Arul: put Minnu/Mintu in the home-sound shots (the SN5 Paati coffee shot is fully cartoon).
+
+## Batch 4 review (13:50)
+- SN1_w3c cooker + Mintu ears: GOOD (cartoon frame; seam 15.1 ok). SN2_w3c bell + Minnu: GOOD. SN3_w3c clock, hands still: GOOD (seam 6.5). SN6_w3c mixie + Minnu: GOOD.
+- A6_w3c crow, locked frames: loop perfect (1.6) but the crow is tiny on the far swing frame — not usable for teaching. Proposed one more try: crow lands on the near gate post, large in frame (awaiting Arul).
+- Clip-to-use index: `YT Shorts\renders-learning\USE-CLIPS.md`.
