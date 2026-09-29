@@ -25,6 +25,8 @@ WORLDS = {
                                 block("W1 · Living room (rain)"), "soft rain on the window, cool grey daylight and warm lamplight"),
     "W2 · Kitchen": ("world-kitchen.txt", "INTERIOR DAY in the family kitchen; everyone stays inside the kitchen.",
                      block("W2 · Kitchen"), "warm morning daylight in the kitchen"),
+    "W5 · Garden": ("world-garden-gate.txt", "EXTERIOR DAY in the small back garden; the camera looks at the closed garden gate.",
+                    block("W5 · Garden"), "warm soft afternoon sunlight in the garden, gentle birdsong"),
     "W6 · Street": ("world-street.txt", "EXTERIOR DAY on a quiet neighbourhood street.",
                     block("W6 · Street"), "warm soft daylight on the street, blue sky"),
 }
@@ -55,7 +57,7 @@ REFS = {"Minnu": "refs/minnu-body-9x16.png", "Mintu": "refs/mintu-front-9x16.png
         "Appa": "refs/appa-front-9x16.png", "Thatha": "refs/thatha-front-9x16.png", "Paati": "refs/paati-front-9x16.png",
         "Kollu-Thatha": "refs/kollu-thatha-front-9x16.png"}
 LABEL = {"Kollu-Thatha": "Kollu Thatha"}
-SFX = {"C": "a soft sparkle as it appears", "F": "a soft sparkle as it appears", "FD": "a soft clink of the steel lid",
+SFX = {"A": "gentle birdsong and a light breeze", "C": "a soft sparkle as it appears", "F": "a soft sparkle as it appears", "FD": "a soft clink of the steel lid",
        "V": "a soft engine hum and one friendly horn toot", "SN": "the clear, natural sound the object makes",
        "FM": "the soft creak of the door"}
 MUSIC = ("A gentle, playful xylophone and ukulele melody plays softly underneath from the very first frame at one steady tempo; "
@@ -64,7 +66,7 @@ TIMING_REVEAL = ("The reveal comes at about one and a half seconds and is held s
                  "by four and a half seconds everything is back exactly as at the start")
 TIMING_ACTION = ("The key moment happens between about one and a half and three and a half seconds; "
                  "by four and a half seconds everything is back exactly as at the start")
-REVEAL_SERIES = ("C", "F", "VG", "FD", "FM", "V")
+REVEAL_SERIES = ("A", "C", "F", "VG", "FD", "FM", "V")
 # Arul 2026-09-29: colours and fruits keep Minnu/Mintu exactly as in the runsheet (the object itself is prompt-only, no
 # object reference image). The object-only variant is kept behind this switch; C1/F3 object-only renders are *-objectonly.
 OBJECT_ONLY = False
@@ -123,7 +125,12 @@ def build(it):
                     "toddler can read it and copy it")
             avoid += ["T-pose"] if series in ("AC", "D") else ["T-pose", "arms stiffly spread wide"]
         else:
-            pose = "one thing is the hero of the shot: large, centred and clearly visible; the background stays soft and uncluttered"
+            pose = ("one thing is the hero of the shot: large, centred and clearly visible; the background stays soft and uncluttered. "
+                    "It is a cartoon object from a Pixar-soft 3D children's film, not a real product: chunky, rounded, simplified toy-like "
+                    "shapes with slightly exaggerated cute proportions, smooth soft matte surfaces and bright friendly colours, "
+                    "no fine realistic detail. The whole clip is one continuous shot from the same camera position, with no cuts")
+            avoid += ["photorealism", "a real photograph or product shot", "realistic metal, glass or wood textures",
+                      "fine realistic detail", "a cut to a closer shot", "zooming in", "a second camera angle"]
         if series == "D":
             avoid += ["travelling across the frame", "turning away from the camera"]
         if series == "C":
@@ -147,7 +154,7 @@ def build(it):
 
 FIELDS = ["shot_id", "cast", "ref", "prompt", "world", "duration_s", "steps", "cfg", "mode", "engine", "keyframe", "lastframe",
           "ref_labels", "audio", "seed", "size", "negative", "status", "notes"]
-rows = [build(it) for it in items if not re.match(r"A\d", it["id"])]   # animals A1-A6 later
+rows = [build(it) for it in items]   # all 78 incl. animals A1-A6 (added 2026-09-29)
 csv_path = os.path.join(HERE, "shots.csv")
 old = {}
 if os.path.exists(csv_path):
