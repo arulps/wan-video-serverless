@@ -25,3 +25,18 @@ incl. Appa and Kollu Thatha with his stick), sound close-ups, feelings, opposite
   First and last frames match by eye; the number is probably small pose drift. Trim a few frames in CapCut if the jump shows.
 - OP2: a second, smaller red ball lies on the rug (from the room set) while she lifts hers — minor.
 - Voice words not machine-checked (no speech-to-text reachable); timing pattern verified on the pilot.
+
+## Update 12:20 — Arul: home-sound objects look real
+SN1 cooker, SN2 bell, SN6 mixie (and by the same cause SN3 clock, SN4 window) came out near-photoreal: with no character in the
+shot, the object words (steel, brass, glass) pulled Wan toward real products. Generator now adds a cartoon-object style line + Avoid
+photorealism / real metal-glass-wood textures to every no-character shot. Batch 2: A1 A2 A4 A5 good and cartoon; A3 hen and A6 crow cut to a
+closer shot mid-clip → retake with "one continuous shot, no cuts". MN1b, MN3b (arms down) and VG3b (real drumstick) are good.
+Queue: 2026-09-29-learning-batch3 (7 rows, $3.50 list).
+
+## Batch 3 review (12:45)
+- A3 hen w3b: GOOD — one continuous wide shot, flies onto the gate and away; use it.
+- A6 crow w3b: still punches in to a closer framing mid-clip (as the first render).
+- SN1 cooker, SN2 bell, SN6 mixie w3b: still near-photoreal steel/brass/plastic — the style words did not beat the object words.
+- SN3 clock w3b: chunkier, but the clock hands turn a lot → loop jump (seam 28.2).
+- SN4 window w3b: Wan invented a blue cartoon creature at the window — wrong; the first SN4 is the better one.
+Conclusion: without a character (or a style reference image) Wan 3.0 renders household objects realistically. Proposal to Arul: put Minnu/Mintu in the home-sound shots (the SN5 Paati coffee shot is fully cartoon).

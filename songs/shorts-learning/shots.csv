@@ -87,3 +87,8 @@ SN4_w3b,none,,shots/SN4-w3b.txt,world-living-rain.txt,5,,,standard,wan3,,,,yes,4
 SN6_w3b,none,,shots/SN6-w3b.txt,world-kitchen.txt,5,,,standard,wan3,,,,yes,4242,720x1280,,done,"Retake: mixie looked real, not animated (Arul)"
 A3_w3b,none,,shots/A3-w3b.txt,world-garden-gate.txt,5,,,standard,wan3,,,,yes,4242,720x1280,,done,Retake: cuts to a closer shot mid-clip
 A6_w3b,none,,shots/A6-w3b.txt,world-garden-gate.txt,5,,,standard,wan3,,,,yes,4242,720x1280,,done,Retake: cuts to a closer shot mid-clip
+SN1_w3c,Mintu,refs/mintu-front-9x16.png,shots/SN1-w3c.txt,world-kitchen.txt,5,,,standard,wan3,,,Mintu,yes,30313,720x1280,,done,Kid added to anchor the cartoon style (Arul OK 2026-09-29); object-only versions looked real
+SN2_w3c,Minnu,refs/minnu-body-9x16.png,shots/SN2-w3c.txt,world-living.txt,5,,,standard,wan3,,,Minnu,yes,30313,720x1280,,done,Kid added to anchor the cartoon style (Arul OK 2026-09-29); object-only versions looked real
+SN3_w3c,Mintu,refs/mintu-front-9x16.png,shots/SN3-w3c.txt,world-living.txt,5,,,standard,wan3,,,Mintu,yes,30313,720x1280,,done,Kid added to anchor the cartoon style (Arul OK 2026-09-29); object-only versions looked real
+SN6_w3c,Minnu,refs/minnu-body-9x16.png,shots/SN6-w3c.txt,world-kitchen.txt,5,,,standard,wan3,,,Minnu,yes,30313,720x1280,,done,Kid added to anchor the cartoon style (Arul OK 2026-09-29); object-only versions looked real
+A6_w3c,none,,shots/A6-w3c.txt,world-garden-gate.txt,5,,,standard,wan3,keyframes/A6-gate-empty.png,keyframes/A6-gate-empty.png,,yes,30313,720x1280,,done,Retake: first+last frame locked to the empty gate so the camera cannot cut in (w3 and w3b both punched in)
