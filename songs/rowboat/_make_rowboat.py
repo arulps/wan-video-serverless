@@ -89,7 +89,9 @@ print("seating override:", {o[:28]: c for o, c in _hits.items()})
 # off-model (a green-shirt "Appa", kids in blue/pink): Wan widens or pulls back and fills the boat. So every boat shot now
 # carries the full family refs; V2c (croc beside the boat, which showed an empty boat) gets FAM+CROC.
 PACK_SWAP = {"KIDS": "FAM", "APPA": "FAM"}
-PACK_SHOT = {"V2c": "FAM+CROC", "V3a": "FAM+LION"}
+PACK_SHOT = {"V2c": "FAM+CROC", "V3a": "FAM+LION", "T1": "FAM"}
+# T1: "three small happy silhouettes" with no refs came back as three invented people in blue/pink (final review) ->
+# family refs, and say who they are.
 # V3a's mane in the grass came back as a different, invented lion (W2 review) -> give it Singa's ref too.
 PACK["FAM+LION"] = (PACK["FAM"][0] + PACK["LION"][0], PACK["FAM"][1][:-1] + ", Image 7 is Singa the lion.",
                     PACK["FAM"][2] + PACK["LION"][2])
@@ -125,6 +127,18 @@ SHOT_FIX = {
     "V3a": [("keeping pace with the boat, only its fluffy top visible.",
              "keeping pace with the boat; only the fluffy top of Singa's mane shows above the grass, his face and body "
              "stay hidden in the grass the whole time.")],
+    "T1": [("the little wooden rowing boat with three small happy silhouettes drifts slowly away",
+            "the little wooden rowing boat drifts slowly away with Appa, Mintu and Minnu small in it, seen from behind, "
+            "Appa rowing gently,"),
+           ("THE BOAT: a small rounded", KEEP_LINE + " Only Appa, the grown-up father with the moustache and the "
+            "black-and-white checked shirt, rows and holds the oars; Mintu and Minnu are small children and never row."
+            "\n\nTHE BOAT: a small rounded")],
+    # V5c: "scrunch their faces into tiny squeaky mouse faces" came back worried, hands over mouths (final review).
+    "V5c": [("both scrunch their faces into tiny squeaky mouse faces — noses wrinkled, hands curled up like little paws "
+             "under their chins, shoulders hunched — holding it.",
+             "both pretend to be tiny cheeky mice: big happy grins, noses scrunched up in a giggle, eyes sparkling, hands "
+             "curled up like little paws under their chins with the mouth still showing, shoulders hunched up playfully "
+             "— holding it; happy and silly, not worried, not scared, hands never cover the mouth.")],
     "X1b": [("[4–6s] the banks open out ahead into warm, tall golden grass under a big open sky.",
              "[4–6s] the river carries on ahead between banks of warm, tall golden grass under a big open sky; the boat "
              "stays on the water the whole time.")],
@@ -134,6 +148,9 @@ for s in S:
     if new != s["pack"]:
         old_leg, new_leg = PACK[s["pack"]][1], PACK[new][1]
         assert s["prompt_refs"].startswith(old_leg), f"legend not at start of {s['id']}"
+        if not old_leg:   # a no-ref shot gets the whole legend paragraph the runsheet uses for ref shots
+            new_leg += (" Use the reference images for each character's look only — ignore their backgrounds and "
+                        "poses.\n\n")
         s["prompt_refs"] = new_leg + s["prompt_refs"][len(old_leg):]
         s["pack"] = new
     for o, n in SHOT_FIX.get(s["id"], []):
