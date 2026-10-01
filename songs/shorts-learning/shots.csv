@@ -93,3 +93,5 @@ SN3_w3c,Mintu,refs/mintu-front-9x16.png,shots/SN3-w3c.txt,world-living.txt,5,,,s
 SN6_w3c,Minnu,refs/minnu-body-9x16.png,shots/SN6-w3c.txt,world-kitchen.txt,5,,,standard,wan3,,,Minnu,yes,30313,720x1280,,done,Kid added to anchor the cartoon style (Arul OK 2026-09-29); object-only versions looked real
 A6_w3c,none,,shots/A6-w3c.txt,world-garden-gate.txt,5,,,standard,wan3,keyframes/A6-gate-empty.png,keyframes/A6-gate-empty.png,,yes,30313,720x1280,,done,Retake: first+last frame locked to the empty gate so the camera cannot cut in (w3 and w3b both punched in)
 A6_w3d,none,,shots/A6-w3d.txt,world-garden-gate.txt,5,,,standard,wan3,keyframes/A6-gate-empty.png,keyframes/A6-gate-empty.png,,yes,30313,720x1280,,done,Retake: locked gate frames + crow lands large on the middle of the gate (w3c crow was tiny on the far swing)
+C1_w3ta,Minnu,refs/minnu-body-9x16.png,shots/C1-w3ta.txt,world-living-plain.txt,5,,,standard,wan3,,,Minnu,yes,30313,720x1280,,done,Tamil voice test: lines in Tamil script
+C1_w3tr,Minnu,refs/minnu-body-9x16.png,shots/C1-w3tr.txt,world-living-plain.txt,5,,,standard,wan3,,,Minnu,yes,30313,720x1280,,done,Tamil voice test: lines in Latin transliteration
