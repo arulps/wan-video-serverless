@@ -36,6 +36,9 @@ DEFAULT_RISKY = {
     r"\bsneez": "sneeze -> runny-nose artefacts; let the action hide it (sneeze into the elbow)",
     r"\bscream": "a wide-mouthed, eyes-shut scream reads as crying -- ask for grins/raised brows and avoid tears",
     r"\bmirror": "mirrors render badly -- avoid or keep incidental",
+    r"\bpretend(?:s|ing)? to be\b|\b(?:mouse|lion|cat|bear|bunny|animal) faces?\b": "'pretend to be a mouse' / 'mouse faces' "
+        "put whiskers and an animal nose on the child (Row Row V5c) -- keep the animal in the gesture and add 'faces stay "
+        "their own: no whiskers, no animal nose, no face paint'",
     r"\bthe [\w-]+ (?:passing |going )?just off-?screen": "naming an object 'just off-screen' pulls it into frame "
         "(Row Row V3b drew an empty sailboat) -- describe the gaze instead ('waves toward the camera')",
     r"\b(sign|label|written|letters?)\b": "text renders badly -- keep incidental",
@@ -73,7 +76,13 @@ def name_re(name):
 
 def lint(song, only=None, quiet=False):
     cfg_path = os.path.join(song, "lint.json")
-    cfg = json.load(open(cfg_path, encoding="utf-8")) if os.path.exists(cfg_path) else {}
+    if not os.path.exists(cfg_path):
+        # R0: without song rules the cast/space/ownership checks can't fire -- a new song must declare them first.
+        print("R0 FAIL: no lint.json in this song folder -- declare its shared spaces (boat, room, car...), who lives there,"
+              " exclusive actions (who rows/drives/cooks) and aliases before any queue (learnings §9).")
+        print("LINT FAIL: 0 shots, 1 fail, 0 warn")
+        return 1
+    cfg = json.load(open(cfg_path, encoding="utf-8"))
     exempt = [e.lower() for e in DEFAULT_EXEMPT + cfg.get("exempt", [])]
     aliases = cfg.get("aliases", {})
     spaces = cfg.get("spaces", {})

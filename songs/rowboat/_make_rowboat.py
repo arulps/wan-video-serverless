@@ -136,9 +136,11 @@ SHOT_FIX = {
     # V5c: "scrunch their faces into tiny squeaky mouse faces" came back worried, hands over mouths (final review).
     "V5c": [("both scrunch their faces into tiny squeaky mouse faces — noses wrinkled, hands curled up like little paws "
              "under their chins, shoulders hunched — holding it.",
-             "both pretend to be tiny cheeky mice: big happy grins, noses scrunched up in a giggle, eyes sparkling, hands "
-             "curled up like little paws under their chins with the mouth still showing, shoulders hunched up playfully "
-             "— holding it; happy and silly, not worried, not scared, hands never cover the mouth.")],
+             "both do a silly little mouse pose with their hands: big happy grins, eyes sparkling, both hands curled "
+             "like little paws held up in front of their chest, shoulders hunched up playfully — holding it; happy and "
+             "silly, not worried, not scared, hands stay below the chin. Their faces stay exactly their own: no "
+             "whiskers, no animal nose, no face paint, nothing drawn on their faces.")],
+    # V5c retake 2 (Arul): "pretend to be tiny cheeky mice" gave Minnu a pink mouse nose and drawn-on whiskers.
     "X1b": [("[4–6s] the banks open out ahead into warm, tall golden grass under a big open sky.",
              "[4–6s] the river carries on ahead between banks of warm, tall golden grass under a big open sky; the boat "
              "stays on the water the whole time.")],
