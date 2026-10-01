@@ -1,0 +1,10 @@
+{
+ "audio": "no",
+ "aliases": {"the children": ["Mintu", "Minnu"], "the kids": ["Mintu", "Minnu"], "the family": ["Appa", "Mintu", "Minnu"],
+             "all three": ["Appa", "Mintu", "Minnu"]},
+ "spaces": {"boat": ["Appa", "Mintu", "Minnu"]},
+ "exempt": ["just off-screen", "as if seen from the passing boat"],
+ "owners": [{"pattern": "\\b(rows|rowing|rower|oars?)\\b(?! of)", "owner": "Appa", "space": "boat", "require": "Only Appa"}],
+ "allow": {"I1": {"R3": "empty boat at the jetty, on purpose (before the family arrives)"},
+           "T1": {"R3": "empty boat drifting away at sunset, on purpose"}}
+}

@@ -53,7 +53,8 @@ def slug(t):
 KIDS_SEATED = ("Mintu and Minnu sit together side by side on the low wooden bench at the other end of the boat, facing Appa, "
                "so he can see them as he rows. The children sit down properly on the bench, low inside the boat, legs inside "
                "and feet on the floor of the boat, only their chests, arms and heads above the side; nobody sits on the edge "
-               "or rim of the boat and nobody stands up.")
+               "or rim of the boat and nobody stands up. Only Appa, the grown-up father with the moustache and the black-and-white "
+               "checked shirt, rows and holds the oars; Mintu and Minnu are small children and never row.")
 SEAT_ALL = [
     ("two wooden oars resting inside it.", "two wooden oars and low wooden benches inside it."),   # I1, T1 empty boat
     ("with a soft teal stripe along its side and two wooden oars.",
@@ -82,6 +83,54 @@ for s in S:
     s["prompt_refs"] = t
 assert all(_hits.values()), f"seating override matched nothing: {[o[:50] for o, c in _hits.items() if not c]}"
 print("seating override:", {o[:28]: c for o, c in _hits.items()})
+
+# --- Cast / pack override + W1 retake fixes (Fable, 2026-10-01, after the W1 review) -----------------------------------
+# Boat shots that referenced only part of the family (KIDS, APPA packs) came back with the missing members invented
+# off-model (a green-shirt "Appa", kids in blue/pink): Wan widens or pulls back and fills the boat. So every boat shot now
+# carries the full family refs; V2c (croc beside the boat, which showed an empty boat) gets FAM+CROC.
+PACK_SWAP = {"KIDS": "FAM", "APPA": "FAM"}
+PACK_SHOT = {"V2c": "FAM+CROC"}
+_v1a = next(x for x in S if x["id"] == "V1a")["prompt_refs"]
+KEEP_LINE = _v1a[_v1a.index("Keep every character"):_v1a.index("are about the same size.") + len("are about the same size.")]
+SHOT_FIX = {
+    "V2a": [("Close-up on Appa at the oars, framed from the chest up, the bright river soft behind him.",
+             "Close-up on Appa at the oars, framed from the chest up for the whole shot, the bright river soft behind him; "
+             "the camera does not pull back and the children are not shown.")],
+    "V2c": [("Medium shot at water level right beside the boat's wooden side. ",
+             KEEP_LINE + "\n\nMedium shot at water level right beside the side of the family's small honey-wood boat with "
+             "its soft teal stripe; Appa, Mintu and Minnu sit in the boat at the edge of frame, and the children lean to "
+             "peek over the side with wide, delighted eyes. ")],
+    "V2d": [("the camera in front of the boat facing them. [0–1.5s]",
+             "the camera in front of the boat facing them; the camera stays on this two-shot for the whole shot and never "
+             "cuts to a wide shot. [0–1.5s]"),
+            ("mouths wide open in a huge comic play-scream, hands up beside their cheeks — joyful and funny, not frightened —",
+             "mouths wide open in a huge comic play-scream with big delighted grins and eyebrows raised high, hands up "
+             "beside their cheeks — joyful and funny, not frightened, not crying, no tears —")],
+    "V6a": [("as the wooden side of the boat slides gently past in the foreground.",
+             "toward the boat passing just off-screen; only Chiku, his lily pad and the water are in frame.")],
+    "X1b": [("[4–6s] the banks open out ahead into warm, tall golden grass under a big open sky.",
+             "[4–6s] the river carries on ahead between banks of warm, tall golden grass under a big open sky; the boat "
+             "stays on the water the whole time.")],
+}
+for s in S:
+    new = PACK_SHOT.get(s["id"], PACK_SWAP.get(s["pack"], s["pack"]))
+    if new != s["pack"]:
+        old_leg, new_leg = PACK[s["pack"]][1], PACK[new][1]
+        assert s["prompt_refs"].startswith(old_leg), f"legend not at start of {s['id']}"
+        s["prompt_refs"] = new_leg + s["prompt_refs"][len(old_leg):]
+        s["pack"] = new
+    for o, n in SHOT_FIX.get(s["id"], []):
+        assert s["prompt_refs"].count(o) == 1, f"shot fix not found once in {s['id']}: {o[:50]}"
+        s["prompt_refs"] = s["prompt_refs"].replace(o, n)
+# Timed beats ("[0–1.5s] ...") were read as separate shots in V2d (hard cut). Every shot with beats gets an explicit
+# one-take line in front of its first beat (prompt_lint R5).
+_BEAT = re.compile(r"\[\d+(\.\d+)?\s*[–-]\s*\d")
+for s in S:
+    t = s["prompt_refs"]
+    m = _BEAT.search(t)
+    if m and "no cuts between" not in t:
+        s["prompt_refs"] = t[:m.start()] + "One continuous take, no cuts between the timed moments: " + t[m.start():]
+print("packs:", {x["id"]: x["pack"] for x in S if x["pack"] not in ("FAM",)})
 
 FIELDS = ["shot_id", "cast", "ref", "prompt", "world", "duration_s", "steps", "cfg", "mode", "engine", "keyframe",
           "lastframe", "ref_labels", "audio", "seed", "size", "negative", "status", "notes"]
