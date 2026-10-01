@@ -466,6 +466,11 @@ def wan3_prompt(ctx, row, p):
     """engine=wan3 prompt: a reference legend naming Image 1..n (the API's own convention), the normal
     assembled prompt, and the shot's NEGATIVE: line as an 'Avoid:' sentence (the API has no negative prompt;
     the long song negative file is Wan2.x-specific and is not sent)."""
+    shot_path = resolve_path(ctx.song_dir, row.get("prompt", ""))
+    if shot_path and shot_path.endswith(".raw.txt"):
+        # A *.raw.txt shot file is a complete, runsheet-assembled Wan 3.0 prompt (legend, style, world, characters,
+        # scene, audio, negative already in it): sent verbatim, nothing added.
+        return open(shot_path, encoding="utf-8").read().strip()
     body = ctx.assemble_prompt(row)
     legend = ""
     if p["ref_labels"]:

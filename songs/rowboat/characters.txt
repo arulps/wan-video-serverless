@@ -1,0 +1,8 @@
+# Lock lines for the runner's checks only; rowboat prompts are sent verbatim from the runsheet (*.raw.txt).
+Appa: father; keep exactly as in the reference image.
+Mintu: little boy; keep exactly as in the reference image.
+Minnu: girl; keep exactly as in the reference image.
+Modhu: friendly cartoon crocodile; keep exactly as in the reference image.
+Singa: friendly cartoon lion; keep exactly as in the reference image.
+Pani-Karadi: cuddly cartoon polar bear; keep exactly as in the reference image.
+Chiku: tiny cartoon mouse; keep exactly as in the reference image.
