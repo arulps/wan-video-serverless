@@ -7,7 +7,8 @@ executed only up to its shot table -- the builder and the runsheet are never mod
   shots.csv                    one row per shot: 1280x720, audio off, duration = the sheet's generate length
   cutplan.json                 cut order, Tamil/English in-out, slips, fades -> comfy\\song_cuts.py
   style.txt / world.txt / characters.txt   minimal files the runner requires (unused by raw prompts)
-Re-run after any runsheet change; status cells already in shots.csv are kept."""
+Re-run after any runsheet change; status cells already in shots.csv are kept.
+Seating override (Arul 2026-10-01): see SEAT_ALL / SEAT_SHOT below."""
 import csv, json, os, re, shutil, sys
 
 SONG = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/mnt/MinMiniKids/songs/L04-Row Row Row Your Boat")
@@ -42,6 +43,54 @@ LABEL = {"01": "Appa", "02": "Appa", "03": "Mintu", "04": "Mintu", "05": "Minnu"
 def slug(t):
     t = re.sub(r"[^a-z0-9]+", "-", t.lower().replace("×", "x")).strip("-")
     return "-".join(t.split("-")[:6])
+
+# --- Seating override (Arul, 2026-10-01, after the V1a gate) --------------------------------------------------------
+# The runsheet seats the kids side by side facing Appa; in V1a they read as perched on the boat's rim. Arul's call: both
+# kids in the back half on two low benches facing each other, Appa rowing in the front half facing them; the kid
+# two-shots become a side-on shot of both (one shot per slot, so timings and the cut plan are unchanged).
+# Applied to the prompts written here only -- the master runsheet and its builder stay untouched.
+SEAT_ALL = [
+    ("two wooden oars resting inside it.", "two wooden oars and three low wooden benches inside it."),   # I1, T1 empty boat
+    ("with a soft teal stripe along its side and two wooden oars.",
+     "with a soft teal stripe along its side, two wooden oars and three low wooden benches inside."),
+    ("Appa sits in the middle and rows with both oars.",
+     "Appa sits on the rowing bench in the front half of the boat, facing the back of the boat, and rows with both oars."),
+    ("Mintu and Minnu sit side by side on the seat right in front of him, facing him, so he can see them as he rows and "
+     "they can look ahead down the river.",
+     "In the back half of the boat two low wooden benches face each other: Mintu sits on the bench at the very back, "
+     "facing forward, and Minnu sits on the bench just in front of him, facing back toward him, so the two children sit "
+     "face to face, knees almost touching, and Appa can watch them both as he rows. The children sit down properly on "
+     "their benches, low inside the boat, legs inside the boat and only their chests, arms and heads above the side; "
+     "nobody sits on the edge or rim of the boat."),
+    ("Medium two-shot of Mintu and Minnu side by side on their seat facing Appa, waist up, the camera in front of the boat "
+     "facing them",
+     "Medium two-shot of Mintu and Minnu on their two facing benches, waist up, seen from the side at their eye level just "
+     "off the side of the boat; both children turn their heads toward the camera side so both faces are clearly visible"),
+]
+SEAT_SHOT = {
+    "V1b": [("; Appa's shoulder soft and out of focus in the foreground.", "; Appa soft and out of focus beyond them.")],
+    "V6c": [("; Appa's shoulder soft in the foreground;", "; Appa soft and out of focus beyond them;")],
+    "X2a": [("Locked-off medium shot from in front of the boat as it comes gently toward camera; Appa's back and rowing "
+             "arms soft in the foreground, the children facing camera beyond him. Mintu and Minnu, still seated side by "
+             "side, do a happy little rowing dance:",
+             "Locked-off medium shot from the side of the boat at the children's eye level as it glides slowly; Appa "
+             "rowing soft and out of focus beyond them. Mintu and Minnu, seated face to face on their benches, do a happy "
+             "little mirror-image rowing dance toward each other:")],
+    "X3b": [("medium shot from in front of the boat:", "medium shot from beside the boat:")],
+}
+_hits = {o: 0 for o, _ in SEAT_ALL}
+for s in S:
+    t = s["prompt_refs"]
+    for o, n in SEAT_ALL:
+        if o in t:
+            _hits[o] += t.count(o); t = t.replace(o, n)
+    for o, n in SEAT_SHOT.get(s["id"], []):
+        assert t.count(o) == 1, f"seating override not found once in {s['id']}: {o[:50]}"
+        t = t.replace(o, n)
+    assert "side by side" not in t, f"'side by side' left in {s['id']}"
+    s["prompt_refs"] = t
+assert all(_hits.values()), f"seating override matched nothing: {[o[:50] for o, c in _hits.items() if not c]}"
+print("seating override:", {o[:28]: c for o, c in _hits.items()})
 
 FIELDS = ["shot_id", "cast", "ref", "prompt", "world", "duration_s", "steps", "cfg", "mode", "engine", "keyframe",
           "lastframe", "ref_labels", "audio", "seed", "size", "negative", "status", "notes"]
