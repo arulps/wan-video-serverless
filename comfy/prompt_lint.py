@@ -36,6 +36,8 @@ DEFAULT_RISKY = {
     r"\bsneez": "sneeze -> runny-nose artefacts; let the action hide it (sneeze into the elbow)",
     r"\bscream": "a wide-mouthed, eyes-shut scream reads as crying -- ask for grins/raised brows and avoid tears",
     r"\bmirror": "mirrors render badly -- avoid or keep incidental",
+    r"\bthe [\w-]+ (?:passing |going )?just off-?screen": "naming an object 'just off-screen' pulls it into frame "
+        "(Row Row V3b drew an empty sailboat) -- describe the gaze instead ('waves toward the camera')",
     r"\b(sign|label|written|letters?)\b": "text renders badly -- keep incidental",
 }
 BEAT_RE = re.compile(r"\[\s*\d+(\.\d+)?\s*[–-]\s*\d+(\.\d+)?\s*s\s*\]")

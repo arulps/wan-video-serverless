@@ -1,10 +1,70 @@
 {
  "audio": "no",
- "aliases": {"the children": ["Mintu", "Minnu"], "the kids": ["Mintu", "Minnu"], "the family": ["Appa", "Mintu", "Minnu"],
-             "all three": ["Appa", "Mintu", "Minnu"]},
- "spaces": {"boat": ["Appa", "Mintu", "Minnu"]},
- "exempt": ["just off-screen", "as if seen from the passing boat"],
- "owners": [{"pattern": "\\b(rows|rowing|rower|oars?)\\b(?! of)", "owner": "Appa", "space": "boat", "require": "Only Appa"}],
- "allow": {"I1": {"R3": "empty boat at the jetty, on purpose (before the family arrives)"},
-           "T1": {"R3": "empty boat drifting away at sunset, on purpose"}}
+ "aliases": {
+  "the children": [
+   "Mintu",
+   "Minnu"
+  ],
+  "the kids": [
+   "Mintu",
+   "Minnu"
+  ],
+  "the family": [
+   "Appa",
+   "Mintu",
+   "Minnu"
+  ],
+  "all three": [
+   "Appa",
+   "Mintu",
+   "Minnu"
+  ],
+  "mane": [
+   "Singa"
+  ],
+  "animal friends": [
+   "Modhu",
+   "Singa",
+   "Pani Karadi"
+  ],
+  "the crocodile": [
+   "Modhu"
+  ],
+  "the lion": [
+   "Singa"
+  ],
+  "the polar bear": [
+   "Pani Karadi"
+  ],
+  "the mouse": [
+   "Chiku"
+  ]
+ },
+ "spaces": {
+  "boat": [
+   "Appa",
+   "Mintu",
+   "Minnu"
+  ]
+ },
+ "exempt": [
+  "just off-screen",
+  "as if seen from the passing boat"
+ ],
+ "owners": [
+  {
+   "pattern": "\\b(rows|rowing|rower|oars?)\\b(?! of)",
+   "owner": "Appa",
+   "space": "boat",
+   "require": "Only Appa"
+  }
+ ],
+ "allow": {
+  "I1": {
+   "R3": "empty boat at the jetty, on purpose (before the family arrives)"
+  },
+  "T1": {
+   "R3": "the family are three tiny distant silhouettes drifting into the sunset -- no faces to reference"
+  }
+ }
 }

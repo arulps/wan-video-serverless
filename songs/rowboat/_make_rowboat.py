@@ -89,7 +89,10 @@ print("seating override:", {o[:28]: c for o, c in _hits.items()})
 # off-model (a green-shirt "Appa", kids in blue/pink): Wan widens or pulls back and fills the boat. So every boat shot now
 # carries the full family refs; V2c (croc beside the boat, which showed an empty boat) gets FAM+CROC.
 PACK_SWAP = {"KIDS": "FAM", "APPA": "FAM"}
-PACK_SHOT = {"V2c": "FAM+CROC"}
+PACK_SHOT = {"V2c": "FAM+CROC", "V3a": "FAM+LION"}
+# V3a's mane in the grass came back as a different, invented lion (W2 review) -> give it Singa's ref too.
+PACK["FAM+LION"] = (PACK["FAM"][0] + PACK["LION"][0], PACK["FAM"][1][:-1] + ", Image 7 is Singa the lion.",
+                    PACK["FAM"][2] + PACK["LION"][2])
 _v1a = next(x for x in S if x["id"] == "V1a")["prompt_refs"]
 KEEP_LINE = _v1a[_v1a.index("Keep every character"):_v1a.index("are about the same size.") + len("are about the same size.")]
 SHOT_FIX = {
@@ -106,8 +109,22 @@ SHOT_FIX = {
             ("mouths wide open in a huge comic play-scream, hands up beside their cheeks — joyful and funny, not frightened —",
              "mouths wide open in a huge comic play-scream with big delighted grins and eyebrows raised high, hands up "
              "beside their cheeks — joyful and funny, not frightened, not crying, no tears —")],
+    # Animal-only shots: "toward the boat just off-screen" drew an empty sailboat into V3b (W2 review) -> describe the gaze.
+    "V3b": [("toward the boat just off-screen.",
+             "straight toward the camera, as if greeting friends passing by; only Singa, his rock, the grass and the "
+             "water are in the shot.")],
+    "V4b": [("to wave at the boat just off-screen.",
+             "to wave toward the camera, as if greeting friends passing by; only Pani Karadi, the ice and the water are "
+             "in the shot.")],
+    "V5b": [("at the boat just off-screen.",
+             "toward the camera, as if greeting friends passing by; only Chiku, his lily pad and the water are in the "
+             "shot.")],
     "V6a": [("as the wooden side of the boat slides gently past in the foreground.",
-             "toward the boat passing just off-screen; only Chiku, his lily pad and the water are in frame.")],
+             "toward the camera, as if saying goodbye to friends passing by; only Chiku, his lily pad and the water "
+             "are in the shot.")],
+    "V3a": [("keeping pace with the boat, only its fluffy top visible.",
+             "keeping pace with the boat; only the fluffy top of Singa's mane shows above the grass, his face and body "
+             "stay hidden in the grass the whole time.")],
     "X1b": [("[4–6s] the banks open out ahead into warm, tall golden grass under a big open sky.",
              "[4–6s] the river carries on ahead between banks of warm, tall golden grass under a big open sky; the boat "
              "stays on the water the whole time.")],
@@ -171,8 +188,16 @@ cp_path = os.path.join(HERE, "cutplan.json")
 takes = {}
 if os.path.exists(cp_path):                                     # keep chosen takes across re-runs
     takes = {p["id"]: p["take"] for p in json.load(open(cp_path, encoding="utf-8"))["shots"]}
+# Hand-built takes whose action sits later than the sheet's 1.5 s onset: shift the SFX slip by that much.
+# V2d-...-splice.mp4 = new V2d wide 0-44 + the old take's stare/scream close-up (old frames 44-79) + new wide 87-119
+# (Arul 2026-10-01: keep the real scream, not the laugh); the head-throw lands at ~1.83 s instead of 1.5 s.
+# V2d-...-splice2.mp4 (Arul: end on the scream, not the laugh) = new wide 0-44 + old scream close-up 44-79 + the last
+# scream frame held 0.97 s with a slow 6 % push-in; 110 frames, covers slip 0.63 + use 3.0.
+SLIP_ADJ = {"V2d-seed30313-w3-splice.mp4": 0.33, "V2d-seed30313-w3-splice2.mp4": 0.33}
 for p in plan:
     p["take"] = takes.get(p["id"], p["take"])
+    if p["take"] in SLIP_ADJ and p["slip"]:
+        p["slip"] = {k: round(v + SLIP_ADJ[p["take"]], 3) for k, v in p["slip"].items()}
 json.dump({"song": "L04 Row Row Row Your Boat", "song_folder": r"C:\Channel Contents\MinMiniKids\songs\L04-Row Row Row Your Boat",
            "audio": {"ta": AUD_TA, "en": AUD_EN},
            "length": {"ta": TA_END, "en": EN_END}, "xfade": 0.4, "hard_cut_into": "sfx",
