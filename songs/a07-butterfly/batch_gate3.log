@@ -1,0 +1,22 @@
+[RA] -> wan3 wan3.0-video 720P 16:9 8s refs=6 first=False last=False est $0.80
+  wan3 submitted task 8a01123c-c2bc-4945-9393-ddf14d25e392
+  wan3 task 8a01123c-c2bc-4945-9393-ddf14d25e392: RUNNING
+  wan3 task 8a01123c-c2bc-4945-9393-ddf14d25e392: SUCCEEDED
+[RA] done in 179.7s -> songs/a07-butterfly\out\RA-seed30313-w3.mp4 (running list-price estimate $0.80)
+[V2b] -> wan3 wan3.0-video 720P 16:9 5s refs=3 first=False last=False est $0.50
+  wan3 submitted task dae9254c-80ea-48cb-8120-9400706340e6
+  wan3 task dae9254c-80ea-48cb-8120-9400706340e6: RUNNING
+  wan3 task dae9254c-80ea-48cb-8120-9400706340e6: SUCCEEDED
+[V2b] done in 132.2s -> songs/a07-butterfly\out\V2b-seed30313-w3.mp4 (running list-price estimate $1.30)
+[V5a] -> wan3 wan3.0-video 720P 16:9 5s refs=8 first=False last=False est $0.50
+  wan3 submitted task de99df36-3a13-438d-bde3-bac05f1e29a0
+  wan3 task de99df36-3a13-438d-bde3-bac05f1e29a0: RUNNING
+  wan3 task de99df36-3a13-438d-bde3-bac05f1e29a0: SUCCEEDED
+[V5a] done in 149.1s -> songs/a07-butterfly\out\V5a-seed30313-w3.mp4 (running list-price estimate $1.80)
+
+SHOT       STATUS       WALL_S  FILE
+RA         done          179.7  songs/a07-butterfly\out\RA-seed30313-w3.mp4
+V2b        done          132.2  songs/a07-butterfly\out\V2b-seed30313-w3.mp4
+V5a        done          149.1  songs/a07-butterfly\out\V5a-seed30313-w3.mp4
+
+total GPU-minutes (done shots): 7.7
