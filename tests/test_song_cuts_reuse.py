@@ -60,7 +60,7 @@ with tempfile.TemporaryDirectory() as td:
     r = subprocess.run([sys.executable, str(ROOT / "comfy/song_cuts.py"), str(td), "cut", "--lang", "both", "--src", "out",
                         "--preview", "--song-folder", str(folder), "--out-dir", str(td / "cuts")],
                        capture_output=True, text=True)
-    print(r.stdout[-1500:]); print(r.stderr[-1500:])
+    print("\n".join(l for l in r.stdout.splitlines() if "wrote " in l or "plan:" in l)); print(r.stderr[-1500:])
     assert r.returncode == 0, "song_cuts failed"
     assert r.stdout.count("video frames = plan") == 2, "frame check line missing"
     assert "holds last frame" not in r.stdout, "a clip is too short for its slot"
