@@ -1,0 +1,6 @@
+plan: 6481 frames (216.033 s)
+wrote C:\Users\arulp\AppData\Local\Temp\tmpgtb1_jji\cuts\A07-BUTTERFLY-ROUGH-TA-PREVIEW.mp4 6481 video frames = plan 6481; container 216.040 s (audio 216.040 s)
+plan: 6665 frames (222.167 s)
+wrote C:\Users\arulp\AppData\Local\Temp\tmpgtb1_jji\cuts\A07-BUTTERFLY-ROUGH-EN-PREVIEW.mp4 6665 video frames = plan 6665; container 222.167 s (audio 222.160 s)
+
+PASS: rowboat order unchanged; butterfly 47/48 slots, re-use + trims fit, both stand-in cuts frame-exact
