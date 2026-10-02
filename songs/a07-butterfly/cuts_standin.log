@@ -1,0 +1,26 @@
+ use  4.600 slip 0.000 frames  138 hard-cut
+22 V4c  in  128.500 use  4.600 slip 0.000 frames  138 hard-cut
+23 V4d  in  133.110 use  4.633 slip 0.000 frames  139 hard-cut
+03 H4a=RA in  137.720 use  4.600 slip 1.580 frames  138 hard-cut
+04 H4b=RB in  142.330 use  4.600 slip 1.580 frames  138 hard-cut
+24 V5a  in  146.940 use  4.600 slip 0.000 frames  138 hard-cut
+25 V5b  in  151.550 use  4.633 slip 0.000 frames  139 hard-cut
+26 V5c  in  156.160 use  4.600 slip 0.000 frames  138 hard-cut
+27 V5d  in  160.770 use  4.600 slip 0.000 frames  138 hard-cut
+04 H5a=RB in  165.380 use  4.633 slip 0.300 frames  139 hard-cut
+03 H5b=RA in  169.990 use  4.600 slip 0.300 frames  138 hard-cut
+28 V6a  in  174.600 use  4.600 slip 0.000 frames  138 hard-cut
+29 V6b  in  179.210 use  4.633 slip 0.000 frames  139 hard-cut
+30 V6c  in  183.820 use  4.600 slip 0.000 frames  138 hard-cut
+31 V6d  in  188.430 use  4.600 slip 0.000 frames  138 hard-cut
+03 H6a=RA in  193.040 use  4.633 slip 2.360 frames  139 hard-cut
+04 H6b=RB in  197.650 use  4.600 slip 2.360 frames  138 hard-cut
+03 O1=RA in  202.260 use  4.600 slip 1.090 frames  138 hard-cut
+04 O2=RB in  206.870 use  4.600 slip 1.090 frames  138 hard-cut
+32 O3   in  211.480 use  4.633 slip 0.000 frames  139 hard-cut
+33 O4   in  216.090 use  6.067 slip 0.000 frames  182
+plan: 6665 frames (222.167 s)
+wrote C:\Users\arulp\AppData\Local\Temp\tmp0n9brx8x\cuts\A07-BUTTERFLY-ROUGH-EN-PREVIEW.mp4 6665 video frames = plan 6665; container 222.167 s (audio 222.160 s)
+
+
+PASS: rowboat order unchanged; butterfly 47/48 slots, re-use + trims fit, both stand-in cuts frame-exact
