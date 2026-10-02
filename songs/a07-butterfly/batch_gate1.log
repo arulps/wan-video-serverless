@@ -1,0 +1,10 @@
+[RA] -> wan3 wan3.0-video 720P 16:9 8s refs=6 first=False last=False est $0.80
+  wan3 submitted task f625fb16-da8a-42a5-85a8-88f323a84f47
+  wan3 task f625fb16-da8a-42a5-85a8-88f323a84f47: RUNNING
+  wan3 task f625fb16-da8a-42a5-85a8-88f323a84f47: SUCCEEDED
+[RA] done in 212.2s -> songs/a07-butterfly\out\RA-seed30313-w3.mp4 (running list-price estimate $0.80)
+
+SHOT       STATUS       WALL_S  FILE
+RA         done          212.2  songs/a07-butterfly\out\RA-seed30313-w3.mp4
+
+total GPU-minutes (done shots): 3.5

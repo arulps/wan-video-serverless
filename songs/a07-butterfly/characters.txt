@@ -1,0 +1,11 @@
+# Lock lines for the runner's checks only; butterfly prompts are sent verbatim from the runsheet (*.raw.txt).
+Amma: grown-up mother (Mintu and Minnu's); keep exactly as in the reference image.
+Blue-Butterfly: small friendly cartoon butterfly; keep exactly as in the reference image.
+Green-Butterfly: small friendly cartoon butterfly; keep exactly as in the reference image.
+Leo: little boy; keep exactly as in the reference image.
+Minnu: little girl; keep exactly as in the reference image.
+Mintu: little boy; keep exactly as in the reference image.
+Mrs-Meena: grown-up mother (Priya's); keep exactly as in the reference image.
+Priya: little girl; keep exactly as in the reference image.
+Red-Butterfly: small friendly cartoon butterfly; keep exactly as in the reference image.
+Yellow-Butterfly: small friendly cartoon butterfly; keep exactly as in the reference image.

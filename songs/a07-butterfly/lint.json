@@ -1,0 +1,91 @@
+{
+ "audio": "no",
+ "aliases": {
+  "the four children": [
+   "Mintu",
+   "Minnu",
+   "Leo",
+   "Priya"
+  ],
+  "all four children": [
+   "Mintu",
+   "Minnu",
+   "Leo",
+   "Priya"
+  ],
+  "all four kids": [
+   "Mintu",
+   "Minnu",
+   "Leo",
+   "Priya"
+  ],
+  "the four friends": [
+   "Mintu",
+   "Minnu",
+   "Leo",
+   "Priya"
+  ],
+  "the mothers": [
+   "Amma",
+   "Mrs Meena"
+  ],
+  "both mothers": [
+   "Amma",
+   "Mrs Meena"
+  ],
+  "the two mothers": [
+   "Amma",
+   "Mrs Meena"
+  ],
+  "the moms": [
+   "Amma",
+   "Mrs Meena"
+  ],
+  "priya's mother": [
+   "Mrs Meena"
+  ],
+  "the four butterflies": [
+   "the red butterfly",
+   "the yellow butterfly",
+   "the blue butterfly",
+   "the green butterfly"
+  ],
+  "all four butterflies": [
+   "the red butterfly",
+   "the yellow butterfly",
+   "the blue butterfly",
+   "the green butterfly"
+  ],
+  "four little butterflies": [
+   "the red butterfly",
+   "the yellow butterfly",
+   "the blue butterfly",
+   "the green butterfly"
+  ],
+  "red butterfly": [
+   "the red butterfly"
+  ],
+  "yellow butterfly": [
+   "the yellow butterfly"
+  ],
+  "blue butterfly": [
+   "the blue butterfly"
+  ],
+  "green butterfly": [
+   "the green butterfly"
+  ]
+ },
+ "spaces": {
+  "bench": [
+   "Amma",
+   "Mrs Meena"
+  ]
+ },
+ "exempt": [
+  "no butterflies"
+ ],
+ "risky": {
+  "\\bpretend": "'pretend to be X' puts the animal's features on the child -- keep it in the gesture"
+ },
+ "_note": "Butterfly labels start with lowercase 'the', and R2 name matching is case-sensitive, so 'The red butterfly' at the start of a sentence would slip through; the '<colour> butterfly' aliases (matched case-insensitively) close that gap."
+}

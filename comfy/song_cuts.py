@@ -29,10 +29,13 @@ def staged_name(s):
     return "%s_%s_%s.mp4" % (s["n"], s["id"], s["slug"])
 
 def stage(song_dir, plan, folder, force):
-    missing = []
+    missing, seen = [], set()
     for s in plan["shots"]:
         src = Path(song_dir) / "out" / s["take"]
         dst = folder / staged_name(s)
+        if dst in seen:                       # a re-used clip (several slots, one take) is staged once
+            continue
+        seen.add(dst)
         if not src.exists():
             missing.append(s["take"]); continue
         if dst.exists() and not force:
@@ -63,7 +66,8 @@ def cut(song_dir, plan, folder, lang, src_mode, out_dir=None, transitions="auto"
     W, H = (3840, 2160) if height >= 2160 else (1920, 1080)
     if preview:
         W, H = 480, 270
-    shots = [s for s in plan["shots"] if s[lang + "_in"] is not None]
+    # entries are slots; sort per language (the two languages may order sections differently, e.g. a moved break)
+    shots = sorted((s for s in plan["shots"] if s[lang + "_in"] is not None), key=lambda s: s[lang + "_in"])
     D = int(round(float(plan.get("xfade", 0.4)) * FPS))
     t0 = shots[0][lang + "_in"]
     length = float(plan["length"][lang])
@@ -98,7 +102,7 @@ def cut(song_dir, plan, folder, lang, src_mode, out_dir=None, transitions="auto"
                       "tpad=stop_mode=clone:stop=%d,trim=end_frame=%d,settb=1/%d,setpts=N[c%d]"
                       % (k, start, FPS, W, H, W, H, hold + 2, need, FPS, k))
         log.append("%s %-4s in %8.3f use %6.3f slip %.3f frames %4d%s%s" % (
-            s["n"], s["id"], s[lang + "_in"], seg / FPS, start, seg,
+            s["n"], s["id"] if s.get("slot", s["id"]) == s["id"] else "%s=%s" % (s["slot"], s["id"]), s[lang + "_in"], seg / FPS, start, seg,
             "" if nxt is None else (" dissolve %d f" % dk if dk else " hard-cut"),
             " (holds last frame %d f)" % hold if hold > 1 else ""))   # 1 frame = in-point rounding, invisible
     cur, cur_len = "c0", seg_len[0]
