@@ -1,0 +1,10 @@
+[V2a] -> wan3 wan3.0-video 720P 16:9 5s refs=3 first=False last=False est $0.50
+  wan3 submitted task cd8816fd-c353-4074-b558-e283ad8aaeae
+  wan3 task cd8816fd-c353-4074-b558-e283ad8aaeae: RUNNING
+  wan3 task cd8816fd-c353-4074-b558-e283ad8aaeae: SUCCEEDED
+[V2a] done in 116.9s -> songs/a07-butterfly\out\V2a-seed30313-w3.mp4 (running list-price estimate $0.50)
+
+SHOT       STATUS       WALL_S  FILE
+V2a        done          116.9  songs/a07-butterfly\out\V2a-seed30313-w3.mp4
+
+total GPU-minutes (done shots): 1.9
