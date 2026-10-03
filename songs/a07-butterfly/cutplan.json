@@ -158,7 +158,7 @@
    "en_in": 36.715,
    "en_out": 41.278,
    "slip": {},
-   "take": "V1c-seed30313-w3.mp4"
+   "take": "V1c-seed30313-w3-splice.mp4"
   },
   {
    "n": "10",
@@ -239,7 +239,7 @@
    "en_in": 59.58,
    "en_out": 64.16,
    "slip": {},
-   "take": "V2b-seed30313-w3.mp4"
+   "take": "V2b-seed30313-w3-splice.mp4"
   },
   {
    "n": "13",
@@ -254,7 +254,7 @@
    "en_in": 64.16,
    "en_out": 68.74,
    "slip": {},
-   "take": "V2c-seed30313-w3.mp4"
+   "take": "V2c-seed30313-w3-splice.mp4"
   },
   {
    "n": "14",
@@ -320,7 +320,7 @@
    "en_in": 82.505,
    "en_out": 87.097,
    "slip": {},
-   "take": "V3a-seed30313-w3.mp4"
+   "take": "V3a-seed30313-w3-splice.mp4"
   },
   {
    "n": "16",
@@ -656,7 +656,7 @@
    "en_in": 179.21,
    "en_out": 183.82,
    "slip": {},
-   "take": "V6b-seed30313-w3.mp4"
+   "take": "V6b-seed30313-w3-splice.mp4"
   },
   {
    "n": "30",
