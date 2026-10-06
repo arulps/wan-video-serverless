@@ -36,7 +36,9 @@ SPLICES = {
     "V4b": [(52, 149, 1.42, 1.0, (640, 360))],
     # V4a (~2:00): the big leaf floats in mid-air (f0-11, f36-79). Keep the butterfly close-up f16-35 at a 1.4x punch-in (crops the
     # leaf tip under it), then the four kids with the butterfly f72-149 at 1.12x (crops the leaf edge on the right); both slowed.
-    "V4a": [(16, 35, 1.4, 1.4, (640, 330)), (72, 149, 1.42, 1.12, (560, 380))],   # 1.12x left-shifted crop drops the leaf edge at f72-79
+    "V4a": [(16, 35, 1.4, 1.4, (640, 330)), (72, 149, 1.42, 1.12, (560, 380))],
+    # O3: after the Tamil anchor fix (6 Oct) the Tamil outro's last line is 6.7 s; the 5 s take slowed 1.36x (sleepy ending, fades out).
+    "O3": [(0, 149, 1.36, 1.0, (640, 360))],   # 1.12x left-shifted crop drops the leaf edge at f72-79
 }
 
 
