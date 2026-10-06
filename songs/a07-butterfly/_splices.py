@@ -28,6 +28,15 @@ SPLICES = {
     # V1c: Mintu (alone with the rose) f0-30; he dissolves f33-36 ("two Mintus"); keep f39 on (rose, Leo walks in, Mintu
     # walks in, both boys to the end).
     "V1c": [(0, 30, 1.0, 1.0, (640, 360)), (39, 149, 1.0, 1.0, (640, 360))],
+    # --- Arul's review of ROUGH-TA, 6 Oct ---
+    # V1b (0:35): two red butterflies come in from both sides and merge into one (f4-52). Keep the single-butterfly part f56-149,
+    # then a 1.45x close-up on the butterfly between the boys' faces (f70-115).
+    "V1b": [(56, 149, 1.0, 1.0, (640, 360)), (70, 115, 1.0, 1.45, (640, 360))],
+    # V4b (2:05): two green butterflies merge (f4-48). Keep the single-butterfly part f52-149, slowed 1.42x.
+    "V4b": [(52, 149, 1.42, 1.0, (640, 360))],
+    # V4a (~2:00): the big leaf floats in mid-air (f0-11, f36-79). Keep the butterfly close-up f16-35 at a 1.4x punch-in (crops the
+    # leaf tip under it), then the four kids with the butterfly f72-149 at 1.12x (crops the leaf edge on the right); both slowed.
+    "V4a": [(16, 35, 1.4, 1.4, (640, 330)), (72, 149, 1.42, 1.12, (560, 380))],   # 1.12x left-shifted crop drops the leaf edge at f72-79
 }
 
 

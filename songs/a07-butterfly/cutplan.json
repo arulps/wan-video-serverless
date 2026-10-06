@@ -143,7 +143,7 @@
    "en_in": 32.153,
    "en_out": 36.715,
    "slip": {},
-   "take": "V1b-seed30313-w3.mp4"
+   "take": "V1b-seed30313-w3-splice.mp4"
   },
   {
    "n": "09",
@@ -449,7 +449,7 @@
    "en_in": 119.28,
    "en_out": 123.89,
    "slip": {},
-   "take": "V4a-seed30313-w3.mp4"
+   "take": "V4a-seed30313-w3-splice.mp4"
   },
   {
    "n": "21",
@@ -464,7 +464,7 @@
    "en_in": 123.89,
    "en_out": 128.5,
    "slip": {},
-   "take": "V4b-seed30313-w3.mp4"
+   "take": "V4b-seed30313-w3-splice.mp4"
   },
   {
    "n": "22",
