@@ -9,7 +9,8 @@ Each take goes through scripts/upscale_video.py (Real-ESRGAN realesr-animevideov
 lanczos to 3840x2160, same 30 fps, h264 crf 16). A take counts as done only when its out_4k .mp4 AND .mp4.json sidecar
 exist (the sidecar is written last), so an interrupted run resumes at the clip it was on; a half-written mp4 is redone.
 Forces --backend ncnn: on a laptop without CUDA the torch-CPU fallback is ~29 s/frame (a song would take >30 h), so if
-the Vulkan tool is missing it stops instead. C:\\tools\\realesrgan-ncnn-vulkan is put on PATH when it exists.
+the Vulkan tool is missing it stops instead. The first of <repo>\\tools\\realesrgan-ncnn-vulkan (git-ignored, installed
+per machine) or C:\\tools\\realesrgan-ncnn-vulkan (old location) that exists is put on PATH.
 Then: python comfy/song_cuts.py songs/<slug> cut --src out4k --height 2160 --tag V2-4K --lang both
 """
 import argparse, json, os, shutil, subprocess, sys, time
@@ -35,11 +36,13 @@ def main():
         if (only and s["id"] not in only) or s["take"] in seen:
             continue
         seen.add(s["take"]); takes.append((s["id"], s["take"]))
-    for d in (r"C:\tools\realesrgan-ncnn-vulkan",):
-        if os.path.isdir(d):
-            os.environ["PATH"] = d + os.pathsep + os.environ["PATH"]
+    tool_dirs = (HERE.parent / "tools" / "realesrgan-ncnn-vulkan", Path(r"C:\tools\realesrgan-ncnn-vulkan"))
+    for d in tool_dirs:
+        if d.is_dir():
+            os.environ["PATH"] = str(d) + os.pathsep + os.environ["PATH"]
+            break
     if not a.dry and not shutil.which("realesrgan-ncnn-vulkan"):
-        sys.exit("realesrgan-ncnn-vulkan not found (expected in C:\\tools\\realesrgan-ncnn-vulkan) -- stopping")
+        sys.exit("realesrgan-ncnn-vulkan not found (expected in %s or %s) -- stopping" % tool_dirs)
     dst_dir = song / "out_4k"; dst_dir.mkdir(exist_ok=True)
     todo = []
     for sid, take in takes:

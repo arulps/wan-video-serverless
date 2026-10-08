@@ -1,7 +1,7 @@
 # 4K master for a song: upscale every chosen take (resumable), then build the Tamil + English 4K cuts.
 #   powershell -ExecutionPolicy Bypass -File scripts\song_4k.ps1 -Song songs\rowboat -Tag V2-4K
 # Safe to stop (close the window) and run again: finished clips are skipped (out_4k\<take> + .json sidecar).
-# Needs C:\tools\realesrgan-ncnn-vulkan (see CC-DISPATCH-phase6b). Laptop (Iris Xe): ~4 s/frame -> ~4-5 h per song.
+# Needs tools\realesrgan-ncnn-vulkan in the repo (git-ignored; see queue\2026-10-07-beast-4k) or C:\tools\... Laptop (Iris Xe): ~4 s/frame -> ~4-5 h per song.
 param(
   [Parameter(Mandatory=$true)][string]$Song,
   [string]$Tag = "V2-4K",
