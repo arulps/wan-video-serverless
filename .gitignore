@@ -16,3 +16,6 @@ nil
 
 # local binaries (Real-ESRGAN etc.) — installed per machine, never committed
 tools/
+
+# Arul's delete folder — reviewed, waiting for him to empty it; never committed
+_to_delete/
