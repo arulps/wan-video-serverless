@@ -6,3 +6,4 @@
 - 14:02 item-01: ZK1 done (228.6 s, 300 frames, est $1.00); ZO FAILED at submission (write timed out, no task id) - not re-run; ZK1 sheets + stills in out\_qc
 - 14:02 item-01 done (1 of 2 clips; see item-01.report.md)
 - QUEUE END 2026-10-09 14:02 est $1.00
+- commit 561e5c5 (pushed with this line in a follow-up record commit)
