@@ -6,3 +6,4 @@
 - 15:04 item-01: ZK1 done (211.4 s, 300 frames), ZO done (259.1 s, 300 frames), est $2.00; sheets + stills for both in out\_qc
 - 15:04 item-01 done
 - QUEUE END 2026-10-09 15:04 est $2.00
+- commit 0e0e5bd (pushed with this line in a follow-up record commit)
