@@ -1,0 +1,2 @@
+INTERIOR, EVENING, the MinMini kitchen vegetable rack (L05 Urulaikizhangu).
+Not used for L05: every shot is a complete shots/*.raw.txt prompt, sent verbatim (batch_runner.wan3_prompt). Edit _gen/build_urulai_runsheet.py in the song folder, not these files.

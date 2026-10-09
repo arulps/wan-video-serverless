@@ -1,0 +1,66 @@
+{
+ "audio": "no",
+ "aliases": {
+  "the children": [
+   "Mintu",
+   "Minnu"
+  ],
+  "both children": [
+   "Mintu",
+   "Minnu"
+  ],
+  "the little potato": [
+   "Baby Potato"
+  ],
+  "the mother potato": [
+   "Amma Potato"
+  ],
+  "the firefly": [
+   "Minmini"
+  ],
+  "all seven vegetables": [
+   "Brinjal",
+   "Okra",
+   "Tomato",
+   "Carrot",
+   "Radish",
+   "Cabbage",
+   "Beans"
+  ],
+  "the seven vegetables": [
+   "Brinjal",
+   "Okra",
+   "Tomato",
+   "Carrot",
+   "Radish",
+   "Cabbage",
+   "Beans"
+  ]
+ },
+ "spaces": {
+  "big vegetable basket": [
+   "Baby Potato",
+   "Brinjal",
+   "Okra",
+   "Tomato",
+   "Carrot",
+   "Radish",
+   "Cabbage",
+   "Beans"
+  ]
+ },
+ "owners": [
+  {
+   "pattern": "\\bkicks?\\b",
+   "owner": "Brinjal",
+   "require": "Only Brinjal"
+  },
+  {
+   "pattern": "\\btugs?\\b",
+   "owner": "Radish",
+   "require": "Only Radish"
+  }
+ ],
+ "exempt": [],
+ "_note": "L05 vegetable world. 'kicks' and 'tugs' are owned (Brinjal, Radish); Okra/Beans pushes are staged per clip with 'Only X' lines."
+}

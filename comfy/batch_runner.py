@@ -533,7 +533,9 @@ def write_qc_strip(mp4_path, out_png):
         return False
     os.makedirs(os.path.dirname(out_png), exist_ok=True)
     vf = "select='eq(n,0)+eq(n,20)+eq(n,40)+eq(n,60)+eq(n,80)',tile=5x1"
-    cmd = ["ffmpeg", "-y", "-i", mp4_path, "-vf", vf, "-vsync", "0", "-frames:v", "1", out_png]
+    # no -vsync: ffmpeg 9 (Beast) removed it, and with select+tile+-frames:v 1 it never changed the image (checked
+    # pixel-identical on ffmpeg 6.1 and 7.0, 9 Oct 2026)
+    cmd = ["ffmpeg", "-y", "-i", mp4_path, "-vf", vf, "-frames:v", "1", out_png]
     try:
         p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=120)
         if p.returncode != 0:

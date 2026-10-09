@@ -1,0 +1,11 @@
+# Lock lines for the runner's checks only; L05 prompts are sent verbatim from the runsheet (*.raw.txt).
+Minmini: the MinMini firefly mascot; keep exactly as in the reference image.
+Baby-Potato: tiny baby potato character; keep exactly as in the reference image.
+Amma-Potato: mother potato character; keep exactly as in the reference image.
+Brinjal: vegetable character; keep exactly as in the reference image.
+Okra: vegetable character; keep exactly as in the reference image.
+Tomato: vegetable character; keep exactly as in the reference image.
+Carrot: vegetable character; keep exactly as in the reference image.
+Radish: vegetable character; keep exactly as in the reference image.
+Cabbage: vegetable character; keep exactly as in the reference image.
+Beans: vegetable character; keep exactly as in the reference image.

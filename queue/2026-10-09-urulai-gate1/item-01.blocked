@@ -1,0 +1,1 @@
+item-01 blocked 2026-10-09 13:28: step 3 `py tests\test_wan3_mock.py` FAIL - not a missing module. ffmpeg 9.0.2 on Beast rejects `-vsync` (`comfy\batch_runner.py` line 536), so the QC strip is not made and the test's assert on `R2-strip.png` fails. Nothing rendered, $0.00 spent. See item-01.report.md.

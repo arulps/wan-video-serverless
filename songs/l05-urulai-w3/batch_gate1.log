@@ -1,0 +1,13 @@
+[ZK1] -> wan3 wan3.0-video 720P 16:9 10s refs=3 first=False last=False est $1.00
+  wan3 submitted task 2fd27534-90fa-4b8f-8abe-89aa0bec85c1
+  wan3 task 2fd27534-90fa-4b8f-8abe-89aa0bec85c1: RUNNING
+  wan3 task 2fd27534-90fa-4b8f-8abe-89aa0bec85c1: SUCCEEDED
+[ZK1] done in 228.6s -> songs/l05-urulai-w3\out\ZK1-seed30313-w3.mp4 (running list-price estimate $1.00)
+[ZO] -> wan3 wan3.0-video 720P 16:9 10s refs=10 first=False last=False est $1.00
+[ZO] FAILED (wan3): <urlopen error The write operation timed out>
+
+SHOT       STATUS       WALL_S  FILE
+ZK1        done          228.6  songs/l05-urulai-w3\out\ZK1-seed30313-w3.mp4
+ZO         failed        120.7  <urlopen error The write operation timed out>
+
+total GPU-minutes (done shots): 3.8
