@@ -6,3 +6,4 @@
 - 15:38 item-01: I1 done (244.7 s, 330 frames), ZO done (268.7 s, 300 frames), CA done (179.0 s, 240 frames), est $2.90; sheets + stills for all three in out\_qc
 - 15:38 item-01 done
 - QUEUE END 2026-10-09 15:38 est $2.90
+- commit 9da50e1 (pushed with this line in a follow-up record commit)
