@@ -6,3 +6,4 @@
 - 16:09 item-01: I1 (260.4 s, 330 frames), ZK2 (210.9 s, 300), ZK4 (211.6 s, 300), ZK7 (211.1 s, 300), K3 (146.9 s, 180), ZO (322.3 s, 300) all done, est $5.70; sheets + stills for all six in out\_qc (K3 has no f210 - clip is 180 frames)
 - 16:09 item-01 done
 - QUEUE END 2026-10-09 16:09 est $5.70
+- commit e962246 (pushed with this line in a follow-up record commit)
