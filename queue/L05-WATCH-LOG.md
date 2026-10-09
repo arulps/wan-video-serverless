@@ -12,3 +12,7 @@
 2026-10-09 14:44 idle
 2026-10-09 14:55 start 2026-10-09-urulai-gate1c
 2026-10-09 15:04 end 2026-10-09-urulai-gate1c done est $2.00
+2026-10-09 15:04 idle
+2026-10-09 15:14 idle
+2026-10-09 15:25 start 2026-10-09-urulai-gate2
+2026-10-09 15:38 end 2026-10-09-urulai-gate2 done est $2.90

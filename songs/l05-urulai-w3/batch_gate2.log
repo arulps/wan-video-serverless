@@ -1,0 +1,22 @@
+[I1] -> wan3 wan3.0-video 720P 16:9 11s refs=6 first=False last=False est $1.10
+  wan3 submitted task 3d070981-d0e7-459f-9771-622937be8baf
+  wan3 task 3d070981-d0e7-459f-9771-622937be8baf: RUNNING
+  wan3 task 3d070981-d0e7-459f-9771-622937be8baf: SUCCEEDED
+[I1] done in 244.7s -> songs/l05-urulai-w3\out\I1-seed30313-w3.mp4 (running list-price estimate $1.10)
+[ZO] -> wan3 wan3.0-video 720P 16:9 10s refs=10 first=False last=False est $1.00
+  wan3 submitted task 4a74ec37-9e72-41a2-8ee5-723896d92bc4
+  wan3 task 4a74ec37-9e72-41a2-8ee5-723896d92bc4: RUNNING
+  wan3 task 4a74ec37-9e72-41a2-8ee5-723896d92bc4: SUCCEEDED
+[ZO] done in 268.7s -> songs/l05-urulai-w3\out\ZO-seed30313-w3.mp4 (running list-price estimate $2.10)
+[CA] -> wan3 wan3.0-video 720P 16:9 8s refs=3 first=False last=False est $0.80
+  wan3 submitted task 3e722f0b-cb55-49aa-8a09-9078fd117c1e
+  wan3 task 3e722f0b-cb55-49aa-8a09-9078fd117c1e: RUNNING
+  wan3 task 3e722f0b-cb55-49aa-8a09-9078fd117c1e: SUCCEEDED
+[CA] done in 179.0s -> songs/l05-urulai-w3\out\CA-seed30313-w3.mp4 (running list-price estimate $2.90)
+
+SHOT       STATUS       WALL_S  FILE
+I1         done          244.7  songs/l05-urulai-w3\out\I1-seed30313-w3.mp4
+ZO         done          268.7  songs/l05-urulai-w3\out\ZO-seed30313-w3.mp4
+CA         done          179.0  songs/l05-urulai-w3\out\CA-seed30313-w3.mp4
+
+total GPU-minutes (done shots): 11.5
