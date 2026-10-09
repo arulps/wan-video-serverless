@@ -18,6 +18,19 @@ ap.add_argument("--song-folder", default=r"C:\Channel Contents\MinMiniKids\songs
 ap.add_argument("--plan-only", action="store_true", help="checks 1-2 only, no encode")
 a = ap.parse_args()
 
+# 0 ffmpeg option by version: ffmpeg 9 (Beast) rejects -filter_complex_script; >= 7 must use -/filter_complex
+sys.path.insert(0, str(ROOT / "comfy"))
+import song_cuts as sc
+for text, want in (("ffmpeg version 9.0.2-full_build-www.gyan.dev Copyright", "-/filter_complex"),
+                   ("ffmpeg version 7.0.2-static https://johnvansickle.com/ffmpeg/", "-/filter_complex"),
+                   ("ffmpeg version n7.1 Copyright", "-/filter_complex"),
+                   ("ffmpeg version N-117000-g1234abcd Copyright", "-/filter_complex"),
+                   ("ffmpeg version 2026-09-01-git-abcdef-full_build-www.gyan.dev", "-/filter_complex"),
+                   ("ffmpeg version 6.1.1-3ubuntu5 Copyright", "-filter_complex_script"),
+                   ("ffmpeg version 4.4.2-0ubuntu0.22.04.1", "-filter_complex_script")):
+    got = sc.filter_graph_args("g.txt", text)
+    assert got == [want, "g.txt"], (text, got)
+
 # 1 rowboat regression
 rp = json.load(open(ROOT / "songs/rowboat/cutplan.json", encoding="utf-8"))
 for lang in ("ta", "en"):
@@ -44,7 +57,7 @@ for lang, n in (("ta", 47), ("en", 48)):
         assert order.index("H3b") + 1 == order.index("BRKa"), "Tamil break must follow Hook 3"
 
 if a.plan_only:
-    print("PASS (plan only): rowboat order unchanged; butterfly 47/48 slots, re-use + trims fit"); sys.exit(0)
+    print("PASS (plan only): ffmpeg filter option by version; rowboat order unchanged; butterfly 47/48 slots, re-use + trims fit"); sys.exit(0)
 
 # 3 stand-in encode
 folder = Path(a.song_folder)
@@ -64,4 +77,4 @@ with tempfile.TemporaryDirectory() as td:
     assert r.returncode == 0, "song_cuts failed"
     assert r.stdout.count("video frames = plan") == 2, "frame check line missing"
     assert "holds last frame" not in r.stdout, "a clip is too short for its slot"
-print("PASS: rowboat order unchanged; butterfly 47/48 slots, re-use + trims fit, both stand-in cuts frame-exact")
+print("PASS: ffmpeg filter option by version; rowboat order unchanged; butterfly 47/48 slots, re-use + trims fit, both stand-in cuts frame-exact")

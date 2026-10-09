@@ -51,6 +51,22 @@ def clip_path(song_dir, folder, s, src_mode):
         return Path(song_dir) / "out_4k" / s["take"]
     return folder / staged_name(s)
 
+def ffmpeg_major(version_text):
+    """Major version from `ffmpeg -version` output, or None for builds without one (git / N-xxxxx builds)."""
+    m = re.match(r"ffmpeg version n?(\d+)\.", version_text.strip())
+    return int(m.group(1)) if m else None
+
+def filter_graph_args(graph, version_text=None):
+    """ffmpeg 7.0 replaced `-filter_complex_script FILE` with `-/filter_complex FILE`, and ffmpeg 9 (Beast, 8 Oct 2026)
+    no longer accepts the old form ("Unrecognized option 'filter_complex_script'"). Use the old form only on a known
+    ffmpeg < 7 (e.g. Ubuntu 6.1); numbered >= 7 and git builds get the new one."""
+    if version_text is None:
+        version_text = subprocess.run(["ffmpeg", "-hide_banner", "-version"], capture_output=True, text=True).stdout
+    major = ffmpeg_major(version_text)
+    if major is not None and major < 7:
+        return ["-filter_complex_script", str(graph)]
+    return ["-/filter_complex", str(graph)]
+
 def video_frames(p):
     r = subprocess.run(["ffprobe", "-v", "error", "-count_packets", "-select_streams", "v:0", "-show_entries",
                         "stream=nb_read_packets", "-of", "csv=p=0", str(p)], capture_output=True, text=True)
@@ -131,7 +147,7 @@ def cut(song_dir, plan, folder, lang, src_mode, out_dir=None, transitions="auto"
     enc = (["-c:v", "libx264", "-preset", "ultrafast", "-crf", "30"] if preview else
            ["-c:v", "libx264", "-preset", "medium", "-crf", "16", "-pix_fmt", "yuv420p"]
            + (["-profile:v", "high", "-level", "5.1"] if H >= 2160 else []))
-    cmd = (["ffmpeg", "-y", "-loglevel", "error"] + inputs + ["-i", str(wav), "-filter_complex_script", str(graph),
+    cmd = (["ffmpeg", "-y", "-loglevel", "error"] + inputs + ["-i", str(wav)] + filter_graph_args(graph) + [
            "-map", "[v]", "-map", "%d:a" % len(shots), "-t", "%.3f" % length] + enc +
            ["-r", str(FPS), "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-movflags", "+faststart", str(out)])
     print("\n".join(log))
