@@ -19,3 +19,10 @@
 2026-10-09 15:38 idle
 2026-10-09 15:45 start 2026-10-09-urulai-gate3
 2026-10-09 16:09 end 2026-10-09-urulai-gate3 done est $5.70
+2026-10-09 16:09 idle
+2026-10-09 16:15 hold 2026-10-09-urulai-gate4 - not started: $11.60 finished + $5.90 cap = $17.50, over the original $17.00 and under the $18.00 now written in L05-WATCH.md; CC is waiting for Arul to confirm the $18.00 cap in the CC chat (nothing blocked, no marker written)
+2026-10-09 16:24 hold 2026-10-09-urulai-gate4 - still waiting for Arul to confirm the $18.00 cap in the CC chat
+2026-10-09 16:34 hold 2026-10-09-urulai-gate4 - still waiting for Arul to confirm the $18.00 cap in the CC chat
+2026-10-09 16:44 hold 2026-10-09-urulai-gate4 - still waiting for Arul to confirm the $18.00 cap in the CC chat
+2026-10-09 16:46 start 2026-10-09-urulai-gate4 (Arul confirmed the $18.00 cap in the CC chat)
+2026-10-09 17:10 end 2026-10-09-urulai-gate4 done est $5.80
