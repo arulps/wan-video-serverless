@@ -5,3 +5,4 @@
 - 18:09 item-01: cutplan.json written (33 slots, 17 clips); 17 clips staged; ROUGH-TA 4448 frames and ROUGH-EN 4452 frames = plan, 0 held-frame lines; two contact sheets in the song folder _cuts
 - 18:09 item-01 done
 - QUEUE END 2026-10-09 18:09 est $0.00
+- commit 5c27ac3 (pushed with this line in a follow-up record commit)
