@@ -1,0 +1,662 @@
+{
+ "song": "L05 Urulaikizhangu",
+ "song_folder": "C:\\Channel Contents\\MinMiniKids\\songs\\L05-Urulaikizhangu chellakutti",
+ "audio": {
+  "ta": "_audio/TA-with-outro.wav",
+  "en": "_audio/EN-with-outro.wav"
+ },
+ "length": {
+  "ta": 148.261,
+  "en": 148.4
+ },
+ "xfade": 0,
+ "hard_cut_into": "all",
+ "fades": {
+  "ta": {
+   "in": 1.0,
+   "out": 2.0
+  },
+  "en": {
+   "in": 1.0,
+   "out": 2.0
+  }
+ },
+ "shots": [
+  {
+   "n": "01",
+   "id": "I1",
+   "slot": "INTRO-01",
+   "slug": "good-night-little-vegetables",
+   "title": "Good night, little vegetables",
+   "kind": "none",
+   "gen": 11.0,
+   "ta_in": 0.0,
+   "ta_out": 9.288,
+   "en_in": 0.0,
+   "en_out": 9.685,
+   "slip": {},
+   "take": "I1-seed30313-w3.mp4",
+   "lyric": "",
+   "lyric_en": ""
+  },
+  {
+   "n": "02",
+   "id": "SA",
+   "slot": "CH1-02",
+   "slug": "chorus-where-did-it-go-look-around",
+   "title": "Chorus — 'where did it go?' (look around)",
+   "kind": "none",
+   "gen": 7.0,
+   "ta_in": 9.288,
+   "ta_out": 13.63,
+   "en_in": 9.685,
+   "en_out": 14.027,
+   "slip": {},
+   "take": "SA-seed30313-w3.mp4",
+   "lyric": "உருளைக்கிழங்கு / செல்லக்குட்டி எங்க போச்சு",
+   "lyric_en": "Little sweet potato, / Where did you go?"
+  },
+  {
+   "n": "04",
+   "id": "ZK1",
+   "slot": "CH1-03",
+   "slug": "chorus-verse-asleep-in-brinjal-s-basket-then-bri",
+   "title": "Chorus + verse — asleep in Brinjal's basket, then Brinjal kicked it",
+   "kind": "none",
+   "gen": 10.0,
+   "ta_in": 13.63,
+   "ta_out": 17.995,
+   "en_in": 14.027,
+   "en_out": 18.392,
+   "slip": {
+    "ta": 0.4,
+    "en": 0.4
+   },
+   "take": "ZK1-seed30313-w3.mp4",
+   "lyric": "கத்தரிக்காய் / கூடையில தூங்க போச்சு",
+   "lyric_en": "Eggplant's basket, / Off to sleep you go!"
+  },
+  {
+   "n": "04",
+   "id": "ZK1",
+   "slot": "V1-04",
+   "slug": "chorus-verse-asleep-in-brinjal-s-basket-then-bri",
+   "title": "Chorus + verse — asleep in Brinjal's basket, then Brinjal kicked it",
+   "kind": "none",
+   "gen": 10.0,
+   "ta_in": 17.995,
+   "ta_out": 22.361,
+   "en_in": 18.392,
+   "en_out": 22.688,
+   "slip": {
+    "ta": 4.765,
+    "en": 4.765
+   },
+   "take": "ZK1-seed30313-w3.mp4",
+   "lyric": "கத்தரிக்காய் / எட்டி உதைக்க அழுதிருச்சு",
+   "lyric_en": "Eggplant / Kicked the potato, made it cry,"
+  },
+  {
+   "n": "15",
+   "id": "CA",
+   "slot": "V1-05",
+   "slug": "verse-amma-comes-cuddles-giggles",
+   "title": "Verse — Amma comes, cuddles, giggles",
+   "kind": "none",
+   "gen": 8.0,
+   "ta_in": 22.361,
+   "ta_out": 26.726,
+   "en_in": 22.688,
+   "en_out": 27.123,
+   "slip": {},
+   "take": "CA-seed30313-w3.mp4",
+   "lyric": "அம்மா வந்து / கொஞ்சினதும் சிரிச்சிருச்சு",
+   "lyric_en": "Mommy came and cuddled it, / Then it smiled, oh my, oh my!"
+  },
+  {
+   "n": "03",
+   "id": "SB",
+   "slot": "CH2-06",
+   "slug": "chorus-where-did-it-go-tiptoe-search",
+   "title": "Chorus — 'where did it go?' (tiptoe search)",
+   "kind": "none",
+   "gen": 7.0,
+   "ta_in": 26.726,
+   "ta_out": 31.068,
+   "en_in": 27.123,
+   "en_out": 31.465,
+   "slip": {},
+   "take": "SB-seed30313-w3.mp4",
+   "lyric": "உருளைக்கிழங்கு / செல்லக்குட்டி எங்க போச்சு",
+   "lyric_en": "Little sweet potato, / Where did you go?"
+  },
+  {
+   "n": "05",
+   "id": "ZK2",
+   "slot": "CH2-07",
+   "slug": "chorus-verse-asleep-in-okra-s-basket-then-okra-p",
+   "title": "Chorus + verse — asleep in Okra's basket, then Okra pushed it",
+   "kind": "none",
+   "gen": 10.0,
+   "ta_in": 31.068,
+   "ta_out": 35.434,
+   "en_in": 31.465,
+   "en_out": 35.807,
+   "slip": {
+    "ta": 0.4,
+    "en": 0.4
+   },
+   "take": "ZK2-seed30313-w3.mp4",
+   "lyric": "வெண்டைக்காய் / கூடையில தூங்க போச்சு",
+   "lyric_en": "Okra's basket, / Off to sleep you go!"
+  },
+  {
+   "n": "05",
+   "id": "ZK2",
+   "slot": "V2-08",
+   "slug": "chorus-verse-asleep-in-okra-s-basket-then-okra-p",
+   "title": "Chorus + verse — asleep in Okra's basket, then Okra pushed it",
+   "kind": "none",
+   "gen": 10.0,
+   "ta_in": 35.434,
+   "ta_out": 39.776,
+   "en_in": 35.807,
+   "en_out": 40.08,
+   "slip": {
+    "ta": 4.766,
+    "en": 4.742
+   },
+   "take": "ZK2-seed30313-w3.mp4",
+   "lyric": "வெண்டைக்காய் / தள்ளிவிட அழுதிருச்சு",
+   "lyric_en": "Okra / Pushed the potato, made it cry,"
+  },
+  {
+   "n": "16",
+   "id": "CB",
+   "slot": "V2-09",
+   "slug": "verse-amma-comes-kisses-tickles",
+   "title": "Verse — Amma comes, kisses, tickles",
+   "kind": "none",
+   "gen": 8.0,
+   "ta_in": 39.776,
+   "ta_out": 44.118,
+   "en_in": 40.08,
+   "en_out": 44.492,
+   "slip": {},
+   "take": "CB-seed30313-w3.mp4",
+   "lyric": "அம்மா வந்து / கொஞ்சினதும் சிரிச்சிருச்சு",
+   "lyric_en": "Mommy came and cuddled it, / Then it smiled, oh my, oh my!"
+  },
+  {
+   "n": "02",
+   "id": "SA",
+   "slot": "CH3-10",
+   "slug": "chorus-where-did-it-go-look-around",
+   "title": "Chorus — 'where did it go?' (look around)",
+   "kind": "none",
+   "gen": 7.0,
+   "ta_in": 44.118,
+   "ta_out": 48.46,
+   "en_in": 44.492,
+   "en_out": 48.834,
+   "slip": {
+    "ta": 1.6,
+    "en": 1.6
+   },
+   "take": "SA-seed30313-w3.mp4",
+   "lyric": "உருளைக்கிழங்கு / செல்லக்குட்டி எங்க போச்சு",
+   "lyric_en": "Little sweet potato, / Where did you go?"
+  },
+  {
+   "n": "06",
+   "id": "Z3",
+   "slot": "CH3-11",
+   "slug": "chorus-asleep-in-tomato-s-basket",
+   "title": "Chorus — asleep in Tomato's basket",
+   "kind": "none",
+   "gen": 6.0,
+   "ta_in": 48.46,
+   "ta_out": 52.802,
+   "en_in": 48.834,
+   "en_out": 53.153,
+   "slip": {
+    "ta": 0.6,
+    "en": 0.6
+   },
+   "take": "Z3-seed30313-w3.mp4",
+   "lyric": "தக்காளி / கூடையில தூங்க போச்சு",
+   "lyric_en": "Tomato's basket, / Off to sleep you go!"
+  },
+  {
+   "n": "11",
+   "id": "K3",
+   "slot": "V3-12",
+   "slug": "verse-tomato-rolled-onto-it",
+   "title": "Verse — Tomato rolled onto it",
+   "kind": "none",
+   "gen": 6.0,
+   "ta_in": 52.802,
+   "ta_out": 57.168,
+   "en_in": 53.153,
+   "en_out": 57.448,
+   "slip": {},
+   "take": "K3-seed30313-w3.mp4",
+   "lyric": "தக்காளி / உருண்டுவிட அழுதிருச்சு",
+   "lyric_en": "Tomato / Rolled the potato, made it cry,"
+  },
+  {
+   "n": "15",
+   "id": "CA",
+   "slot": "V3-13",
+   "slug": "verse-amma-comes-cuddles-giggles",
+   "title": "Verse — Amma comes, cuddles, giggles",
+   "kind": "none",
+   "gen": 8.0,
+   "ta_in": 57.168,
+   "ta_out": 61.51,
+   "en_in": 57.448,
+   "en_out": 61.837,
+   "slip": {
+    "ta": 0.8,
+    "en": 0.8
+   },
+   "take": "CA-seed30313-w3.mp4",
+   "lyric": "அம்மா வந்து / கொஞ்சினதும் சிரிச்சிருச்சு",
+   "lyric_en": "Mommy came and cuddled it, / Then it smiled, oh my, oh my!"
+  },
+  {
+   "n": "03",
+   "id": "SB",
+   "slot": "CH4-14",
+   "slug": "chorus-where-did-it-go-tiptoe-search",
+   "title": "Chorus — 'where did it go?' (tiptoe search)",
+   "kind": "none",
+   "gen": 7.0,
+   "ta_in": 61.51,
+   "ta_out": 65.805,
+   "en_in": 61.837,
+   "en_out": 66.156,
+   "slip": {
+    "ta": 1.6,
+    "en": 1.6
+   },
+   "take": "SB-seed30313-w3.mp4",
+   "lyric": "உருளைக்கிழங்கு / செல்லக்குட்டி எங்க போச்சு",
+   "lyric_en": "Little sweet potato, / Where did you go?"
+  },
+  {
+   "n": "07",
+   "id": "ZK4",
+   "slot": "CH4-15",
+   "slug": "chorus-verse-asleep-in-carrot-s-basket-then-carr",
+   "title": "Chorus + verse — asleep in Carrot's basket, then Carrot tripped it",
+   "kind": "none",
+   "gen": 10.0,
+   "ta_in": 65.805,
+   "ta_out": 70.147,
+   "en_in": 66.156,
+   "en_out": 70.475,
+   "slip": {
+    "ta": 0.4,
+    "en": 0.4
+   },
+   "take": "ZK4-seed30313-w3.mp4",
+   "lyric": "கேரட் / கூடையில தூங்க போச்சு",
+   "lyric_en": "Carrot's basket, / Off to sleep you go!"
+  },
+  {
+   "n": "07",
+   "id": "ZK4",
+   "slot": "V4-16",
+   "slug": "chorus-verse-asleep-in-carrot-s-basket-then-carr",
+   "title": "Chorus + verse — asleep in Carrot's basket, then Carrot tripped it",
+   "kind": "none",
+   "gen": 10.0,
+   "ta_in": 70.147,
+   "ta_out": 74.513,
+   "en_in": 70.475,
+   "en_out": 74.724,
+   "slip": {
+    "ta": 4.742,
+    "en": 4.719
+   },
+   "take": "ZK4-seed30313-w3.mp4",
+   "lyric": "கேரட் / தடுக்கிவிட அழுதிருச்சு",
+   "lyric_en": "Carrot / Tripped the potato, made it cry,"
+  },
+  {
+   "n": "16",
+   "id": "CB",
+   "slot": "V4-17",
+   "slug": "verse-amma-comes-kisses-tickles",
+   "title": "Verse — Amma comes, kisses, tickles",
+   "kind": "none",
+   "gen": 8.0,
+   "ta_in": 74.513,
+   "ta_out": 78.855,
+   "en_in": 74.724,
+   "en_out": 79.113,
+   "slip": {
+    "ta": 0.8,
+    "en": 0.8
+   },
+   "take": "CB-seed30313-w3.mp4",
+   "lyric": "அம்மா வந்து / கொஞ்சினதும் சிரிச்சிருச்சு",
+   "lyric_en": "Mommy came and cuddled it, / Then it smiled, oh my, oh my!"
+  },
+  {
+   "n": "02",
+   "id": "SA",
+   "slot": "CH5-18",
+   "slug": "chorus-where-did-it-go-look-around",
+   "title": "Chorus — 'where did it go?' (look around)",
+   "kind": "none",
+   "gen": 7.0,
+   "ta_in": 78.855,
+   "ta_out": 83.197,
+   "en_in": 79.113,
+   "en_out": 83.408,
+   "slip": {
+    "ta": 0.8,
+    "en": 0.8
+   },
+   "take": "SA-seed30313-w3.mp4",
+   "lyric": "உருளைக்கிழங்கு / செல்லக்குட்டி எங்க போச்சு",
+   "lyric_en": "Little sweet potato, / Where did you go?"
+  },
+  {
+   "n": "08",
+   "id": "Z5",
+   "slot": "CH5-19",
+   "slug": "chorus-asleep-in-radish-s-basket",
+   "title": "Chorus — asleep in Radish's basket",
+   "kind": "none",
+   "gen": 6.0,
+   "ta_in": 83.197,
+   "ta_out": 87.539,
+   "en_in": 83.408,
+   "en_out": 87.727,
+   "slip": {},
+   "take": "Z5-seed30313-w3.mp4",
+   "lyric": "முள்ளங்கி / கூடையில தூங்க போச்சு",
+   "lyric_en": "Radish's basket, / Off to sleep you go!"
+  },
+  {
+   "n": "12",
+   "id": "K5",
+   "slot": "V5-20",
+   "slug": "verse-radish-pulled-it",
+   "title": "Verse — Radish pulled it",
+   "kind": "none",
+   "gen": 6.0,
+   "ta_in": 87.539,
+   "ta_out": 91.858,
+   "en_in": 87.727,
+   "en_out": 91.953,
+   "slip": {
+    "ta": 1.2,
+    "en": 1.2
+   },
+   "take": "K5-seed30313-w3.mp4",
+   "lyric": "முள்ளங்கி / இழுத்துவிட அழுதிருச்சு",
+   "lyric_en": "Radish / Pulled the potato, made it cry,"
+  },
+  {
+   "n": "15",
+   "id": "CA",
+   "slot": "V5-21",
+   "slug": "verse-amma-comes-cuddles-giggles",
+   "title": "Verse — Amma comes, cuddles, giggles",
+   "kind": "none",
+   "gen": 8.0,
+   "ta_in": 91.858,
+   "ta_out": 96.177,
+   "en_in": 91.953,
+   "en_out": 96.342,
+   "slip": {
+    "ta": 1.6,
+    "en": 1.6
+   },
+   "take": "CA-seed30313-w3.mp4",
+   "lyric": "அம்மா வந்து / கொஞ்சினதும் சிரிச்சிருச்சு",
+   "lyric_en": "Mommy came and cuddled it, / Then it smiled, oh my, oh my!"
+  },
+  {
+   "n": "03",
+   "id": "SB",
+   "slot": "CH6-22",
+   "slug": "chorus-where-did-it-go-tiptoe-search",
+   "title": "Chorus — 'where did it go?' (tiptoe search)",
+   "kind": "none",
+   "gen": 7.0,
+   "ta_in": 96.177,
+   "ta_out": 100.519,
+   "en_in": 96.342,
+   "en_out": 100.661,
+   "slip": {
+    "ta": 0.8,
+    "en": 0.8
+   },
+   "take": "SB-seed30313-w3.mp4",
+   "lyric": "உருளைக்கிழங்கு / செல்லக்குட்டி எங்க போச்சு",
+   "lyric_en": "Little sweet potato, / Where did you go?"
+  },
+  {
+   "n": "09",
+   "id": "Z6",
+   "slot": "CH6-23",
+   "slug": "chorus-asleep-in-cabbage-s-basket",
+   "title": "Chorus — asleep in Cabbage's basket",
+   "kind": "none",
+   "gen": 6.0,
+   "ta_in": 100.519,
+   "ta_out": 104.861,
+   "en_in": 100.661,
+   "en_out": 104.91,
+   "slip": {
+    "ta": 1.2,
+    "en": 1.2
+   },
+   "take": "Z6-seed30313-w3.mp4",
+   "lyric": "முட்டைக்கோஸ் / கூடையில தூங்க போச்சு",
+   "lyric_en": "Cabbage's basket, / Off to sleep you go!"
+  },
+  {
+   "n": "13",
+   "id": "K6",
+   "slot": "V6-24",
+   "slug": "verse-cabbage-covered-it-up",
+   "title": "Verse — Cabbage covered it up",
+   "kind": "none",
+   "gen": 6.0,
+   "ta_in": 104.861,
+   "ta_out": 109.18,
+   "en_in": 104.91,
+   "en_out": 109.206,
+   "slip": {},
+   "take": "K6-seed30313-w3.mp4",
+   "lyric": "முட்டைக்கோஸ் / மூடிவிட அழுதிருச்சு",
+   "lyric_en": "Cabbage / Covered the potato, made it cry,"
+  },
+  {
+   "n": "16",
+   "id": "CB",
+   "slot": "V6-25",
+   "slug": "verse-amma-comes-kisses-tickles",
+   "title": "Verse — Amma comes, kisses, tickles",
+   "kind": "none",
+   "gen": 8.0,
+   "ta_in": 109.18,
+   "ta_out": 113.499,
+   "en_in": 109.206,
+   "en_out": 113.571,
+   "slip": {
+    "ta": 1.6,
+    "en": 1.6
+   },
+   "take": "CB-seed30313-w3.mp4",
+   "lyric": "அம்மா வந்து / கொஞ்சினதும் சிரிச்சிருச்சு",
+   "lyric_en": "Mommy came and cuddled it, / Then it smiled, oh my, oh my!"
+  },
+  {
+   "n": "02",
+   "id": "SA",
+   "slot": "CH7-26",
+   "slug": "chorus-where-did-it-go-look-around",
+   "title": "Chorus — 'where did it go?' (look around)",
+   "kind": "none",
+   "gen": 7.0,
+   "ta_in": 113.499,
+   "ta_out": 117.818,
+   "en_in": 113.571,
+   "en_out": 117.843,
+   "slip": {
+    "ta": 2.4,
+    "en": 2.4
+   },
+   "take": "SA-seed30313-w3.mp4",
+   "lyric": "உருளைக்கிழங்கு / செல்லக்குட்டி எங்க போச்சு",
+   "lyric_en": "Little sweet potato, / Where did you go?"
+  },
+  {
+   "n": "10",
+   "id": "ZK7",
+   "slot": "CH7-27",
+   "slug": "chorus-verse-asleep-in-beans-s-basket-then-beans",
+   "title": "Chorus + verse — asleep in Beans's basket, then Beans pushed it",
+   "kind": "none",
+   "gen": 10.0,
+   "ta_in": 117.818,
+   "ta_out": 122.137,
+   "en_in": 117.843,
+   "en_out": 122.139,
+   "slip": {
+    "ta": 0.4,
+    "en": 0.4
+   },
+   "take": "ZK7-seed30313-w3.mp4",
+   "lyric": "பீன்ஸ் / கூடையில தூங்க போச்சு",
+   "lyric_en": "Green beans' basket, / Off to sleep you go!"
+  },
+  {
+   "n": "10",
+   "id": "ZK7",
+   "slot": "V7-28",
+   "slug": "chorus-verse-asleep-in-beans-s-basket-then-beans",
+   "title": "Chorus + verse — asleep in Beans's basket, then Beans pushed it",
+   "kind": "none",
+   "gen": 10.0,
+   "ta_in": 122.137,
+   "ta_out": 126.456,
+   "en_in": 122.139,
+   "en_out": 126.365,
+   "slip": {
+    "ta": 4.719,
+    "en": 4.696
+   },
+   "take": "ZK7-seed30313-w3.mp4",
+   "lyric": "பீன்ஸ் / தள்ளிவிட அழுதிருச்சு",
+   "lyric_en": "Green beans / Pushed the potato, made it cry,"
+  },
+  {
+   "n": "15",
+   "id": "CA",
+   "slot": "V7-29",
+   "slug": "verse-amma-comes-cuddles-giggles",
+   "title": "Verse — Amma comes, cuddles, giggles",
+   "kind": "none",
+   "gen": 8.0,
+   "ta_in": 126.456,
+   "ta_out": 130.775,
+   "en_in": 126.365,
+   "en_out": 130.754,
+   "slip": {
+    "ta": 0.4,
+    "en": 0.4
+   },
+   "take": "CA-seed30313-w3.mp4",
+   "lyric": "அம்மா வந்து / கொஞ்சினதும் சிரிச்சிருச்சு",
+   "lyric_en": "Mommy came and cuddled it, / Then it smiled, oh my, oh my!"
+  },
+  {
+   "n": "03",
+   "id": "SB",
+   "slot": "CH8-30",
+   "slug": "chorus-where-did-it-go-tiptoe-search",
+   "title": "Chorus — 'where did it go?' (tiptoe search)",
+   "kind": "none",
+   "gen": 7.0,
+   "ta_in": 130.775,
+   "ta_out": 135.07,
+   "en_in": 130.754,
+   "en_out": 135.026,
+   "slip": {
+    "ta": 2.4,
+    "en": 2.4
+   },
+   "take": "SB-seed30313-w3.mp4",
+   "lyric": "உருளைக்கிழங்கு / செல்லக்குட்டி எங்க போச்சு",
+   "lyric_en": "Little sweet potato, / Where did you go?"
+  },
+  {
+   "n": "14",
+   "id": "ZO",
+   "slot": "CH8-31",
+   "slug": "final-chorus-outro-the-big-basket-amma-tucks-the",
+   "title": "Final chorus + outro — the big basket, Amma tucks them in",
+   "kind": "none",
+   "gen": 10.0,
+   "ta_in": 135.07,
+   "ta_out": 139.413,
+   "en_in": 135.026,
+   "en_out": 139.552,
+   "slip": {
+    "ta": 0.4,
+    "en": 0.4
+   },
+   "take": "ZO-seed30313-w3.mp4",
+   "lyric": "காய்கறி / கூடையில தூங்க போச்சு",
+   "lyric_en": "All the veggies' baskets, / Off to sleep you go!"
+  },
+  {
+   "n": "14",
+   "id": "ZO",
+   "slot": "OUTRO-32",
+   "slug": "final-chorus-outro-the-big-basket-amma-tucks-the",
+   "title": "Final chorus + outro — the big basket, Amma tucks them in",
+   "kind": "none",
+   "gen": 10.0,
+   "ta_in": 139.413,
+   "ta_out": 144.013,
+   "en_in": 139.552,
+   "en_out": 144.152,
+   "slip": {
+    "ta": 4.743,
+    "en": 4.926
+   },
+   "take": "ZO-seed30313-w3.mp4",
+   "lyric": "",
+   "lyric_en": ""
+  },
+  {
+   "n": "17",
+   "id": "O2",
+   "slot": "OUTRO-33",
+   "slug": "outro-shh",
+   "title": "Outro — shh!",
+   "kind": "none",
+   "gen": 6.0,
+   "ta_in": 144.013,
+   "ta_out": 148.261,
+   "en_in": 144.152,
+   "en_out": 148.4,
+   "slip": {
+    "ta": 1.2,
+    "en": 1.2
+   },
+   "take": "O2-seed30313-w3.mp4",
+   "lyric": "",
+   "lyric_en": ""
+  }
+ ]
+}
