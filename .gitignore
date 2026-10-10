@@ -19,3 +19,6 @@ tools/
 
 # Arul's delete folder — reviewed, waiting for him to empty it; never committed
 _to_delete/
+
+# per-song 4K upscales (Real-ESRGAN takes + sidecars) — large, rebuilt by scripts/song_4k.ps1, never committed
+songs/*/out_4k/

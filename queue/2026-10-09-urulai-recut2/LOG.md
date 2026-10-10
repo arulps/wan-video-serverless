@@ -1,0 +1,24 @@
+# LOG — queue 2026-10-09-urulai-recut2 (machine: arulps-beast)
+
+- 2026-10-09 21:55 QUEUE START (budget check: $17.40 finished L05 + $0.00, no API in this queue = $17.40 of $18.00 list)
+- 21:55 item-01 start
+- 21:59 item-01: cutplan rev 2 (I1 = splice); ROUGH2-TA 4448 frames and ROUGH2-EN 4452 frames = plan, 0 held-frame lines; two ROUGH2 contact sheets; nothing renamed (song_cuts overwrote its own _graph-*.txt scratch files)
+- 21:59 item-01 done
+- 21:59 item-02 start
+- 22:01 item-02 done (4K job running in its own window since 21:59, process 22588; first take upscaling, no error)
+- 22:01 item-03 start (checking every 5 min, up to 120 min)
+- 22:01 check: clips done 0/17 (first take upscaled 295 frames in 124.4 s, 0.42 s/frame); no 4K cut files yet
+- 22:06 check: clips done 3/17; no 4K cut files yet; log fresh, no error
+- 22:11 check: clips done 4/17 (5th upscaled, encoding; last clip ran at 0.73 s/frame, slower than the first); no 4K cut files yet; no error
+- 22:16 check: clips done 6/17; no 4K cut files yet; no error
+- 22:21 check: clips done 7/17; no 4K cut files yet; no error
+- 22:26 check: clips done 9/17; no 4K cut files yet; no error
+- 22:30 check: clips done 10/17; no 4K cut files yet; no error
+- 22:35 check: clips done 12/17; no 4K cut files yet; no error
+- 22:40 check: clips done 15/17 (ZO started); no 4K cut files yet; no error
+- 22:45 check: clips done 17/17 (ALL DONE); the 4K TA cut file has appeared (still being written), EN not yet; no error
+- 22:50 check: clips 17/17; both 4K cut files exist (EN still being written); log not yet updated by the cut step
+- 22:55 check: both 'wrote' lines in the log - TA 4448 and EN 4452 frames = plan
+- 23:03 item-03: V1-4K-TA 3840x2160, 4448 frames, AAC, 452 MB; V1-4K-EN 3840x2160, 4452 frames, AAC, 453 MB; 0 held-frame lines; 17 takes + 17 sidecars in out_4k; total about 53 min; .gitignore got songs/*/out_4k/
+- 23:03 item-03 done
+- QUEUE END 2026-10-09 23:03 est $0.00
