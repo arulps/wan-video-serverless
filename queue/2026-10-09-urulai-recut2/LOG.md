@@ -22,3 +22,4 @@
 - 23:03 item-03: V1-4K-TA 3840x2160, 4448 frames, AAC, 452 MB; V1-4K-EN 3840x2160, 4452 frames, AAC, 453 MB; 0 held-frame lines; 17 takes + 17 sidecars in out_4k; total about 53 min; .gitignore got songs/*/out_4k/
 - 23:03 item-03 done
 - QUEUE END 2026-10-09 23:03 est $0.00
+- commit 4f3f122 (pushed with this line in a follow-up record commit)
