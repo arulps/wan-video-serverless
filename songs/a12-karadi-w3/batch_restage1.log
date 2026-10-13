@@ -1,0 +1,28 @@
+[V1A] -> wan3 wan3.0-video 720P 16:9 6s refs=2 first=False last=False est $0.60
+  wan3 submitted task 044141e9-dbb3-42a8-8406-8d225274fb11
+  wan3 task 044141e9-dbb3-42a8-8406-8d225274fb11: RUNNING
+  wan3 task 044141e9-dbb3-42a8-8406-8d225274fb11: SUCCEEDED
+[V1A] done in 131.3s -> songs/a12-karadi-w3\out\V1A-seed30313-w3.mp4 (running list-price estimate $0.60)
+[V2A] -> wan3 wan3.0-video 720P 16:9 6s refs=2 first=False last=False est $0.60
+  wan3 submitted task f8402c4c-f4d7-4909-97c2-d3b4990cf405
+  wan3 task f8402c4c-f4d7-4909-97c2-d3b4990cf405: RUNNING
+  wan3 task f8402c4c-f4d7-4909-97c2-d3b4990cf405: SUCCEEDED
+[V2A] done in 131.1s -> songs/a12-karadi-w3\out\V2A-seed30313-w3.mp4 (running list-price estimate $1.20)
+[V3A] -> wan3 wan3.0-video 720P 16:9 6s refs=5 first=False last=False est $0.60
+  wan3 submitted task 8f738dd8-c113-466e-b26d-54d58c55b839
+  wan3 task 8f738dd8-c113-466e-b26d-54d58c55b839: RUNNING
+  wan3 task 8f738dd8-c113-466e-b26d-54d58c55b839: SUCCEEDED
+[V3A] done in 146.9s -> songs/a12-karadi-w3\out\V3A-seed30313-w3.mp4 (running list-price estimate $1.80)
+[V4A] -> wan3 wan3.0-video 720P 16:9 6s refs=5 first=False last=False est $0.60
+  wan3 submitted task a7e6e7c5-07de-434a-84a0-ab787b0ce44f
+  wan3 task a7e6e7c5-07de-434a-84a0-ab787b0ce44f: RUNNING
+  wan3 task a7e6e7c5-07de-434a-84a0-ab787b0ce44f: SUCCEEDED
+[V4A] done in 162.7s -> songs/a12-karadi-w3\out\V4A-seed30313-w3.mp4 (running list-price estimate $2.40)
+
+SHOT       STATUS       WALL_S  FILE
+V1A        done          131.3  songs/a12-karadi-w3\out\V1A-seed30313-w3.mp4
+V2A        done          131.1  songs/a12-karadi-w3\out\V2A-seed30313-w3.mp4
+V3A        done          146.9  songs/a12-karadi-w3\out\V3A-seed30313-w3.mp4
+V4A        done          162.7  songs/a12-karadi-w3\out\V4A-seed30313-w3.mp4
+
+total GPU-minutes (done shots): 9.5

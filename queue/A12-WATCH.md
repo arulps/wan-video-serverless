@@ -16,8 +16,8 @@ Fable checks the same folder on its own schedule, reviews finished queues, and w
    has a `READY` file, has **no** `QUEUE END` line in its `LOG.md`, and has **no** `*.blocked` file.
    - None → append `<time> idle` to `queue\A12-WATCH-LOG.md` and end the cycle. (One line per cycle; this is the heartbeat Fable reads.)
 4. **Budget check.** Add up the `est $` of every finished A12 queue (`QUEUE END … est $x` lines in `queue\2026-*-karadi-*\LOG.md`)
-   plus the new queue's own cap (`--max-usd` in its items). If the total would pass **$15.00 list** (the song cap, runsheet rev 1.2:
-   $12.40 planned + 20 % reserve), write `<queue>\item-01.blocked` with the numbers, tell Arul, append `<time> blocked budget <queue>`,
+   plus the new queue's own cap (`--max-usd` in its items). If the total would pass **$17.00 list** (the song cap: $15 at rev 1.2,
+   raised to $17 by Arul on 13 Oct for the rev 1.5 re-stage of the four verse answers), write `<queue>\item-01.blocked` with the numbers, tell Arul, append `<time> blocked budget <queue>`,
    and end the cycle. (The scale-rule queues are $0 and do not count.)
 5. **Run it.** Append `<time> start <queue>`. Then do exactly what that queue's `QUEUE.md` and `item-NN.md` files say, item by item,
    following its protocol and hard limits (markers, reports, commit). Never change a queue's files except the markers/reports it asks for.
@@ -27,7 +27,7 @@ Fable checks the same folder on its own schedule, reviews finished queues, and w
 ## Hard limits (on top of each queue's own)
 - Never write or edit a `QUEUE.md`, `item-NN.md` or `READY` file, and never create a queue — only Fable does.
 - Never re-run a failed or blocked item on your own. Never retry a render. A failure is reported, not re-run.
-- Song budget **$15.00 list** across all A12 queues (step 4). Never touch `.env`, RunPod, other songs, or the song folder in
+- Song budget **$17.00 list** across all A12 queues (step 4; raised from $15 by Arul, 13 Oct). Never touch `.env`, RunPod, other songs, or the song folder in
   `C:\Channel Contents\…` unless a queue item says so.
 - Never print `.env` values, API keys, the workspace id or any video URL.
 - Move or rename, never delete.
