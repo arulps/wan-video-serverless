@@ -40,3 +40,4 @@
 2026-10-13 15:41 start 2026-10-13-karadi-cuts ($0.00 queue; A12 total stays $13.00 of $15.00)
 2026-10-13 15:45 end 2026-10-13-karadi-cuts done est $0.00
 2026-10-13 15:52 start 2026-10-13-karadi-restage1 (budget: finished A12 queues $13.00 + cap $2.50 = $15.50 of $17.00 — cap raised from $15 in A12-WATCH.md, 13 Oct 15:47)
+2026-10-13 16:06 end 2026-10-13-karadi-restage1 done est $2.40 (A12 total $15.40 of $17.00)
