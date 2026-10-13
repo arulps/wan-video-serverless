@@ -1,0 +1,28 @@
+[V2A] -> wan3 wan3.0-video 720P 16:9 6s refs=2 first=False last=False est $0.60
+  wan3 submitted task 7a1d6dc7-b3d4-4344-acf3-37bdbc231543
+  wan3 task 7a1d6dc7-b3d4-4344-acf3-37bdbc231543: RUNNING
+  wan3 task 7a1d6dc7-b3d4-4344-acf3-37bdbc231543: FAILED
+[V2A] FAILED (wan3): Wan3 task 7a1d6dc7-b3d4-4344-acf3-37bdbc231543 FAILED: IPInfringementSuspect Output data is suspected of being involved in IP infringement
+[V3Q] -> wan3 wan3.0-video 720P 16:9 6s refs=6 first=False last=False est $0.60
+  wan3 submitted task 89855eaf-d17d-426d-9da8-2e87b6d90350
+  wan3 task 89855eaf-d17d-426d-9da8-2e87b6d90350: RUNNING
+  wan3 task 89855eaf-d17d-426d-9da8-2e87b6d90350: SUCCEEDED
+[V3Q] done in 163.4s -> songs/a12-karadi-w3\out\V3Q-seed30313-w3.mp4 (running list-price estimate $1.20)
+[V4A] -> wan3 wan3.0-video 720P 16:9 6s refs=6 first=False last=False est $0.60
+  wan3 submitted task ffab0fd8-35af-45a0-84f5-1b7b4e3a93ff
+  wan3 task ffab0fd8-35af-45a0-84f5-1b7b4e3a93ff: RUNNING
+  wan3 task ffab0fd8-35af-45a0-84f5-1b7b4e3a93ff: SUCCEEDED
+[V4A] done in 164.7s -> songs/a12-karadi-w3\out\V4A-seed30313-w3.mp4 (running list-price estimate $1.80)
+[O3] -> wan3 wan3.0-video 720P 16:9 7s refs=10 first=False last=False est $0.70
+  wan3 submitted task d36f3849-6881-407e-bd09-ff01289fab9e
+  wan3 task d36f3849-6881-407e-bd09-ff01289fab9e: RUNNING
+  wan3 task d36f3849-6881-407e-bd09-ff01289fab9e: SUCCEEDED
+[O3] done in 211.8s -> songs/a12-karadi-w3\out\O3-seed30313-w3.mp4 (running list-price estimate $2.50)
+
+SHOT       STATUS       WALL_S  FILE
+V2A        failed        130.2  Wan3 task 7a1d6dc7-b3d4-4344-acf3-37bdbc231543 FAILED: IPInfringementSuspect Output data is suspected of being involved in IP infringement
+V3Q        done          163.4  songs/a12-karadi-w3\out\V3Q-seed30313-w3.mp4
+V4A        done          164.7  songs/a12-karadi-w3\out\V4A-seed30313-w3.mp4
+O3         done          211.8  songs/a12-karadi-w3\out\O3-seed30313-w3.mp4
+
+total GPU-minutes (done shots): 9.0
