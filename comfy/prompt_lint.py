@@ -17,6 +17,11 @@ Checks every shots.csv row (engine wan3) against the rules learned in production
   R6 words      risky words from the learnings (sneeze, scream without "no tears", ...) -> WARN.
   R7 basics     duration 2-30 s, audio=no for songs (lint.json "audio"), prompt file exists and is non-empty.
   R8 no-cast    a shot with no refs at all -> WARN (style can drift photoreal; outdoor scenes usually hold).
+  R9 scale      every character in the refs has a height on record (comfy/character_scale.json or the song's scale.json)
+                and the prompt carries comfy/scale_line.py's SIZES line for that cast VERBATIM (Arul 9 Oct 2026, after
+                L05 drew Minnu half a head shorter than Mintu). Set/place refs ("the kitchen shelf set") are skipped;
+                a character with size modes (Minmini flying / perched) may carry the line for any of its modes.
+  R10 canon     a lock line in the song's characters.txt states an age that is not the canon age (e.g. "Minnu: girl, 6-8").
 
 Per-song rules live in <song>/lint.json (all keys optional):
   {"audio": "no",
@@ -25,10 +30,14 @@ Per-song rules live in <song>/lint.json (all keys optional):
    "exempt": ["off-screen", "out of frame"],            # a sentence with one of these doesn't put anyone in frame
    "owners": [{"pattern": "\\\\b(rows|rowing|oars?)\\\\b", "owner": "Appa", "require": "Only Appa"}],
    "risky": {"sneeze": "runny nose risk -- hide it (elbow)"},
-   "allow": {"I1": {"R3": "empty boat at the jetty, on purpose"}}}   # reviewed exceptions, each with its reason
+   "allow": {"I1": {"R3": "empty boat at the jetty, on purpose"}},   # reviewed exceptions, each with its reason
+   "not_characters": ["the old gate"]}                 # R9: ref labels that are places/props (place words are automatic)
 Exit code 0 = no FAIL, 1 = at least one FAIL, 2 = usage error.
 """
 import argparse, csv, json, os, re, sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import scale_line as SL  # noqa: E402
 
 DEFAULT_EXEMPT = ["off-screen", "off screen", "out of frame", "not shown", "not in frame", "as if seen from",
                   "empty", "nobody ", "no one ", "never ", "do not ", "don't "]
@@ -46,6 +55,30 @@ DEFAULT_RISKY = {
 BEAT_RE = re.compile(r"\[\s*\d+(\.\d+)?\s*[–-]\s*\d+(\.\d+)?\s*s\s*\]")
 HOLD_RE = re.compile(r"(no cuts between|stays on this|never cuts|does not cut|doesn't cut|no cut to|holds? (?:steady|on)|"
                      r"camera does not|whole shot|for the whole)", re.I)
+AGE_RE = re.compile(r"\b(\d{1,2}\s*[–-]\s*\d{1,2}|\d0s)\b")
+
+
+def canon_ages(song, table):
+    """R10: characters.txt lock lines whose stated age is not the canon age -> list of messages"""
+    p = os.path.join(song, "characters.txt")
+    out = []
+    if not os.path.exists(p):
+        return out
+    for line in open(p, encoding="utf-8"):
+        if ":" not in line or line.lstrip().startswith("#"):
+            continue
+        name, rest = line.split(":", 1)
+        e = SL.lookup(table, name.strip())
+        if not e or not e.get("age"):
+            continue
+        said = AGE_RE.search(rest)
+        tok = said.group(1).replace("–", "-").replace(" ", "") if said else None
+        if tok and tok not in e["age"].replace(" ", ""):        # "30s" fits "mid 30s"; "6-8" does not fit "5-6"
+            out.append(f"R10 characters.txt: {name.strip()} says '{said.group(1)}', canon age is '{e['age']}' "
+                       f"(comfy/character_scale.json) -- fix the lock line")
+    return out
+
+
 AVOID_START = re.compile(r"^\s*(no |nothing |avoid|ambient|keep every character|use the reference)", re.I)
 
 
@@ -90,12 +123,17 @@ def lint(song, only=None, quiet=False):
     risky = dict(DEFAULT_RISKY, **cfg.get("risky", {}))
     want_audio = cfg.get("audio")
     allow = cfg.get("allow", {})          # {"I1": {"R3": "empty boat on purpose"}} -- a reviewed, written-down exception
+    not_chars = cfg.get("not_characters", [])
+    table = SL.load(song)
 
     rows = list(csv.DictReader(open(os.path.join(song, "shots.csv"), encoding="utf-8", newline="")))
     cast_all = set()
     for r in rows:
         cast_all.update(x for x in (r.get("ref_labels") or "").split("|") if x)
     fails = warns = n = 0
+    for m in canon_ages(song, table):
+        print(f"song   FAIL\n   FAIL {m}")
+        fails += 1
     for r in rows:
         sid = r["shot_id"]
         if only and sid not in only:
@@ -206,6 +244,15 @@ def lint(song, only=None, quiet=False):
                         break
                     W(f"R6 {why}. «{s[:80]}»")
                     break
+
+        # R9 scale: heights on record + the SIZES line in the prompt
+        entries, missing = SL.cast_for_labels(table, labels, not_chars)
+        for c in missing:
+            F(f"R9 '{c}' has no height on record -> add it to comfy/character_scale.json or this song's scale.json")
+        if entries and not missing:
+            if not any(v in text for v in SL.variants(entries)):
+                F(f"R9 the SIZES line for this cast is missing or stale -> put the output of `py comfy/scale_line.py "
+                  f"--song {song} --shot {sid}` in the prompt verbatim")
 
         allowed = allow.get(sid, {})
         msgs = [(("ALLOW" if k == "FAIL" and m[:2] in allowed else k), (m + f"  [allowed: {allowed[m[:2]]}]"

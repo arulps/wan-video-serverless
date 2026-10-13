@@ -1,0 +1,26 @@
+{
+ "characters": [
+  {
+   "name": "Karadi Mama",
+   "type": "song",
+   "kind": "big friendly grown-up brown bear",
+   "height_m": 1.9,
+   "build": "big round body with a soft cream tummy, stands and walks upright on two legs",
+   "source": "A12 concept (Arul 10 Oct): a big grown-up bear, taller than Appa standing"
+  },
+  {
+   "name": "the rabbit",
+   "same_as": "Kutti Muyal",
+   "aliases": [
+    "rabbit"
+   ]
+  },
+  {
+   "name": "the squirrel",
+   "same_as": "Anil",
+   "aliases": [
+    "squirrel"
+   ]
+  }
+ ]
+}

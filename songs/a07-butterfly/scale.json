@@ -1,0 +1,9 @@
+{
+ "_about": "Butterfly (A07) song-only characters: the four butterflies are the non-human bible's Vanna (0.25 m), in four colours.",
+ "characters": [
+  {"name": "Red Butterfly", "aliases": ["Red-Butterfly"], "same_as": "Vanna"},
+  {"name": "Yellow Butterfly", "aliases": ["Yellow-Butterfly"], "same_as": "Vanna"},
+  {"name": "Blue Butterfly", "aliases": ["Blue-Butterfly"], "same_as": "Vanna"},
+  {"name": "Green Butterfly", "aliases": ["Green-Butterfly"], "same_as": "Vanna"}
+ ]
+}

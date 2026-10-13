@@ -139,5 +139,14 @@ at the higher resolution.
 ## 8 · Character lock lines (append for the cast)
 Mintu: little boy, 4–5, black hair with a cowlick above the right brow, warm brown skin, green t-shirt with a dinosaur
 print, blue shorts, blue shoes — keep him exactly as in the reference image; do not restyle, recolour or resize.
-Minnu: girl, 6–8, jet-black hair in two pigtails with red ribbon bows, warm brown skin, violet dungarees over a cream
+Minnu: girl, 5–6, jet-black hair in two pigtails with red ribbon bows, warm brown skin, violet dungarees over a cream
 t-shirt, white canvas shoes — keep her exactly as in the reference image; do not restyle, recolour or resize.
+
+## 9 · Sizes and builds go into every prompt (rule, Arul 9 Oct 2026)
+L05 drew Minnu about half a head shorter than Mintu; the canon has them level (Mintu 1.00 m, Minnu 1.02 m). Every prompt
+whose refs show a character carries the `SIZES` line from `py comfy/scale_line.py --song songs/<slug> --shot <ID>`
+verbatim — heights relative to Mintu, where a child's head reaches on a grown-up, plus each character's metres, age and
+build. The table is `docs/CHARACTER-SCALE.md` (generated from `comfy/character_scale.json`; song-only characters in
+`songs/<slug>/scale.json`). `prompt_lint` R9 fails a shot without the line or with a character that has no height; R10
+fails a `characters.txt` lock line whose age is not the canon age. The reference image has to match the build as well:
+Wan takes body proportions from the reference before the prompt.

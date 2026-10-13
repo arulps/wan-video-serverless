@@ -1,0 +1,971 @@
+{
+ "_about": "MinMini character scale canon for video prompts. Mintu = 1.00 m is the anchor. Every character in a shot gets its height and build passed to the video through comfy/scale_line.py; prompt_lint R9 checks it. Edit THIS file (not the generated docs/CHARACTER-SCALE.md) and re-run `py comfy/scale_line.py --table`. Song-only characters (vegetables, a song's butterflies) go in songs/<slug>/scale.json with the same fields. An entry with \"modes\" (Minmini: flying by default, perched for still or close-up shots) uses its \"mode\" unless the builder asks for another with --mode Name=mode; the lint accepts any mode.",
+ "_sources": [
+  "MinMiniKids/charecter bible/minimini_full_bible_v61.html",
+  "oviyan/docs/CHARACTER-HEIGHTS.md",
+  "MinMiniKids/charecter bible/minmini_nonhuman_bible_v26.html",
+  "oviyan/src/data/animalHeights.ts",
+  "Arul rulings 2026-10-09/10 (Priya; Chiku and Minmini corrected in non-human bible v26)"
+ ],
+ "version": "2026-10-10",
+ "anchor": "Mintu",
+ "characters": [
+  {
+   "name": "Mintu",
+   "aliases": [
+    "little boy"
+   ],
+   "type": "human",
+   "kind": "boy",
+   "age": "4-5",
+   "height_m": 1.0,
+   "build": "round chubby face, chubby hands, six and a half heads tall",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md (locked anchor)"
+  },
+  {
+   "name": "Minnu",
+   "aliases": [],
+   "type": "human",
+   "kind": "girl",
+   "age": "5-6",
+   "height_m": 1.02,
+   "build": "round bright face with deep dimples, six and a half heads tall",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md (v60: one year older than Mintu, same height)"
+  },
+  {
+   "name": "Appa",
+   "aliases": [
+    "Dad",
+    "father"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "mid 30s",
+   "height_m": 1.65,
+   "build": "tall lean athletic build, upright posture",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md (locked anchor)"
+  },
+  {
+   "name": "Amma",
+   "aliases": [
+    "Mom",
+    "mother"
+   ],
+   "type": "human",
+   "kind": "woman",
+   "age": "early 30s",
+   "height_m": 1.55,
+   "build": "slim build",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Thatha",
+   "aliases": [
+    "Grandpa",
+    "grandfather"
+   ],
+   "type": "human",
+   "kind": "grandfather",
+   "age": "65-70",
+   "height_m": 1.55,
+   "build": "slim build, round jolly face",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Paati",
+   "aliases": [
+    "Grandma",
+    "grandmother"
+   ],
+   "type": "human",
+   "kind": "grandmother",
+   "age": "63-68",
+   "height_m": 1.48,
+   "build": "slim upright build",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Kollu Thatha",
+   "aliases": [
+    "Periya Thatha",
+    "great-grandfather",
+    "Kollu-Thatha"
+   ],
+   "type": "human",
+   "kind": "great-grandfather",
+   "age": "88-92",
+   "height_m": 1.45,
+   "build": "slim upright build, very long snow-white beard",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Leo",
+   "aliases": [],
+   "type": "human",
+   "kind": "boy",
+   "age": "3-4",
+   "height_m": 0.95,
+   "build": "round chubby face, big rosy cheeks, wild golden curls",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Mila",
+   "aliases": [],
+   "type": "human",
+   "kind": "girl",
+   "age": "3-4",
+   "height_m": 0.95,
+   "build": "round chubby face, plump rosy cheeks, two afro puffs",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Priya",
+   "aliases": [],
+   "type": "human",
+   "kind": "girl",
+   "age": "6-7",
+   "height_m": 1.02,
+   "build": "round bright face, rosy warm cheeks, long side braid",
+   "source": "Arul 2026-10-09: same height as Minnu (was 1.15 m in CHARACTER-HEIGHTS.md / bible v60)"
+  },
+  {
+   "name": "Mr. David",
+   "aliases": [
+    "Mr David",
+    "David"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "late 30s",
+   "height_m": 1.68,
+   "build": "tall slim build",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Ms. Sophie",
+   "aliases": [
+    "Ms Sophie",
+    "Sophie"
+   ],
+   "type": "human",
+   "kind": "woman",
+   "age": "early 30s",
+   "height_m": 1.55,
+   "build": "slim build",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Mr. James",
+   "aliases": [
+    "Mr James",
+    "James"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "late 30s",
+   "height_m": 1.78,
+   "build": "tall strong slim build, the tallest grown-up",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Ms. Amara",
+   "aliases": [
+    "Ms Amara",
+    "Amara"
+   ],
+   "type": "human",
+   "kind": "woman",
+   "age": "early 30s",
+   "height_m": 1.6,
+   "build": "graceful slim build",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Mr. Rajan",
+   "aliases": [
+    "Mr Rajan",
+    "Rajan"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "late 30s",
+   "height_m": 1.63,
+   "build": "tall slim build",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Mrs. Meena",
+   "aliases": [
+    "Mrs Meena",
+    "Meena",
+    "Mrs-Meena"
+   ],
+   "type": "human",
+   "kind": "woman",
+   "age": "early 30s",
+   "height_m": 1.52,
+   "build": "medium build",
+   "source": "human bible v61 + CHARACTER-HEIGHTS.md"
+  },
+  {
+   "name": "Teacher Miss",
+   "aliases": [
+    "Teacher"
+   ],
+   "type": "human",
+   "kind": "woman",
+   "age": "late 20s",
+   "height_m": 1.62,
+   "build": "slim upright build",
+   "source": "human bible v61 (card height)"
+  },
+  {
+   "name": "Doctor Uncle",
+   "aliases": [
+    "Doctor"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "early 40s",
+   "height_m": 1.7,
+   "build": "medium upright build",
+   "source": "human bible v61 (card height)"
+  },
+  {
+   "name": "Kadai Anna",
+   "aliases": [
+    "shopkeeper"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "early 30s",
+   "height_m": 1.68,
+   "build": "sturdy friendly build",
+   "source": "human bible v61 (card height)"
+  },
+  {
+   "name": "Driver Uncle",
+   "aliases": [
+    "Driver"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "mid 40s",
+   "height_m": 1.7,
+   "build": "solid dependable build",
+   "source": "human bible v61 (card height)"
+  },
+  {
+   "name": "Postman Uncle",
+   "aliases": [
+    "Postman"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "early 50s",
+   "height_m": 1.68,
+   "build": "lean upright build",
+   "source": "human bible v61 (card height)"
+  },
+  {
+   "name": "Ice Cream Uncle",
+   "aliases": [],
+   "type": "human",
+   "kind": "man",
+   "age": "mid 30s",
+   "height_m": 1.68,
+   "build": "sturdy cheerful build",
+   "source": "human bible v61 (card height)"
+  },
+  {
+   "name": "Santa Claus",
+   "aliases": [
+    "Santa"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "elderly",
+   "height_m": 1.7,
+   "build": "round plump belly",
+   "source": "human bible v61 (card height)"
+  },
+  {
+   "name": "Salavaikkarar Uncle",
+   "aliases": [
+    "Salavaikkarar",
+    "washerman"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "late 30s",
+   "height_m": 1.68,
+   "build": "lean wiry build, long lean face",
+   "source": "human bible v61 (card height)"
+  },
+  {
+   "name": "Librarian Aunty",
+   "aliases": [
+    "Librarian"
+   ],
+   "type": "human",
+   "kind": "woman",
+   "age": "late 40s",
+   "height_m": 1.6,
+   "build": "slim graceful build",
+   "source": "human bible v61 (card height)"
+  },
+  {
+   "name": "Police Uncle",
+   "aliases": [
+    "Police"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "early 40s",
+   "height_m": 1.72,
+   "build": "tall sturdy upright build",
+   "source": "human bible v61 (card height)"
+  },
+  {
+   "name": "Kalla",
+   "aliases": [
+    "the silly thief"
+   ],
+   "type": "human",
+   "kind": "man",
+   "age": "late 20s",
+   "height_m": 1.7,
+   "build": "wiry slouching build",
+   "source": "human bible v61 (card height)"
+  },
+  {
+   "name": "Rocky",
+   "aliases": [],
+   "type": "vehicle",
+   "kind": "train",
+   "bible_size_m": 2.5,
+   "height_m": 2.5,
+   "source": "non-human bible v26 size_m",
+   "measure": "length",
+   "note": "vehicle: the size is its length"
+  },
+  {
+   "name": "Zippy",
+   "aliases": [],
+   "type": "vehicle",
+   "kind": "family car",
+   "bible_size_m": 1.4,
+   "height_m": 1.4,
+   "source": "non-human bible v26 size_m",
+   "measure": "length",
+   "note": "vehicle: the size is its length"
+  },
+  {
+   "name": "Turbo",
+   "aliases": [],
+   "type": "vehicle",
+   "kind": "motorbike",
+   "bible_size_m": 1.1,
+   "height_m": 1.1,
+   "source": "non-human bible v26 size_m",
+   "measure": "length",
+   "note": "vehicle: the size is its length"
+  },
+  {
+   "name": "Breezy",
+   "aliases": [],
+   "type": "vehicle",
+   "kind": "bicycle",
+   "bible_size_m": 1.0,
+   "height_m": 1.0,
+   "source": "non-human bible v26 size_m",
+   "measure": "length",
+   "note": "vehicle: the size is its length"
+  },
+  {
+   "name": "Putt-Putt",
+   "aliases": [],
+   "type": "vehicle",
+   "kind": "auto-rickshaw",
+   "bible_size_m": 1.6,
+   "height_m": 1.6,
+   "source": "non-human bible v26 size_m",
+   "measure": "length",
+   "note": "vehicle: the size is its length"
+  },
+  {
+   "name": "Kutti Muyal",
+   "aliases": [],
+   "type": "animal",
+   "kind": "bunny",
+   "bible_size_m": 0.8,
+   "height_m": 0.28,
+   "source": "animalHeights.ts 'bunny' staging height (bible card 0.80 m)"
+  },
+  {
+   "name": "Chiku",
+   "aliases": [],
+   "type": "animal",
+   "kind": "mouse",
+   "bible_size_m": 0.1,
+   "height_m": 0.1,
+   "source": "Arul 2026-10-10: non-human bible v26 corrected 0.5 m to ~0.10 m, a child's hand",
+   "phrase": "no bigger than a child's hand"
+  },
+  {
+   "name": "Kittu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "monkey",
+   "bible_size_m": 0.7,
+   "height_m": 0.55,
+   "source": "animalHeights.ts 'monkey' staging height (bible card 0.70 m)"
+  },
+  {
+   "name": "Biscuit",
+   "aliases": [],
+   "type": "animal",
+   "kind": "family dog",
+   "bible_size_m": 0.6,
+   "height_m": 0.45,
+   "source": "animalHeights.ts 'dog' staging height (bible card 0.60 m)"
+  },
+  {
+   "name": "Misty",
+   "aliases": [],
+   "type": "animal",
+   "kind": "cat",
+   "bible_size_m": 0.45,
+   "height_m": 0.3,
+   "source": "animalHeights.ts 'cat' staging height (bible card 0.45 m)"
+  },
+  {
+   "name": "Ammu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "cow",
+   "bible_size_m": 1.4,
+   "height_m": 1.15,
+   "source": "animalHeights.ts 'cow' staging height (bible card 1.40 m)"
+  },
+  {
+   "name": "Kandu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "goat",
+   "bible_size_m": 0.9,
+   "height_m": 0.65,
+   "source": "animalHeights.ts 'goat' staging height (bible card 0.90 m)"
+  },
+  {
+   "name": "Kokki",
+   "aliases": [],
+   "type": "animal",
+   "kind": "hen",
+   "bible_size_m": 0.35,
+   "height_m": 0.33,
+   "source": "animalHeights.ts 'hen' staging height (bible card 0.35 m)"
+  },
+  {
+   "name": "Vaathu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "duck",
+   "bible_size_m": 0.35,
+   "height_m": 0.3,
+   "source": "animalHeights.ts 'duck' staging height (bible card 0.35 m)"
+  },
+  {
+   "name": "Raja",
+   "aliases": [],
+   "type": "animal",
+   "kind": "horse",
+   "bible_size_m": 1.7,
+   "height_m": 1.45,
+   "source": "animalHeights.ts 'horse' staging height (bible card 1.70 m)"
+  },
+  {
+   "name": "Chella",
+   "aliases": [],
+   "type": "animal",
+   "kind": "sheep",
+   "bible_size_m": 0.8,
+   "height_m": 0.7,
+   "source": "animalHeights.ts 'sheep' staging height (bible card 0.80 m)"
+  },
+  {
+   "name": "Gundu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "pig",
+   "bible_size_m": 0.7,
+   "height_m": 0.5,
+   "source": "animalHeights.ts 'pig' staging height (bible card 0.70 m)"
+  },
+  {
+   "name": "Kokkarako",
+   "aliases": [],
+   "type": "animal",
+   "kind": "rooster",
+   "bible_size_m": 0.45,
+   "height_m": 0.38,
+   "source": "animalHeights.ts 'rooster' staging height (bible card 0.45 m)"
+  },
+  {
+   "name": "Chinnu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "donkey",
+   "bible_size_m": 1.2,
+   "height_m": 1.05,
+   "source": "animalHeights.ts 'donkey' staging height (bible card 1.20 m)"
+  },
+  {
+   "name": "Appu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "baby elephant",
+   "bible_size_m": 2.2,
+   "height_m": 2.2,
+   "source": "animalHeights.ts 'elephant' staging height (bible card 2.20 m)"
+  },
+  {
+   "name": "Anil",
+   "aliases": [],
+   "type": "animal",
+   "kind": "squirrel",
+   "bible_size_m": 0.3,
+   "height_m": 0.3,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Mayilu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "peacock",
+   "bible_size_m": 0.6,
+   "height_m": 0.7,
+   "source": "animalHeights.ts 'peacock' staging height (bible card 0.60 m)"
+  },
+  {
+   "name": "Nari",
+   "aliases": [],
+   "type": "animal",
+   "kind": "fox",
+   "bible_size_m": 0.55,
+   "height_m": 0.55,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Minmini",
+   "aliases": [
+    "the firefly"
+   ],
+   "type": "creature",
+   "kind": "TV-firefly mascot",
+   "bible_size_m": 0.5,
+   "height_m": 0.1,
+   "source": "Arul 2026-10-10 (non-human bible v26): a small flier in most scenes; up to 0.50 m only when perched, still or close up",
+   "phrase": "a small flying firefly, about the size of a child's hand",
+   "mode": "flying",
+   "modes": {
+    "perched": {
+     "height_m": 0.5,
+     "phrase": "resting or hovering still close by, up to about half a child's height",
+     "use": "perched, hovering still, or in a close-up: up to half a child's height"
+    }
+   }
+  },
+  {
+   "name": "Kaaka",
+   "aliases": [],
+   "type": "animal",
+   "kind": "crow",
+   "bible_size_m": 0.35,
+   "height_m": 0.35,
+   "source": "non-human bible v26 size_m"
+  },
+  {
+   "name": "Meenu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "fish",
+   "bible_size_m": 0.25,
+   "height_m": 0.25,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Aamai",
+   "aliases": [],
+   "type": "animal",
+   "kind": "turtle",
+   "bible_size_m": 0.35,
+   "height_m": 0.35,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Thavva",
+   "aliases": [],
+   "type": "animal",
+   "kind": "frog",
+   "bible_size_m": 0.2,
+   "height_m": 0.15,
+   "source": "animalHeights.ts 'frog' staging height (bible card 0.20 m)"
+  },
+  {
+   "name": "Kuruvi",
+   "aliases": [],
+   "type": "animal",
+   "kind": "sparrow",
+   "bible_size_m": 0.12,
+   "height_m": 0.12,
+   "source": "animalHeights.ts 'sparrow' staging height (bible card 0.12 m)"
+  },
+  {
+   "name": "Onai",
+   "aliases": [],
+   "type": "animal",
+   "kind": "wolf",
+   "bible_size_m": 1.0,
+   "height_m": 1.0,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Smiling Sun",
+   "aliases": [],
+   "type": "sky",
+   "kind": "sun",
+   "bible_size_m": 1.5,
+   "height_m": 1.5,
+   "source": "non-human bible v26 size_m",
+   "phrase": "a big friendly face high in the sky, far away behind everyone — never down on the ground",
+   "note": "sky object: its size in frame is a staging choice; size_m is the model scale"
+  },
+  {
+   "name": "Sleepy Moon",
+   "aliases": [],
+   "type": "sky",
+   "kind": "moon",
+   "bible_size_m": 1.2,
+   "height_m": 1.2,
+   "source": "non-human bible v26 size_m",
+   "phrase": "a big friendly face high in the sky, far away behind everyone — never down on the ground",
+   "note": "sky object: its size in frame is a staging choice; size_m is the model scale"
+  },
+  {
+   "name": "Reindeer",
+   "aliases": [],
+   "type": "animal",
+   "kind": "reindeer",
+   "bible_size_m": 1.4,
+   "height_m": 1.4,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Kannukutti",
+   "aliases": [],
+   "type": "animal",
+   "kind": "calf",
+   "bible_size_m": 0.8,
+   "height_m": 0.85,
+   "source": "animalHeights.ts 'calf' staging height (bible card 0.80 m)"
+  },
+  {
+   "name": "Aatukutti",
+   "aliases": [],
+   "type": "animal",
+   "kind": "goat kid",
+   "bible_size_m": 0.5,
+   "height_m": 0.5,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Malli",
+   "aliases": [],
+   "type": "animal",
+   "kind": "big temple elephant",
+   "bible_size_m": 3.2,
+   "height_m": 3.2,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Sili",
+   "aliases": [],
+   "type": "animal",
+   "kind": "small spider",
+   "bible_size_m": 0.15,
+   "height_m": 0.15,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Singa",
+   "aliases": [],
+   "type": "animal",
+   "kind": "lion",
+   "bible_size_m": 1.1,
+   "height_m": 1.1,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Veera",
+   "aliases": [],
+   "type": "animal",
+   "kind": "tiger",
+   "bible_size_m": 1.1,
+   "height_m": 1.1,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Nettai",
+   "aliases": [],
+   "type": "animal",
+   "kind": "giraffe",
+   "bible_size_m": 3.0,
+   "height_m": 3.0,
+   "source": "animalHeights.ts 'giraffe' staging height (bible card 3.00 m)"
+  },
+  {
+   "name": "Vari",
+   "aliases": [],
+   "type": "animal",
+   "kind": "zebra",
+   "bible_size_m": 1.3,
+   "height_m": 1.3,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Karadi",
+   "aliases": [],
+   "type": "animal",
+   "kind": "bear",
+   "bible_size_m": 1.2,
+   "height_m": 1.2,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Neeri",
+   "aliases": [],
+   "type": "animal",
+   "kind": "hippo",
+   "bible_size_m": 1.0,
+   "height_m": 1.0,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Modhu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "crocodile",
+   "bible_size_m": 1.4,
+   "height_m": 1.4,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Pengu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "penguin",
+   "bible_size_m": 0.5,
+   "height_m": 0.5,
+   "source": "non-human bible v26 size_m"
+  },
+  {
+   "name": "Kili",
+   "aliases": [],
+   "type": "animal",
+   "kind": "green parrot",
+   "bible_size_m": 0.3,
+   "height_m": 0.25,
+   "source": "animalHeights.ts 'parrot' staging height (bible card 0.30 m)"
+  },
+  {
+   "name": "Nathai",
+   "aliases": [],
+   "type": "animal",
+   "kind": "snail",
+   "bible_size_m": 0.15,
+   "height_m": 0.15,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Naaikutti",
+   "aliases": [],
+   "type": "animal",
+   "kind": "puppy",
+   "bible_size_m": 0.35,
+   "height_m": 0.3,
+   "source": "animalHeights.ts 'puppy' staging height (bible card 0.35 m)"
+  },
+  {
+   "name": "Kambali",
+   "aliases": [],
+   "type": "animal",
+   "kind": "caterpillar",
+   "bible_size_m": 0.25,
+   "height_m": 0.25,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Thangam",
+   "aliases": [],
+   "type": "creature",
+   "kind": "little star",
+   "bible_size_m": 0.5,
+   "height_m": 0.5,
+   "source": "non-human bible v26 size_m"
+  },
+  {
+   "name": "Vandu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "bumblebee",
+   "bible_size_m": 0.15,
+   "height_m": 0.15,
+   "source": "non-human bible v26 size_m"
+  },
+  {
+   "name": "Jelli",
+   "aliases": [],
+   "type": "animal",
+   "kind": "jellyfish",
+   "bible_size_m": 0.3,
+   "height_m": 0.3,
+   "source": "non-human bible v26 size_m"
+  },
+  {
+   "name": "Muttai",
+   "aliases": [],
+   "type": "creature",
+   "kind": "egg fellow",
+   "bible_size_m": 0.5,
+   "height_m": 0.5,
+   "source": "non-human bible v26 size_m"
+  },
+  {
+   "name": "Kuyil",
+   "aliases": [],
+   "type": "animal",
+   "kind": "koel",
+   "bible_size_m": 0.35,
+   "height_m": 0.35,
+   "source": "non-human bible v26 size_m"
+  },
+  {
+   "name": "Pani Karadi",
+   "aliases": [
+    "Pani-Karadi",
+    "polar bear"
+   ],
+   "type": "animal",
+   "kind": "polar bear",
+   "bible_size_m": 1.3,
+   "height_m": 1.3,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "White Puppy",
+   "aliases": [],
+   "type": "animal",
+   "kind": "white puppy dog",
+   "bible_size_m": 0.3,
+   "height_m": 0.3,
+   "source": "animalHeights.ts 'puppy' staging height (bible card 0.30 m)"
+  },
+  {
+   "name": "Grasshopper",
+   "aliases": [],
+   "type": "animal",
+   "kind": "grasshopper",
+   "bible_size_m": 0.15,
+   "height_m": 0.15,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Thulli",
+   "aliases": [],
+   "type": "animal",
+   "kind": "dolphin",
+   "bible_size_m": 1.1,
+   "height_m": 1.1,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Thimi",
+   "aliases": [],
+   "type": "animal",
+   "kind": "whale",
+   "bible_size_m": 1.8,
+   "height_m": 1.8,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Ettu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "octopus",
+   "bible_size_m": 0.5,
+   "height_m": 0.5,
+   "source": "non-human bible v26 size_m"
+  },
+  {
+   "name": "Kadal Nai",
+   "aliases": [],
+   "type": "animal",
+   "kind": "seal",
+   "bible_size_m": 0.7,
+   "height_m": 0.7,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Vanna",
+   "aliases": [],
+   "type": "animal",
+   "kind": "butterfly",
+   "bible_size_m": 0.25,
+   "height_m": 0.25,
+   "source": "non-human bible v26 size_m"
+  },
+  {
+   "name": "Pulli",
+   "aliases": [],
+   "type": "animal",
+   "kind": "ladybug",
+   "bible_size_m": 0.12,
+   "height_m": 0.12,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  },
+  {
+   "name": "Erumbu",
+   "aliases": [],
+   "type": "animal",
+   "kind": "ant",
+   "bible_size_m": 0.12,
+   "height_m": 0.12,
+   "source": "non-human bible v26 size_m",
+   "measure": "length"
+  }
+ ]
+}

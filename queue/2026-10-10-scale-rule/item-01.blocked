@@ -1,0 +1,3 @@
+BLOCKED 2026-10-13 10:22 — item-01 step 5: fc /W docs\CHARACTER-SCALE.md vs freshly generated table reports differences.
+Generated table has an extra a12-karadi-w3 section (Karadi Mama, the rabbit, the squirrel) that the doc lacks.
+Steps 1-4 and 6 passed. Nothing committed. See item-01.report.md for the full fc output.

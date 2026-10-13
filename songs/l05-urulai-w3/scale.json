@@ -1,0 +1,14 @@
+{
+ "_about": "L05 song-only characters, as staged in the L05 runsheet rev 2.7 (Baby Potato = a child's hand; Brinjal and Tomato the same height; Cabbage a little taller and twice as wide; Okra, Carrot, Radish, Beans and Amma Potato about 1.5x). Heights in metres against Mintu = 1.00 m.",
+ "characters": [
+  {"name": "Baby Potato", "height_m": 0.11, "phrase": "about as tall as a child's hand", "build": "tiny round baby potato, stubby arms and legs", "source": "L05 runsheet rev 2.7 (KIDS_SCALE)"},
+  {"name": "Brinjal", "height_m": 0.11, "build": "plump egg shape, wider at the bottom", "source": "L05 runsheet rev 2.7: about Baby Potato's height"},
+  {"name": "Tomato", "height_m": 0.11, "build": "round, a little wider than tall, roly-poly", "source": "L05 runsheet rev 2.7: the same height as Baby Potato"},
+  {"name": "Cabbage", "height_m": 0.13, "build": "round, about twice as wide as Baby Potato", "source": "L05 runsheet rev 2.7: a little taller than Baby Potato"},
+  {"name": "Amma Potato", "height_m": 0.17, "build": "bigger oval mother potato", "source": "L05 runsheet rev 2.7: about 1.5x the little vegetables"},
+  {"name": "Okra", "height_m": 0.17, "build": "one slim upright pod, three times as tall as wide", "source": "L05 runsheet rev 2.7: about 1.5x Baby Potato"},
+  {"name": "Carrot", "height_m": 0.17, "build": "tall upright carrot with a leaf tuft and big floppy feet", "source": "L05 runsheet rev 2.7: about 1.5x Baby Potato"},
+  {"name": "Radish", "height_m": 0.17, "build": "long white upright radish with a leaf tuft", "source": "L05 runsheet rev 2.7: about 1.5x Baby Potato"},
+  {"name": "Beans", "height_m": 0.17, "build": "one chunky, gently curved bean pod", "source": "L05 runsheet rev 2.7: about 1.5x Baby Potato"}
+ ]
+}
