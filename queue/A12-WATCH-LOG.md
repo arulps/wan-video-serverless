@@ -38,3 +38,4 @@
 2026-10-13 15:21 idle (no runnable queue; last: karadi-batch1 done est $8.90; A12 total $13.00 of $15.00)
 2026-10-13 15:31 idle (no runnable queue; Fable's batch1 verdict is in; A12 total $13.00 of $15.00)
 2026-10-13 15:41 start 2026-10-13-karadi-cuts ($0.00 queue; A12 total stays $13.00 of $15.00)
+2026-10-13 15:45 end 2026-10-13-karadi-cuts done est $0.00
