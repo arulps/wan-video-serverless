@@ -1,0 +1,4 @@
+BLOCKED 2026-10-13 12:27 — item-01 step 5 (dry-run), $0.00 spent, no render started.
+CQa: "ERROR assembling prompt: unknown cast name 'the-rabbit' (known: Amma, Appa, Karadi-Mama, Minmini, Minnu, Mintu)".
+Only CAa assembled (est $0.80, not the expected 2 rows / $1.60). characters.txt has the-rabbit and the-squirrel lines, but the runner does not pick them up.
+Steps 0-4 passed. Nothing committed. See item-01.report.md.

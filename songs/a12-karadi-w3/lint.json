@@ -1,0 +1,48 @@
+{
+ "audio": "no",
+ "aliases": {
+  "the children": [
+   "Mintu",
+   "Minnu"
+  ],
+  "both children": [
+   "Mintu",
+   "Minnu"
+  ],
+  "the four friends": [
+   "Mintu",
+   "Minnu",
+   "the rabbit",
+   "the squirrel"
+  ],
+  "the family": [
+   "Mintu",
+   "Minnu",
+   "Amma",
+   "Appa"
+  ],
+  "the firefly": [
+   "Minmini"
+  ]
+ },
+ "spaces": {
+  "picnic blanket": [
+   "Mintu",
+   "Minnu",
+   "Amma",
+   "Appa"
+  ]
+ },
+ "owners": [
+  {
+   "pattern": "\\bhoneycomb stick\\b|\\bbasket\\b",
+   "owner": "Karadi Mama",
+   "require": "Only Karadi Mama"
+  }
+ ],
+ "exempt": [],
+ "not_characters": [
+  "the forest picnic set"
+ ],
+ "_note": "A12 forest picnic. The blanket is the family's shared space (Amma, Appa, Mintu, Minnu) — shots without them keep it out of frame. Karadi Mama owns the honeycomb stick and the basket. Bees in V2A are text-only (three, tiny)."
+}

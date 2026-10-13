@@ -1,0 +1,9 @@
+# Lock lines for the runner's checks only; A12 prompts are sent verbatim from the runsheet (*.raw.txt).
+Mintu: little boy; keep exactly as in the reference image.
+Minnu: little girl; keep exactly as in the reference image.
+Karadi-Mama: big friendly brown bear; keep exactly as in the reference image.
+Rabbit: small grey bunny; keep exactly as in the reference image.
+Squirrel: small chestnut squirrel; keep exactly as in the reference image.
+Amma: mother; keep exactly as in the reference image.
+Appa: father; keep exactly as in the reference image.
+Minmini: the MinMini firefly mascot; keep exactly as in the reference image.
