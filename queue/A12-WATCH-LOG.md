@@ -29,3 +29,8 @@
 2026-10-13 13:54 idle (no runnable queue; no karadi gate 2 folder on Beast yet)
 2026-10-13 14:02 start 2026-10-13-karadi-gate2 (budget: finished A12 queues $1.60 + cap $2.60 = $4.20 of $15.00)
 2026-10-13 14:14 end 2026-10-13-karadi-gate2 done est $2.50 (V2A failed at the API, not re-run; A12 total $4.10 of $15.00)
+2026-10-13 14:14 idle (no runnable queue; last: karadi-gate2 done est $2.50, V2A failed)
+2026-10-13 14:21 idle (no runnable queue; last: karadi-gate2 done est $2.50, V2A failed)
+2026-10-13 14:31 idle (no runnable queue; last: karadi-gate2 done est $2.50, V2A failed)
+2026-10-13 14:42 start 2026-10-13-karadi-batch1 (budget: finished A12 queues $4.10 + cap $9.00 = $13.10 of $15.00)
+2026-10-13 14:45 busy 2026-10-13-karadi-batch1 (render running since 14:42, clip 1 of 13)
