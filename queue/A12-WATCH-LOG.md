@@ -35,3 +35,6 @@
 2026-10-13 14:42 start 2026-10-13-karadi-batch1 (budget: finished A12 queues $4.10 + cap $9.00 = $13.10 of $15.00)
 2026-10-13 14:45 busy 2026-10-13-karadi-batch1 (render running since 14:42, clip 1 of 13)
 2026-10-13 15:21 end 2026-10-13-karadi-batch1 done est $8.90 (A12 total $13.00 of $15.00)
+2026-10-13 15:21 idle (no runnable queue; last: karadi-batch1 done est $8.90; A12 total $13.00 of $15.00)
+2026-10-13 15:31 idle (no runnable queue; Fable's batch1 verdict is in; A12 total $13.00 of $15.00)
+2026-10-13 15:41 start 2026-10-13-karadi-cuts ($0.00 queue; A12 total stays $13.00 of $15.00)
