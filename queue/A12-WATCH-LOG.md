@@ -195,3 +195,7 @@
 2026-10-14 15:51 idle (karadi-rev26-gateA-retake present but has no READY; no runnable queue; A12 total $16.90 of $29.50)
 2026-10-14 16:01 idle (karadi-rev26-gateA-retake present but has no READY; no runnable queue; A12 total $16.90 of $29.50)
 2026-10-14 16:11 start 2026-10-14-karadi-rev26-gateA-retake (budget: A12 $16.90 + cap $1.60 = $18.50 of $29.50)
+2026-10-14 16:22 end 2026-10-14-karadi-rev26-gateA-retake done est $1.50 (A12 total $18.40 of $29.50)
+2026-10-14 16:22 idle (karadi-rev26-gateA-retake done, awaiting Fable's review; no runnable queue; A12 total $18.40 of $29.50)
+2026-10-14 16:31 idle (karadi-rev26-gateA-retake done, awaiting Fable's review; no runnable queue; A12 total $18.40 of $29.50)
+2026-10-14 16:41 start 2026-10-14-karadi-rev27-gateB (budget: A12 $18.40 + cap $3.20 = $21.60 of $29.50)

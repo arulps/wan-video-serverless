@@ -73,7 +73,7 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 0.4
+    "ta": 1.33
    },
    "take": "HKa-seed30313-w3.mp4",
    "lyric": "",
@@ -111,7 +111,7 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 0.4
+    "ta": 1.33
    },
    "take": "HKa-seed30313-w3.mp4",
    "lyric": "",
@@ -293,7 +293,7 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 0.4
+    "ta": 1.33
    },
    "take": "HKa-seed30313-w3.mp4",
    "lyric": "",
@@ -625,7 +625,7 @@
    "ta_in": null,
    "ta_out": null,
    "slip": {
-    "en": 0.4
+    "en": 1.33
    },
    "take": "HKa-seed30313-w3.mp4",
    "lyric": "",

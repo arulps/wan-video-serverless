@@ -1,6 +1,6 @@
 # item-01 report — DONE: rev 2.2 rebuilt, Gate A takes kept as `-v1-multishot`, HKa + O1 re-rendered ($1.50), no scene cuts found, sheets, slot cuts
 
-Run by CC (A12 watcher), 2026-10-14 16:11–16:24 Toronto. Repo `C:\Projects\opencode\video_image`, branch `main`.
+Run by CC (A12 watcher), 2026-10-14 16:11–16:22 Toronto. Repo `C:\Projects\opencode\video_image`, branch `main`.
 One render run, no retries. The clips were not judged.
 
 ## Step 1 — rebuild
