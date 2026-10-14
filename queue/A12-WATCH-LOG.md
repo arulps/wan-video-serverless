@@ -82,3 +82,4 @@
 2026-10-13 22:21 idle (karadi-pacing still has no READY file; nothing started; A12 total $15.40 of $17.00)
 2026-10-13 22:31 idle (karadi-pacing still has no READY file; nothing started; A12 total $15.40 of $17.00)
 2026-10-13 22:42 start 2026-10-13-karadi-rev20-build ($0.00 queue; A12 total stays $15.40 of $17.00)
+2026-10-13 22:43 end 2026-10-13-karadi-rev20-build done est $0.00
