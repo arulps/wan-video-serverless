@@ -92,3 +92,7 @@
 2026-10-13 23:21 idle (karadi-rev22-gateA still blocked, network errors; no runnable queue; A12 total $16.10 of $29.50)
 2026-10-13 23:31 idle (karadi-rev22-gateA still blocked, network errors; no runnable queue; A12 total $16.10 of $29.50)
 2026-10-13 23:37 start 2026-10-13-karadi-rev23-gateA2 (budget: A12 $16.10 conservative + cap $1.60 = $17.70 of $29.50)
+2026-10-13 23:38 end 2026-10-13-karadi-rev23-gateA2 blocked est $0.00 (O1 recovered free in item-01; A12 total $16.10 of $29.50)
+2026-10-13 23:41 idle (karadi-rev23-gateA2 blocked at item-02 step 1: HKa status 'failed' not 'todo'; no runnable queue; A12 total $16.10 of $29.50)
+2026-10-13 23:51 idle (karadi-rev23-gateA2 still blocked at item-02 step 1; no runnable queue; A12 total $16.10 of $29.50)
+2026-10-14 00:02 start 2026-10-13-karadi-rev24-picnic-archive ($0.00 queue; A12 total stays $16.10)
