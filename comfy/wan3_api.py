@@ -15,9 +15,19 @@ PNG/JPEG/WEBP/BMP, 240-8000 px a side, <= 20 MB, may be sent as data URIs; refer
 
 Secrets: DASHSCOPE_API_KEY and DASHSCOPE_WORKSPACE_ID come from the environment, or from the repo's .env
 (only those keys are read). They are never printed or written to a sidecar.
+
+Network (13 Oct 2026, A12 Gate A lost two renders to dropped TLS connections): polls and downloads retry on connection-level
+errors (SSL, reset, timeout, remote disconnect) with a backoff — a dropped poll must never lose a paid task; a submit (POST) is
+retried ONCE, and only on a connection-level error before any HTTP response, since a retry after the service accepted the task
+would pay twice. A finished task can be fetched by id without paying again:
+  python comfy/wan3_api.py fetch <task_id> <dest.mp4> [--timeout-min 30]     (writes <dest>.json with recovered=true)
 """
 import base64
+import http.client
 import json
+import socket
+import ssl
+import sys
 import mimetypes
 import os
 import time
@@ -34,6 +44,17 @@ RATE_USD_PER_S = {"standard": {"480P": 0.05, "720P": 0.10, "1080P": 0.20},
 RATIOS = {"16:9": 16 / 9, "9:16": 9 / 16, "4:3": 4 / 3, "3:4": 3 / 4, "1:1": 1.0, "21:9": 21 / 9}
 MAX_REFS = 10
 POLL_S = float(os.environ.get("WAN3_POLL_S", "15"))   # API guidance: poll every 15 s
+RETRY_BACKOFF_S = (5, 15, 30, 60, 60, 60)             # GET / download: up to 6 retries on connection-level errors
+SUBMIT_RETRY_S = 20                                    # POST: one retry, connection-level errors only
+TRANSIENT = (urllib.error.URLError, ssl.SSLError, socket.timeout, ConnectionError,
+             http.client.RemoteDisconnected, http.client.IncompleteRead)
+
+
+def _transient(e):
+    """a connection-level failure (no HTTP response), as opposed to an HTTP error the service sent"""
+    if isinstance(e, urllib.error.HTTPError):
+        return e.code in (429, 500, 502, 503, 504)
+    return isinstance(e, TRANSIENT)
 
 
 def _env():
@@ -116,7 +137,7 @@ def build_request(prompt, refs=(), first_frame=None, last_frame=None, resolution
     return body
 
 
-def _call(method, url, body=None, timeout=120):
+def _call_once(method, url, body=None, timeout=120):
     v = _env()
     if not v["DASHSCOPE_API_KEY"]:
         raise RuntimeError("DASHSCOPE_API_KEY is not set (env or .env)")
@@ -125,16 +146,37 @@ def _call(method, url, body=None, timeout=120):
         headers["X-DashScope-Async"] = "enable"
     data = json.dumps(body).encode() if body is not None else None
     req = urllib.request.Request(url, data=data, method=method, headers=headers)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return json.loads(r.read())
+
+
+def _http_message(method, url, e):
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return json.loads(r.read())
-    except urllib.error.HTTPError as e:
+        j = json.loads(e.read())
+        msg = "%s: %s" % (j.get("code"), j.get("message"))
+    except Exception:
+        msg = "HTTP %d" % e.code
+    return "Wan3 API %s %s -> %s" % (method, url.split(".com", 1)[-1], msg)
+
+
+def _call(method, url, body=None, timeout=120, log=print):
+    """GET: retried on connection-level errors (RETRY_BACKOFF_S). POST: one retry, connection-level only — a POST that
+    failed after the service accepted it would be paid twice, so the caller is told which attempt failed."""
+    waits = RETRY_BACKOFF_S if method == "GET" else (SUBMIT_RETRY_S,)
+    for attempt in range(len(waits) + 1):
         try:
-            j = json.loads(e.read())
-            msg = "%s: %s" % (j.get("code"), j.get("message"))
-        except Exception:
-            msg = "HTTP %d" % e.code
-        raise RuntimeError("Wan3 API %s %s -> %s" % (method, url.split(".com", 1)[-1], msg))
+            return _call_once(method, url, body, timeout)
+        except urllib.error.HTTPError as e:
+            if attempt < len(waits) and method == "GET" and _transient(e):
+                log("  wan3 %s: HTTP %d, retry %d in %d s" % (method, e.code, attempt + 1, waits[attempt]))
+                time.sleep(waits[attempt]); continue
+            raise RuntimeError(_http_message(method, url, e))
+        except TRANSIENT as e:
+            if attempt < len(waits):
+                log("  wan3 %s: connection error (%s), retry %d in %d s" % (method, type(e).__name__, attempt + 1, waits[attempt]))
+                time.sleep(waits[attempt]); continue
+            raise RuntimeError("Wan3 API %s %s -> connection failed after %d attempts: %s"
+                               % (method, url.split(".com", 1)[-1], attempt + 1, e))
 
 
 def submit(body):
@@ -149,7 +191,7 @@ def wait(task_id, timeout_min=30, stop=None, log=print):
     deadline = time.time() + timeout_min * 60
     last = ""
     while time.time() < deadline:
-        j = _call("GET", base_url() + "/api/v1/tasks/" + task_id)
+        j = _call("GET", base_url() + "/api/v1/tasks/" + task_id, log=log)
         out = j.get("output") or {}
         st = out.get("task_status", "")
         if st != last:
@@ -162,11 +204,19 @@ def wait(task_id, timeout_min=30, stop=None, log=print):
     raise TimeoutError("Wan3 task %s not done after %d min (still billable; check the console)" % (task_id, timeout_min))
 
 
-def download(url, dest):
+def download(url, dest, log=print):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 WanBatch"})
-    with urllib.request.urlopen(req, timeout=600) as r:
-        data = r.read()
-    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    for attempt in range(len(RETRY_BACKOFF_S) + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=600) as r:
+                data = r.read()
+            break
+        except TRANSIENT as e:
+            if attempt < len(RETRY_BACKOFF_S):
+                log("  wan3 download: connection error (%s), retry %d in %d s" % (type(e).__name__, attempt + 1, RETRY_BACKOFF_S[attempt]))
+                time.sleep(RETRY_BACKOFF_S[attempt]); continue
+            raise RuntimeError("Wan3 download failed after %d attempts: %s" % (attempt + 1, e))
+    os.makedirs(os.path.dirname(dest) or ".", exist_ok=True)
     open(dest, "wb").write(data)
     return len(data)
 
@@ -177,5 +227,30 @@ def render(body, dest, timeout_min=30, log=print):
     tid = submit(body)
     log("  wan3 submitted task %s" % tid)
     out, usage = wait(tid, timeout_min, log=log)
-    n = download(out["video_url"], dest)
+    n = download(out["video_url"], dest, log=log)
     return {"task_id": tid, "wall_s": round(time.time() - t0, 1), "bytes": n, "usage": usage}
+
+
+def fetch(task_id, dest, timeout_min=30, log=print):
+    """Recover a task that was submitted but lost (dropped poll, crash): wait for it and download, paying nothing new.
+    Writes <dest>.json (recovered=true, no URLs, no secrets). Returns the same dict as render()."""
+    t0 = time.time()
+    out, usage = wait(task_id, timeout_min, log=log)
+    n = download(out["video_url"], dest, log=log)
+    shot_id = os.path.basename(dest).split("-seed")[0]
+    sidecar = {"shot_id": shot_id, "engine": "wan3", "task_id": task_id, "usage": usage, "bytes": n, "recovered": True,
+               "recovered_at": time.strftime("%Y-%m-%d %H:%M:%S"), "wall_s": round(time.time() - t0, 1),
+               "note": "fetched by task id after the runner lost the connection; the prompt/refs are in shots/ and the runsheet"}
+    json.dump(sidecar, open(dest[:-4] + ".json", "w", encoding="utf-8"), indent=1)
+    return {"task_id": task_id, "wall_s": sidecar["wall_s"], "bytes": n, "usage": usage}
+
+
+if __name__ == "__main__":
+    if len(sys.argv) >= 4 and sys.argv[1] == "fetch":
+        tmin = 30
+        if "--timeout-min" in sys.argv:
+            tmin = float(sys.argv[sys.argv.index("--timeout-min") + 1])
+        r = fetch(sys.argv[2], sys.argv[3], timeout_min=tmin)
+        print("fetched task %s -> %s (%d bytes, usage %s)" % (r["task_id"], sys.argv[3], r["bytes"], r["usage"]))
+    else:
+        sys.exit("usage: python comfy/wan3_api.py fetch <task_id> <dest.mp4> [--timeout-min N]")

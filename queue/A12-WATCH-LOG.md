@@ -86,3 +86,9 @@
 2026-10-13 22:51 idle (no runnable queue; last: karadi-rev20-build done $0.00; A12 total $15.40 of $17.00)
 2026-10-13 23:02 start 2026-10-13-karadi-rev21-refs ($0.00 queue; A12 total stays $15.40; cap in A12-WATCH.md now $29.50, edited 23:00)
 2026-10-13 23:03 end 2026-10-13-karadi-rev21-refs done est $0.00
+2026-10-13 23:07 start 2026-10-13-karadi-rev22-gateA (budget: finished A12 queues $15.40 + cap $1.60 = $17.00 of $29.50)
+2026-10-13 23:12 end 2026-10-13-karadi-rev22-gateA blocked est $0.70 (O1 task accepted before the connection dropped; A12 total $16.10 of $29.50)
+2026-10-13 23:12 idle (karadi-rev22-gateA blocked at item-01 step 5, network errors; no runnable queue; A12 total $16.10 of $29.50)
+2026-10-13 23:21 idle (karadi-rev22-gateA still blocked, network errors; no runnable queue; A12 total $16.10 of $29.50)
+2026-10-13 23:31 idle (karadi-rev22-gateA still blocked, network errors; no runnable queue; A12 total $16.10 of $29.50)
+2026-10-13 23:37 start 2026-10-13-karadi-rev23-gateA2 (budget: A12 $16.10 conservative + cap $1.60 = $17.70 of $29.50)

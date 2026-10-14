@@ -1,0 +1,4 @@
+BLOCKED 2026-10-13 23:12 — item-01 step 5: both renders FAILED on a network (SSL EOF) error; no clips; not re-run.
+HKa: failed after 76 s before any task was submitted ("urlopen error EOF occurred in violation of protocol") — $0.
+O1: task 6d24e073-4519-4515-801e-31a553879f70 was accepted and RUNNING, then the connection dropped while polling — the task may have finished and be billed ($0.70); no file downloaded.
+Steps 0-4 passed. Steps 6-8 (sheets, slot cuts, commit) not done. Nothing committed. See item-01.report.md.
