@@ -96,3 +96,4 @@
 2026-10-13 23:41 idle (karadi-rev23-gateA2 blocked at item-02 step 1: HKa status 'failed' not 'todo'; no runnable queue; A12 total $16.10 of $29.50)
 2026-10-13 23:51 idle (karadi-rev23-gateA2 still blocked at item-02 step 1; no runnable queue; A12 total $16.10 of $29.50)
 2026-10-14 00:02 start 2026-10-13-karadi-rev24-picnic-archive ($0.00 queue; A12 total stays $16.10)
+2026-10-14 00:02 end 2026-10-13-karadi-rev24-picnic-archive done est $0.00
