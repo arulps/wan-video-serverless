@@ -26,11 +26,8 @@
   ]
  },
  "spaces": {
-  "picnic blanket": [
-   "Mintu",
-   "Minnu",
-   "Amma",
-   "Appa"
+  "doorstep": [
+   "Karadi Mama"
   ]
  },
  "owners": [
@@ -42,7 +39,9 @@
  ],
  "exempt": [],
  "not_characters": [
-  "the forest picnic set"
+  "the lower forest path set",
+  "the upper hill path set",
+  "Karadi Mama's home set"
  ],
- "_note": "A12 forest picnic. The blanket is the family's shared space (Amma, Appa, Mintu, Minnu) — shots without them keep it out of frame. Karadi Mama owns the honeycomb stick and the basket. Bees in V2A are text-only (three, tiny)."
+ "_note": "A12 the family trek (rev 2.0). Three set plates are places, not characters. Karadi Mama owns the honeycomb stick and the basket and his hut's doorstep. Bees in V2A are text-only (three, tiny)."
 }

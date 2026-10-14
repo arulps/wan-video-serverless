@@ -26,8 +26,8 @@
    "n": "01",
    "id": "I1",
    "slot": "TA-INTRO-01",
-   "slug": "intro-the-picnic-nuts-for-new-friends",
-   "title": "Intro — the picnic, nuts for new friends",
+   "slug": "intro-long-shot-the-family-treks-up-the-hill-pat",
+   "title": "Intro — long shot: the family treks up the hill path",
    "kind": "none",
    "gen": 7.0,
    "ta_in": 0.0,
@@ -43,61 +43,67 @@
   },
   {
    "n": "02",
-   "id": "CQa",
+   "id": "CQ0",
    "slot": "TA-C1-02",
-   "slug": "chorus-question-karadi-mama-where-are-you-going-",
-   "title": "Chorus question — 'Karadi Mama, where are you going?' (bear walk)",
+   "slug": "chorus-1-the-encounter-karadi-mama-where-are-you",
+   "title": "Chorus 1 — THE ENCOUNTER: 'Karadi Mama, where are you going?'",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 5.735,
    "ta_out": 11.076,
    "en_in": null,
    "en_out": null,
-   "slip": {},
-   "take": "CQa-seed30313-w3.mp4",
+   "slip": {
+    "ta": 0.4
+   },
+   "take": "CQ0-seed30313-w3.mp4",
    "lyric": "கரடி மாமா கரடி மாமா எங்கே போறீங்க?",
    "lyric_en": ""
   },
   {
-   "n": "06",
+   "n": "05",
    "id": "HKa",
    "slot": "TA-C1-03",
-   "slug": "hook-karadi-mama-strolls-along-the-trail",
-   "title": "Hook — Karadi Mama strolls along the trail",
+   "slug": "hook-karadi-mama-s-quick-spin-and-skip-lower-pat",
+   "title": "Hook — Karadi Mama's QUICK spin-and-skip, lower path (his signature move)",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 11.076,
    "ta_out": 16.393,
    "en_in": null,
    "en_out": null,
-   "slip": {},
+   "slip": {
+    "ta": 0.4
+   },
    "take": "HKa-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "04",
+   "n": "09",
    "id": "CAa",
    "slot": "TA-C1-04",
-   "slug": "chorus-answer-my-home-is-near-the-forest-spin-an",
-   "title": "Chorus answer — 'my home is near the forest!' (spin and skip)",
+   "slug": "chorus-answer-lower-path-my-home-is-near-the-for",
+   "title": "Chorus answer, lower path — 'my home is near the forest!'",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 16.393,
    "ta_out": 21.757,
    "en_in": null,
    "en_out": null,
-   "slip": {},
+   "slip": {
+    "ta": 0.4
+   },
    "take": "CAa-seed30313-w3.mp4",
    "lyric": "காட்டுப் பக்கம் வீடிருக்கு அங்கே போறேங்க!",
    "lyric_en": ""
   },
   {
-   "n": "07",
-   "id": "HKb",
+   "n": "05",
+   "id": "HKa",
    "slot": "TA-C1-05",
-   "slug": "hook-clap-along-on-the-picnic-blanket",
-   "title": "Hook — clap-along on the picnic blanket",
+   "slug": "hook-karadi-mama-s-quick-spin-and-skip-lower-pat",
+   "title": "Hook — Karadi Mama's QUICK spin-and-skip, lower path (his signature move)",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 21.757,
@@ -105,14 +111,14 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 1.0
+    "ta": 0.4
    },
-   "take": "HKb-seed30313-w3.mp4",
+   "take": "HKa-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "08",
+   "n": "11",
    "id": "V1Q",
    "slot": "TA-V1-06",
    "slug": "verse-1-question-minnu-your-woolly-coat-looks-ni",
@@ -129,7 +135,7 @@
    "lyric_en": ""
   },
   {
-   "n": "09",
+   "n": "12",
    "id": "V1A",
    "slot": "TA-V1-07",
    "slug": "verse-1-answer-a-gift-from-god",
@@ -146,28 +152,30 @@
    "lyric_en": ""
   },
   {
-   "n": "03",
+   "n": "04",
    "id": "CQb",
    "slot": "TA-C2-08",
-   "slug": "chorus-question-karadi-mama-where-are-you-going-",
-   "title": "Chorus question — 'Karadi Mama, where are you going?' (bear walk)",
+   "slug": "chorus-question-upper-path-valley-view-the-child",
+   "title": "Chorus question, upper path (valley view) — the children's actions",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 37.732,
    "ta_out": 43.096,
    "en_in": null,
    "en_out": null,
-   "slip": {},
+   "slip": {
+    "ta": 0.4
+   },
    "take": "CQb-seed30313-w3.mp4",
    "lyric": "கரடி மாமா கரடி மாமா எங்கே போறீங்க?",
    "lyric_en": ""
   },
   {
    "n": "06",
-   "id": "HKa",
+   "id": "HKc",
    "slot": "TA-C2-09",
-   "slug": "hook-karadi-mama-strolls-along-the-trail",
-   "title": "Hook — Karadi Mama strolls along the trail",
+   "slug": "hook-karadi-mama-s-quick-spin-and-skip-upper-pat",
+   "title": "Hook — Karadi Mama's QUICK spin-and-skip, upper path (valley view)",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 43.096,
@@ -175,31 +183,33 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 0.8
+    "ta": 0.4
    },
-   "take": "HKa-seed30313-w3.mp4",
+   "take": "HKc-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "05",
+   "n": "10",
    "id": "CAb",
    "slot": "TA-C2-10",
-   "slug": "chorus-answer-my-home-is-near-the-forest-spin-an",
-   "title": "Chorus answer — 'my home is near the forest!' (spin and skip)",
+   "slug": "chorus-answer-upper-path-valley-view-my-home-is-",
+   "title": "Chorus answer, upper path (valley view) — 'my home is near the forest!'",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 48.414,
    "ta_out": 53.731,
    "en_in": null,
    "en_out": null,
-   "slip": {},
+   "slip": {
+    "ta": 0.4
+   },
    "take": "CAb-seed30313-w3.mp4",
    "lyric": "காட்டுப் பக்கம் வீடிருக்கு அங்கே போறேங்க!",
    "lyric_en": ""
   },
   {
-   "n": "10",
+   "n": "13",
    "id": "V2Q",
    "slot": "TA-V2-11",
    "slug": "verse-2-question-mintu-a-honeycomb-in-your-hand",
@@ -216,7 +226,7 @@
    "lyric_en": ""
   },
   {
-   "n": "11",
+   "n": "14",
    "id": "V2A",
    "slot": "TA-V2-12",
    "slug": "verse-2-answer-the-busy-little-bees-made-it",
@@ -233,30 +243,30 @@
    "lyric_en": ""
   },
   {
-   "n": "07",
-   "id": "HKb",
+   "n": "08",
+   "id": "JOIN",
    "slot": "TA-C3-13",
-   "slug": "hook-clap-along-on-the-picnic-blanket",
-   "title": "Hook — clap-along on the picnic blanket",
+   "slug": "chorus-3-the-rabbit-and-the-squirrel-join-the-tr",
+   "title": "Chorus 3 — the rabbit and the squirrel join the trek",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "ta_in": 64.412,
    "ta_out": 69.73,
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 1.8
+    "ta": 0.4
    },
-   "take": "HKb-seed30313-w3.mp4",
+   "take": "JOIN-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "02",
+   "n": "03",
    "id": "CQa",
    "slot": "TA-C3-14",
-   "slug": "chorus-question-karadi-mama-where-are-you-going-",
-   "title": "Chorus question — 'Karadi Mama, where are you going?' (bear walk)",
+   "slug": "chorus-question-lower-path-the-children-s-action",
+   "title": "Chorus question, lower path — the children's actions",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 69.73,
@@ -264,18 +274,18 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 0.8
+    "ta": 0.4
    },
    "take": "CQa-seed30313-w3.mp4",
    "lyric": "கரடி மாமா கரடி மாமா எங்கே போறீங்க?",
    "lyric_en": ""
   },
   {
-   "n": "06",
+   "n": "05",
    "id": "HKa",
    "slot": "TA-C3-15",
-   "slug": "hook-karadi-mama-strolls-along-the-trail",
-   "title": "Hook — Karadi Mama strolls along the trail",
+   "slug": "hook-karadi-mama-s-quick-spin-and-skip-lower-pat",
+   "title": "Hook — Karadi Mama's QUICK spin-and-skip, lower path (his signature move)",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 75.093,
@@ -283,18 +293,18 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 1.6
+    "ta": 0.4
    },
    "take": "HKa-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "04",
+   "n": "09",
    "id": "CAa",
    "slot": "TA-C3-16",
-   "slug": "chorus-answer-my-home-is-near-the-forest-spin-an",
-   "title": "Chorus answer — 'my home is near the forest!' (spin and skip)",
+   "slug": "chorus-answer-lower-path-my-home-is-near-the-for",
+   "title": "Chorus answer, lower path — 'my home is near the forest!'",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 80.387,
@@ -302,14 +312,14 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 0.8
+    "ta": 0.4
    },
    "take": "CAa-seed30313-w3.mp4",
    "lyric": "காட்டுப் பக்கம் வீடிருக்கு அங்கே போறேங்க!",
    "lyric_en": ""
   },
   {
-   "n": "12",
+   "n": "15",
    "id": "V3Q",
    "slot": "TA-V3-17",
    "slug": "verse-3-question-everyone-little-fish-in-your-ba",
@@ -326,7 +336,7 @@
    "lyric_en": ""
   },
   {
-   "n": "13",
+   "n": "16",
    "id": "V3A",
    "slot": "TA-V3-18",
    "slug": "verse-3-answer-i-caught-them-in-the-river-splash",
@@ -346,8 +356,8 @@
    "n": "07",
    "id": "HKb",
    "slot": "TA-C4-19",
-   "slug": "hook-clap-along-on-the-picnic-blanket",
-   "title": "Hook — clap-along on the picnic blanket",
+   "slug": "hook-everyone-walks-on-up-the-path-toward-the-ca",
+   "title": "Hook — everyone walks on up the path toward the camera",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 96.432,
@@ -355,18 +365,18 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 2.6
+    "ta": 1.0
    },
    "take": "HKb-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "03",
+   "n": "04",
    "id": "CQb",
    "slot": "TA-C4-20",
-   "slug": "chorus-question-karadi-mama-where-are-you-going-",
-   "title": "Chorus question — 'Karadi Mama, where are you going?' (bear walk)",
+   "slug": "chorus-question-upper-path-valley-view-the-child",
+   "title": "Chorus question, upper path (valley view) — the children's actions",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 101.727,
@@ -374,7 +384,7 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 0.8
+    "ta": 0.4
    },
    "take": "CQb-seed30313-w3.mp4",
    "lyric": "கரடி மாமா கரடி மாமா எங்கே போறீங்க?",
@@ -382,10 +392,10 @@
   },
   {
    "n": "06",
-   "id": "HKa",
+   "id": "HKc",
    "slot": "TA-C4-21",
-   "slug": "hook-karadi-mama-strolls-along-the-trail",
-   "title": "Hook — Karadi Mama strolls along the trail",
+   "slug": "hook-karadi-mama-s-quick-spin-and-skip-upper-pat",
+   "title": "Hook — Karadi Mama's QUICK spin-and-skip, upper path (valley view)",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 107.09,
@@ -395,16 +405,16 @@
    "slip": {
     "ta": 0.4
    },
-   "take": "HKa-seed30313-w3.mp4",
+   "take": "HKc-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "05",
+   "n": "10",
    "id": "CAb",
    "slot": "TA-C4-22",
-   "slug": "chorus-answer-my-home-is-near-the-forest-spin-an",
-   "title": "Chorus answer — 'my home is near the forest!' (spin and skip)",
+   "slug": "chorus-answer-upper-path-valley-view-my-home-is-",
+   "title": "Chorus answer, upper path (valley view) — 'my home is near the forest!'",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 112.385,
@@ -412,14 +422,14 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 0.8
+    "ta": 0.4
    },
    "take": "CAb-seed30313-w3.mp4",
    "lyric": "காட்டுப் பக்கம் வீடிருக்கு அங்கே போறேங்க!",
    "lyric_en": ""
   },
   {
-   "n": "14",
+   "n": "17",
    "id": "V4Q",
    "slot": "TA-V4-23",
    "slug": "verse-4-question-the-rabbit-and-the-squirrel-blu",
@@ -436,7 +446,7 @@
    "lyric_en": ""
   },
   {
-   "n": "15",
+   "n": "18",
    "id": "V4A",
    "slot": "TA-V4-24",
    "slug": "verse-4-answer-i-picked-them-in-the-forest-every",
@@ -456,8 +466,8 @@
    "n": "07",
    "id": "HKb",
    "slot": "TA-C5-25",
-   "slug": "hook-clap-along-on-the-picnic-blanket",
-   "title": "Hook — clap-along on the picnic blanket",
+   "slug": "hook-everyone-walks-on-up-the-path-toward-the-ca",
+   "title": "Hook — everyone walks on up the path toward the camera",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 128.43,
@@ -465,18 +475,18 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 1.4
+    "ta": 1.8
    },
    "take": "HKb-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "02",
-   "id": "CQa",
+   "n": "04",
+   "id": "CQb",
    "slot": "TA-C5-26",
-   "slug": "chorus-question-karadi-mama-where-are-you-going-",
-   "title": "Chorus question — 'Karadi Mama, where are you going?' (bear walk)",
+   "slug": "chorus-question-upper-path-valley-view-the-child",
+   "title": "Chorus question, upper path (valley view) — the children's actions",
    "kind": "none",
    "gen": 8.0,
    "ta_in": 133.724,
@@ -484,18 +494,18 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 1.6
+    "ta": 0.4
    },
-   "take": "CQa-seed30313-w3.mp4",
+   "take": "CQb-seed30313-w3.mp4",
    "lyric": "கரடி மாமா கரடி மாமா எங்கே போறீங்க?",
    "lyric_en": ""
   },
   {
-   "n": "16",
+   "n": "19",
    "id": "O1",
    "slot": "TA-C5-27",
-   "slug": "outro-1-karadi-mama-shares-his-blueberries",
-   "title": "Outro 1 — Karadi Mama shares his blueberries",
+   "slug": "finale-1-they-reach-his-home-blueberries-for-eve",
+   "title": "Finale 1 — they reach his home: blueberries for everyone",
    "kind": "none",
    "gen": 7.0,
    "ta_in": 139.088,
@@ -508,35 +518,39 @@
    "lyric_en": ""
   },
   {
-   "n": "17",
+   "n": "20",
    "id": "O2",
    "slot": "TA-C5-28",
-   "slug": "outro-2-everyone-s-bear-walk-with-karadi-mama",
-   "title": "Outro 2 — everyone's bear walk with Karadi Mama",
+   "slug": "finale-2-everyone-s-answer-actions-home-is-near-",
+   "title": "Finale 2 — everyone's answer actions: 'home is near the forest, that's where I'm going!'",
    "kind": "none",
    "gen": 7.0,
    "ta_in": 144.382,
    "ta_out": 149.745,
    "en_in": null,
    "en_out": null,
-   "slip": {},
+   "slip": {
+    "ta": 0.4
+   },
    "take": "O2-seed30313-w3.mp4",
    "lyric": "காட்டுப் பக்கம் வீடிருக்கு அங்கே போறேங்க!",
    "lyric_en": ""
   },
   {
-   "n": "18",
+   "n": "21",
    "id": "O3",
    "slot": "TA-OUTRO-29",
-   "slug": "outro-3-spin-skip-wave-and-home-to-the-forest",
-   "title": "Outro 3 — spin, skip, wave and home to the forest",
+   "slug": "finale-3-his-last-quick-spin-and-skip-a-goodbye-",
+   "title": "Finale 3 — his last quick spin-and-skip, a goodbye wave, the family heads back down",
    "kind": "none",
    "gen": 7.0,
    "ta_in": 149.745,
    "ta_out": 154.8,
    "en_in": null,
    "en_out": null,
-   "slip": {},
+   "slip": {
+    "ta": 0.4
+   },
    "take": "O3-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
@@ -545,8 +559,8 @@
    "n": "01",
    "id": "I1",
    "slot": "EN-INTRO-01",
-   "slug": "intro-the-picnic-nuts-for-new-friends",
-   "title": "Intro — the picnic, nuts for new friends",
+   "slug": "intro-long-shot-the-family-treks-up-the-hill-pat",
+   "title": "Intro — long shot: the family treks up the hill path",
    "kind": "none",
    "gen": 7.0,
    "en_in": 0.0,
@@ -562,44 +576,48 @@
   },
   {
    "n": "02",
-   "id": "CQa",
+   "id": "CQ0",
    "slot": "EN-C1-02",
-   "slug": "chorus-question-karadi-mama-where-are-you-going-",
-   "title": "Chorus question — 'Karadi Mama, where are you going?' (bear walk)",
+   "slug": "chorus-1-the-encounter-karadi-mama-where-are-you",
+   "title": "Chorus 1 — THE ENCOUNTER: 'Karadi Mama, where are you going?'",
    "kind": "none",
    "gen": 8.0,
    "en_in": 5.759,
    "en_out": 11.076,
    "ta_in": null,
    "ta_out": null,
-   "slip": {},
-   "take": "CQa-seed30313-w3.mp4",
+   "slip": {
+    "en": 0.4
+   },
+   "take": "CQ0-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": "Uncle Bear, Uncle Bear, where are you going?"
   },
   {
-   "n": "04",
+   "n": "09",
    "id": "CAa",
    "slot": "EN-C1-03",
-   "slug": "chorus-answer-my-home-is-near-the-forest-spin-an",
-   "title": "Chorus answer — 'my home is near the forest!' (spin and skip)",
+   "slug": "chorus-answer-lower-path-my-home-is-near-the-for",
+   "title": "Chorus answer, lower path — 'my home is near the forest!'",
    "kind": "none",
    "gen": 8.0,
    "en_in": 11.076,
    "en_out": 16.37,
    "ta_in": null,
    "ta_out": null,
-   "slip": {},
+   "slip": {
+    "en": 0.4
+   },
    "take": "CAa-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": "Home in the forest, that's where I'm going!"
   },
   {
-   "n": "07",
-   "id": "HKb",
+   "n": "05",
+   "id": "HKa",
    "slot": "EN-C1-04",
-   "slug": "hook-clap-along-on-the-picnic-blanket",
-   "title": "Hook — clap-along on the picnic blanket",
+   "slug": "hook-karadi-mama-s-quick-spin-and-skip-lower-pat",
+   "title": "Hook — Karadi Mama's QUICK spin-and-skip, lower path (his signature move)",
    "kind": "none",
    "gen": 8.0,
    "en_in": 16.37,
@@ -607,14 +625,14 @@
    "ta_in": null,
    "ta_out": null,
    "slip": {
-    "en": 1.0
+    "en": 0.4
    },
-   "take": "HKb-seed30313-w3.mp4",
+   "take": "HKa-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "08",
+   "n": "11",
    "id": "V1Q",
    "slot": "EN-V1-05",
    "slug": "verse-1-question-minnu-your-woolly-coat-looks-ni",
@@ -631,7 +649,7 @@
    "lyric_en": "Your woolly coat looks nice, who gave it to you?"
   },
   {
-   "n": "09",
+   "n": "12",
    "id": "V1A",
    "slot": "EN-V1-06",
    "slug": "verse-1-answer-a-gift-from-god",
@@ -648,58 +666,64 @@
    "lyric_en": "God gave me this gift, it's special and true!"
   },
   {
-   "n": "03",
+   "n": "04",
    "id": "CQb",
    "slot": "EN-C2-07",
-   "slug": "chorus-question-karadi-mama-where-are-you-going-",
-   "title": "Chorus question — 'Karadi Mama, where are you going?' (bear walk)",
+   "slug": "chorus-question-upper-path-valley-view-the-child",
+   "title": "Chorus question, upper path (valley view) — the children's actions",
    "kind": "none",
    "gen": 8.0,
    "en_in": 32.299,
    "en_out": 37.64,
    "ta_in": null,
    "ta_out": null,
-   "slip": {},
+   "slip": {
+    "en": 0.4
+   },
    "take": "CQb-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": "Uncle Bear, Uncle Bear, where are you going?"
   },
   {
-   "n": "05",
+   "n": "10",
    "id": "CAb",
    "slot": "EN-C2-08",
-   "slug": "chorus-answer-my-home-is-near-the-forest-spin-an",
-   "title": "Chorus answer — 'my home is near the forest!' (spin and skip)",
+   "slug": "chorus-answer-upper-path-valley-view-my-home-is-",
+   "title": "Chorus answer, upper path (valley view) — 'my home is near the forest!'",
    "kind": "none",
    "gen": 8.0,
    "en_in": 37.64,
    "en_out": 42.957,
    "ta_in": null,
    "ta_out": null,
-   "slip": {},
+   "slip": {
+    "en": 0.4
+   },
    "take": "CAb-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": "Home in the forest, that's where I'm going!"
   },
   {
    "n": "06",
-   "id": "HKa",
+   "id": "HKc",
    "slot": "EN-C2-09",
-   "slug": "hook-karadi-mama-strolls-along-the-trail",
-   "title": "Hook — Karadi Mama strolls along the trail",
+   "slug": "hook-karadi-mama-s-quick-spin-and-skip-upper-pat",
+   "title": "Hook — Karadi Mama's QUICK spin-and-skip, upper path (valley view)",
    "kind": "none",
    "gen": 8.0,
    "en_in": 42.957,
    "en_out": 48.298,
    "ta_in": null,
    "ta_out": null,
-   "slip": {},
-   "take": "HKa-seed30313-w3.mp4",
+   "slip": {
+    "en": 0.4
+   },
+   "take": "HKc-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "10",
+   "n": "13",
    "id": "V2Q",
    "slot": "EN-V2-10",
    "slug": "verse-2-question-mintu-a-honeycomb-in-your-hand",
@@ -716,7 +740,7 @@
    "lyric_en": "A honeycomb in your hand, who gave it to you?"
   },
   {
-   "n": "11",
+   "n": "14",
    "id": "V2A",
    "slot": "EN-V2-11",
    "slug": "verse-2-answer-the-busy-little-bees-made-it",
@@ -733,11 +757,11 @@
    "lyric_en": "The busy little bees made honey for you!"
   },
   {
-   "n": "02",
+   "n": "03",
    "id": "CQa",
    "slot": "EN-C3-12",
-   "slug": "chorus-question-karadi-mama-where-are-you-going-",
-   "title": "Chorus question — 'Karadi Mama, where are you going?' (bear walk)",
+   "slug": "chorus-question-lower-path-the-children-s-action",
+   "title": "Chorus question, lower path — the children's actions",
    "kind": "none",
    "gen": 8.0,
    "en_in": 58.909,
@@ -745,18 +769,18 @@
    "ta_in": null,
    "ta_out": null,
    "slip": {
-    "en": 0.8
+    "en": 0.4
    },
    "take": "CQa-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": "Uncle Bear, Uncle Bear, where are you going?"
   },
   {
-   "n": "04",
+   "n": "09",
    "id": "CAa",
    "slot": "EN-C3-13",
-   "slug": "chorus-answer-my-home-is-near-the-forest-spin-an",
-   "title": "Chorus answer — 'my home is near the forest!' (spin and skip)",
+   "slug": "chorus-answer-lower-path-my-home-is-near-the-for",
+   "title": "Chorus answer, lower path — 'my home is near the forest!'",
    "kind": "none",
    "gen": 8.0,
    "en_in": 64.25,
@@ -764,33 +788,33 @@
    "ta_in": null,
    "ta_out": null,
    "slip": {
-    "en": 0.8
+    "en": 0.4
    },
    "take": "CAa-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": "Home in the forest, that's where I'm going!"
   },
   {
-   "n": "07",
-   "id": "HKb",
+   "n": "08",
+   "id": "JOIN",
    "slot": "EN-C3-14",
-   "slug": "hook-clap-along-on-the-picnic-blanket",
-   "title": "Hook — clap-along on the picnic blanket",
+   "slug": "chorus-3-the-rabbit-and-the-squirrel-join-the-tr",
+   "title": "Chorus 3 — the rabbit and the squirrel join the trek",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "en_in": 69.567,
    "en_out": 74.908,
    "ta_in": null,
    "ta_out": null,
    "slip": {
-    "en": 1.8
+    "en": 0.4
    },
-   "take": "HKb-seed30313-w3.mp4",
+   "take": "JOIN-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "12",
+   "n": "15",
    "id": "V3Q",
    "slot": "EN-V3-15",
    "slug": "verse-3-question-everyone-little-fish-in-your-ba",
@@ -807,7 +831,7 @@
    "lyric_en": "Little fish in your basket, who gave them to you?"
   },
   {
-   "n": "13",
+   "n": "16",
    "id": "V3A",
    "slot": "EN-V3-16",
    "slug": "verse-3-answer-i-caught-them-in-the-river-splash",
@@ -824,11 +848,11 @@
    "lyric_en": "I caught them in the river, splash, splash, too!"
   },
   {
-   "n": "03",
+   "n": "04",
    "id": "CQb",
    "slot": "EN-C4-17",
-   "slug": "chorus-question-karadi-mama-where-are-you-going-",
-   "title": "Chorus question — 'Karadi Mama, where are you going?' (bear walk)",
+   "slug": "chorus-question-upper-path-valley-view-the-child",
+   "title": "Chorus question, upper path (valley view) — the children's actions",
    "kind": "none",
    "gen": 8.0,
    "en_in": 85.519,
@@ -836,18 +860,18 @@
    "ta_in": null,
    "ta_out": null,
    "slip": {
-    "en": 0.8
+    "en": 0.4
    },
    "take": "CQb-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": "Uncle Bear, Uncle Bear, where are you going?"
   },
   {
-   "n": "05",
+   "n": "10",
    "id": "CAb",
    "slot": "EN-C4-18",
-   "slug": "chorus-answer-my-home-is-near-the-forest-spin-an",
-   "title": "Chorus answer — 'my home is near the forest!' (spin and skip)",
+   "slug": "chorus-answer-upper-path-valley-view-my-home-is-",
+   "title": "Chorus answer, upper path (valley view) — 'my home is near the forest!'",
    "kind": "none",
    "gen": 8.0,
    "en_in": 90.883,
@@ -855,7 +879,7 @@
    "ta_in": null,
    "ta_out": null,
    "slip": {
-    "en": 0.8
+    "en": 0.4
    },
    "take": "CAb-seed30313-w3.mp4",
    "lyric": "",
@@ -863,10 +887,10 @@
   },
   {
    "n": "06",
-   "id": "HKa",
+   "id": "HKc",
    "slot": "EN-C4-19",
-   "slug": "hook-karadi-mama-strolls-along-the-trail",
-   "title": "Hook — Karadi Mama strolls along the trail",
+   "slug": "hook-karadi-mama-s-quick-spin-and-skip-upper-pat",
+   "title": "Hook — Karadi Mama's QUICK spin-and-skip, upper path (valley view)",
    "kind": "none",
    "gen": 8.0,
    "en_in": 96.2,
@@ -874,14 +898,14 @@
    "ta_in": null,
    "ta_out": null,
    "slip": {
-    "en": 0.8
+    "en": 0.4
    },
-   "take": "HKa-seed30313-w3.mp4",
+   "take": "HKc-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
   },
   {
-   "n": "14",
+   "n": "17",
    "id": "V4Q",
    "slot": "EN-V4-20",
    "slug": "verse-4-question-the-rabbit-and-the-squirrel-blu",
@@ -898,7 +922,7 @@
    "lyric_en": "Blueberries in your basket, who gave them to you?"
   },
   {
-   "n": "15",
+   "n": "18",
    "id": "V4A",
    "slot": "EN-V4-21",
    "slug": "verse-4-answer-i-picked-them-in-the-forest-every",
@@ -915,11 +939,11 @@
    "lyric_en": "I picked them in the forest, fresh with morning dew!"
   },
   {
-   "n": "16",
+   "n": "19",
    "id": "O1",
    "slot": "EN-C5-22",
-   "slug": "outro-1-karadi-mama-shares-his-blueberries",
-   "title": "Outro 1 — Karadi Mama shares his blueberries",
+   "slug": "finale-1-they-reach-his-home-blueberries-for-eve",
+   "title": "Finale 1 — they reach his home: blueberries for everyone",
    "kind": "none",
    "gen": 7.0,
    "en_in": 112.129,
@@ -932,35 +956,39 @@
    "lyric_en": "Uncle Bear, Uncle Bear, where are you going?"
   },
   {
-   "n": "17",
+   "n": "20",
    "id": "O2",
    "slot": "EN-C5-23",
-   "slug": "outro-2-everyone-s-bear-walk-with-karadi-mama",
-   "title": "Outro 2 — everyone's bear walk with Karadi Mama",
+   "slug": "finale-2-everyone-s-answer-actions-home-is-near-",
+   "title": "Finale 2 — everyone's answer actions: 'home is near the forest, that's where I'm going!'",
    "kind": "none",
    "gen": 7.0,
    "en_in": 117.447,
    "en_out": 122.764,
    "ta_in": null,
    "ta_out": null,
-   "slip": {},
+   "slip": {
+    "en": 0.4
+   },
    "take": "O2-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": "Home in the forest, that's where I'm going!"
   },
   {
-   "n": "18",
+   "n": "21",
    "id": "O3",
    "slot": "EN-C5-24",
-   "slug": "outro-3-spin-skip-wave-and-home-to-the-forest",
-   "title": "Outro 3 — spin, skip, wave and home to the forest",
+   "slug": "finale-3-his-last-quick-spin-and-skip-a-goodbye-",
+   "title": "Finale 3 — his last quick spin-and-skip, a goodbye wave, the family heads back down",
    "kind": "none",
    "gen": 7.0,
    "en_in": 122.764,
    "en_out": 128.0,
    "ta_in": null,
    "ta_out": null,
-   "slip": {},
+   "slip": {
+    "en": 0.4
+   },
    "take": "O3-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""

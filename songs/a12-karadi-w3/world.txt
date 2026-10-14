@@ -1,2 +1,2 @@
-EXTERIOR, SUNNY AFTERNOON, a forest picnic clearing (A12 Karadi Mama).
+EXTERIOR, SUNNY AFTERNOON, a hill trekking path through the forest; his home at the top (A12 Karadi Mama, rev 2.0).
 Not used for A12: every shot is a complete shots/*.raw.txt prompt, sent verbatim. Edit _gen/build_karadi_runsheet.py in the song folder, not these files.
