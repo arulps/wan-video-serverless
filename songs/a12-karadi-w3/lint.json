@@ -35,6 +35,11 @@
    "pattern": "\\bhoneycomb stick\\b|\\bbasket\\b",
    "owner": "Karadi Mama",
    "require": "Only Karadi Mama"
+  },
+  {
+   "pattern": "\\bbackpack\\b|\\bdaypack\\b|\\brucksack\\b",
+   "owner": "Appa",
+   "require": "only Appa"
   }
  ],
  "exempt": [],
