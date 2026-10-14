@@ -1,0 +1,12 @@
+[HKa] -> wan3 wan3.0-video 720P 16:9 8s refs=7 first=False last=False est $0.80
+[HKa] FAILED (wan3): <urlopen error EOF occurred in violation of protocol (_ssl.c:2427)>
+[O1] -> wan3 wan3.0-video 720P 16:9 7s refs=9 first=False last=False est $0.70
+  wan3 submitted task 6d24e073-4519-4515-801e-31a553879f70
+  wan3 task 6d24e073-4519-4515-801e-31a553879f70: RUNNING
+[O1] FAILED (wan3): <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+
+SHOT       STATUS       WALL_S  FILE
+HKa        failed         76.4  <urlopen error EOF occurred in violation of protocol (_ssl.c:2427)>
+O1         failed        177.1  <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>
+
+total GPU-minutes (done shots): 0.0

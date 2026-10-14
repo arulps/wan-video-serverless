@@ -1,0 +1,10 @@
+[HKa] -> wan3 wan3.0-video 720P 16:9 8s refs=7 first=False last=False est $0.80
+  wan3 submitted task 2d01d015-511e-4eb3-9d68-fb9129c0e7bf
+  wan3 task 2d01d015-511e-4eb3-9d68-fb9129c0e7bf: RUNNING
+  wan3 task 2d01d015-511e-4eb3-9d68-fb9129c0e7bf: SUCCEEDED
+[HKa] done in 243.1s -> songs/a12-karadi-w3\out\HKa-seed30313-w3.mp4 (running list-price estimate $0.80)
+
+SHOT       STATUS       WALL_S  FILE
+HKa        done          243.1  songs/a12-karadi-w3\out\HKa-seed30313-w3.mp4
+
+total GPU-minutes (done shots): 4.1

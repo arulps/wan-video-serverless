@@ -17,9 +17,10 @@ Secrets: DASHSCOPE_API_KEY and DASHSCOPE_WORKSPACE_ID come from the environment,
 (only those keys are read). They are never printed or written to a sidecar.
 
 Network (13 Oct 2026, A12 Gate A lost two renders to dropped TLS connections): polls and downloads retry on connection-level
-errors (SSL, reset, timeout, remote disconnect) with a backoff — a dropped poll must never lose a paid task; a submit (POST) is
-retried ONCE, and only on a connection-level error before any HTTP response, since a retry after the service accepted the task
-would pay twice. A finished task can be fetched by id without paying again:
+errors (SSL, reset, timeout, remote disconnect) with a backoff — a dropped poll must never lose a paid task. A submit (POST) is
+retried ONCE and only when the connection could not be opened at all (refused, DNS) — then nothing reached the service. A drop
+during or after the upload (SSL, reset, timeout) is NOT retried: the service may have accepted the task, and a resubmit would pay
+twice (CC, 13 Oct). That row fails and is reported; re-render it on a fresh queue. A finished task can be fetched by id without paying again:
   python comfy/wan3_api.py fetch <task_id> <dest.mp4> [--timeout-min 30]     (writes <dest>.json with recovered=true)
 """
 import base64
@@ -159,9 +160,15 @@ def _http_message(method, url, e):
     return "Wan3 API %s %s -> %s" % (method, url.split(".com", 1)[-1], msg)
 
 
+def _never_sent(e):
+    """True only when the connection was never opened (refused / DNS) — the request cannot have reached the service."""
+    r = getattr(e, "reason", e)
+    return isinstance(r, (ConnectionRefusedError, socket.gaierror)) or isinstance(e, (ConnectionRefusedError, socket.gaierror))
+
+
 def _call(method, url, body=None, timeout=120, log=print):
-    """GET: retried on connection-level errors (RETRY_BACKOFF_S). POST: one retry, connection-level only — a POST that
-    failed after the service accepted it would be paid twice, so the caller is told which attempt failed."""
+    """GET: retried on connection-level errors (RETRY_BACKOFF_S). POST: one retry, and only if the connection was never
+    opened (_never_sent) — any other failure may have reached the service, so it is not resubmitted (no double pay)."""
     waits = RETRY_BACKOFF_S if method == "GET" else (SUBMIT_RETRY_S,)
     for attempt in range(len(waits) + 1):
         try:
@@ -172,6 +179,9 @@ def _call(method, url, body=None, timeout=120, log=print):
                 time.sleep(waits[attempt]); continue
             raise RuntimeError(_http_message(method, url, e))
         except TRANSIENT as e:
+            if method == "POST" and not _never_sent(e):
+                raise RuntimeError("Wan3 API POST -> connection dropped during/after the upload (%s); NOT resubmitted (the "
+                                   "service may have accepted it — check for an orphan task before re-rendering)" % type(e).__name__)
             if attempt < len(waits):
                 log("  wan3 %s: connection error (%s), retry %d in %d s" % (method, type(e).__name__, attempt + 1, waits[attempt]))
                 time.sleep(waits[attempt]); continue

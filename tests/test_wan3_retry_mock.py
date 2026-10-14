@@ -35,13 +35,17 @@ W.urllib.request.urlopen = fake_urlopen([ssl.SSLError("drop"), ConnectionResetEr
 d = tempfile.mkdtemp(); dest = os.path.join(d, "O1-seed1-w3.mp4")
 out, usage = W.wait("t1", log=lambda *a: None); nb = W.download(out["video_url"], dest, log=lambda *a: None)
 check("poll survives two drops", out["task_status"] == "SUCCEEDED" and nb == 7)
-# 2 submit drops once -> retried once -> ok
-calls.clear(); W.urllib.request.urlopen = fake_urlopen([ssl.SSLError("drop"), {"output": {"task_id": "t2"}}])
-check("submit retried once", W.submit({"x": 1}) == "t2" and len(calls) == 2)
-# 3 submit drops twice -> fails, exactly 2 POSTs
-calls.clear(); W.urllib.request.urlopen = fake_urlopen([ssl.SSLError("drop"), ConnectionResetError(), {"output": {"task_id": "t3"}}])
-try: W.submit({"x": 1}); check("submit never a third POST", False)
-except RuntimeError as e: check("submit never a third POST", len(calls) == 2 and "connection failed after 2 attempts" in str(e))
+# 2 submit: connection refused (never sent) -> retried once -> ok
+calls.clear(); W.urllib.request.urlopen = fake_urlopen([urllib.error.URLError(ConnectionRefusedError()), {"output": {"task_id": "t2"}}])
+check("refused submit retried once", W.submit({"x": 1}) == "t2" and len(calls) == 2)
+# 3 submit: SSL drop during/after upload -> NOT resubmitted (no double pay), exactly 1 POST
+calls.clear(); W.urllib.request.urlopen = fake_urlopen([ssl.SSLError("drop"), {"output": {"task_id": "t3"}}])
+try: W.submit({"x": 1}); check("dropped upload not resubmitted", False)
+except RuntimeError as e: check("dropped upload not resubmitted", len(calls) == 1 and "NOT resubmitted" in str(e))
+# 3b refused twice -> fails after 2 POSTs, never a third
+calls.clear(); W.urllib.request.urlopen = fake_urlopen([urllib.error.URLError(ConnectionRefusedError()), urllib.error.URLError(ConnectionRefusedError()), {"output": {"task_id": "x"}}])
+try: W.submit({"x": 1}); check("never a third POST", False)
+except RuntimeError as e: check("never a third POST", len(calls) == 2)
 # 4 HTTP 400 on submit -> no retry
 calls.clear(); W.urllib.request.urlopen = fake_urlopen([http_err(400), {"output": {"task_id": "t4"}}])
 try: W.submit({"x": 1}); check("400 not retried", False)
