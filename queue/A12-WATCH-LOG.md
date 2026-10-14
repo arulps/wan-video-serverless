@@ -85,3 +85,4 @@
 2026-10-13 22:43 end 2026-10-13-karadi-rev20-build done est $0.00
 2026-10-13 22:51 idle (no runnable queue; last: karadi-rev20-build done $0.00; A12 total $15.40 of $17.00)
 2026-10-13 23:02 start 2026-10-13-karadi-rev21-refs ($0.00 queue; A12 total stays $15.40; cap in A12-WATCH.md now $29.50, edited 23:00)
+2026-10-13 23:03 end 2026-10-13-karadi-rev21-refs done est $0.00
