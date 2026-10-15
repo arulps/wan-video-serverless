@@ -1,0 +1,16 @@
+[CQb] -> wan3 wan3.0-video 720P 16:9 6s refs=7 first=False last=False est $0.60
+  wan3 submitted task 53245f59-4305-4856-9dd9-6ff68d2fb2a6
+  wan3 task 53245f59-4305-4856-9dd9-6ff68d2fb2a6: RUNNING
+  wan3 task 53245f59-4305-4856-9dd9-6ff68d2fb2a6: SUCCEEDED
+[CQb] done in 180.0s -> songs/a12-karadi-w3\out\CQb-seed30313-w3.mp4 (running list-price estimate $0.60)
+[CAa] -> wan3 wan3.0-video 720P 16:9 6s refs=7 first=False last=False est $0.60
+  wan3 submitted task 8fbc301e-3729-4f05-b437-b274a55c0f98
+  wan3 task 8fbc301e-3729-4f05-b437-b274a55c0f98: RUNNING
+  wan3 task 8fbc301e-3729-4f05-b437-b274a55c0f98: SUCCEEDED
+[CAa] done in 179.4s -> songs/a12-karadi-w3\out\CAa-seed30313-w3.mp4 (running list-price estimate $1.20)
+
+SHOT       STATUS       WALL_S  FILE
+CQb        done          180.0  songs/a12-karadi-w3\out\CQb-seed30313-w3.mp4
+CAa        done          179.4  songs/a12-karadi-w3\out\CAa-seed30313-w3.mp4
+
+total GPU-minutes (done shots): 6.0

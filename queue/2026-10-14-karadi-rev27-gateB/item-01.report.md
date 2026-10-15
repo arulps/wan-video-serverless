@@ -1,6 +1,6 @@
 # item-01 report — DONE: CQ0, CQa, CAa, I1 rendered ($3.10), no scene cuts found, sheets, slot cuts — **one slot mapping to check (CQa)**
 
-Run by CC (A12 watcher), 2026-10-14 16:41–17:05 Toronto. Repo `C:\Projects\opencode\video_image`, branch `main`.
+Run by CC (A12 watcher), 2026-10-14 16:41–16:57 Toronto. Repo `C:\Projects\opencode\video_image`, branch `main`.
 One render run, no retries. The clips were not judged.
 
 ## Step 1 — rebuild (path quoted this time; no stray folder)

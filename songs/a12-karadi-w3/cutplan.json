@@ -34,9 +34,7 @@
    "ta_out": 5.735,
    "en_in": null,
    "en_out": null,
-   "slip": {
-    "ta": 1.2
-   },
+   "slip": {},
    "take": "I1-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
@@ -86,7 +84,7 @@
    "slug": "chorus-answer-lower-path-my-home-is-near-the-for",
    "title": "Chorus answer, lower path — 'my home is near the forest!'",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "ta_in": 16.393,
    "ta_out": 21.757,
    "en_in": null,
@@ -158,7 +156,7 @@
    "slug": "chorus-question-upper-path-valley-view-the-child",
    "title": "Chorus question, upper path (valley view) — the children's actions",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "ta_in": 37.732,
    "ta_out": 43.096,
    "en_in": null,
@@ -183,7 +181,7 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 0.4
+    "ta": 1.33
    },
    "take": "HKc-seed30313-w3.mp4",
    "lyric": "",
@@ -196,7 +194,7 @@
    "slug": "chorus-answer-upper-path-valley-view-my-home-is-",
    "title": "Chorus answer, upper path (valley view) — 'my home is near the forest!'",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "ta_in": 48.414,
    "ta_out": 53.731,
    "en_in": null,
@@ -274,7 +272,7 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 0.4
+    "ta": 1.9
    },
    "take": "CQa-seed30313-w3.mp4",
    "lyric": "கரடி மாமா கரடி மாமா எங்கே போறீங்க?",
@@ -306,7 +304,7 @@
    "slug": "chorus-answer-lower-path-my-home-is-near-the-for",
    "title": "Chorus answer, lower path — 'my home is near the forest!'",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "ta_in": 80.387,
    "ta_out": 85.705,
    "en_in": null,
@@ -359,14 +357,12 @@
    "slug": "hook-everyone-walks-on-up-the-path-toward-the-ca",
    "title": "Hook — everyone walks on up the path toward the camera",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "ta_in": 96.432,
    "ta_out": 101.727,
    "en_in": null,
    "en_out": null,
-   "slip": {
-    "ta": 1.0
-   },
+   "slip": {},
    "take": "HKb-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
@@ -378,7 +374,7 @@
    "slug": "chorus-question-upper-path-valley-view-the-child",
    "title": "Chorus question, upper path (valley view) — the children's actions",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "ta_in": 101.727,
    "ta_out": 107.09,
    "en_in": null,
@@ -403,7 +399,7 @@
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 0.4
+    "ta": 1.33
    },
    "take": "HKc-seed30313-w3.mp4",
    "lyric": "",
@@ -416,7 +412,7 @@
    "slug": "chorus-answer-upper-path-valley-view-my-home-is-",
    "title": "Chorus answer, upper path (valley view) — 'my home is near the forest!'",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "ta_in": 112.385,
    "ta_out": 117.748,
    "en_in": null,
@@ -469,13 +465,13 @@
    "slug": "hook-everyone-walks-on-up-the-path-toward-the-ca",
    "title": "Hook — everyone walks on up the path toward the camera",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "ta_in": 128.43,
    "ta_out": 133.724,
    "en_in": null,
    "en_out": null,
    "slip": {
-    "ta": 1.8
+    "ta": 0.6
    },
    "take": "HKb-seed30313-w3.mp4",
    "lyric": "",
@@ -488,7 +484,7 @@
    "slug": "chorus-question-upper-path-valley-view-the-child",
    "title": "Chorus question, upper path (valley view) — the children's actions",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "ta_in": 133.724,
    "ta_out": 139.088,
    "en_in": null,
@@ -524,7 +520,7 @@
    "slug": "finale-2-everyone-s-answer-actions-home-is-near-",
    "title": "Finale 2 — everyone's answer actions: 'home is near the forest, that's where I'm going!'",
    "kind": "none",
-   "gen": 7.0,
+   "gen": 6.0,
    "ta_in": 144.382,
    "ta_out": 149.745,
    "en_in": null,
@@ -543,7 +539,7 @@
    "slug": "finale-3-his-last-quick-spin-and-skip-a-goodbye-",
    "title": "Finale 3 — his last quick spin-and-skip, a goodbye wave, the family heads back down",
    "kind": "none",
-   "gen": 7.0,
+   "gen": 6.0,
    "ta_in": 149.745,
    "ta_out": 154.8,
    "en_in": null,
@@ -567,9 +563,7 @@
    "en_out": 5.759,
    "ta_in": null,
    "ta_out": null,
-   "slip": {
-    "en": 1.2
-   },
+   "slip": {},
    "take": "I1-seed30313-w3.mp4",
    "lyric": "",
    "lyric_en": ""
@@ -600,7 +594,7 @@
    "slug": "chorus-answer-lower-path-my-home-is-near-the-for",
    "title": "Chorus answer, lower path — 'my home is near the forest!'",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "en_in": 11.076,
    "en_out": 16.37,
    "ta_in": null,
@@ -672,7 +666,7 @@
    "slug": "chorus-question-upper-path-valley-view-the-child",
    "title": "Chorus question, upper path (valley view) — the children's actions",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "en_in": 32.299,
    "en_out": 37.64,
    "ta_in": null,
@@ -691,7 +685,7 @@
    "slug": "chorus-answer-upper-path-valley-view-my-home-is-",
    "title": "Chorus answer, upper path (valley view) — 'my home is near the forest!'",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "en_in": 37.64,
    "en_out": 42.957,
    "ta_in": null,
@@ -716,7 +710,7 @@
    "ta_in": null,
    "ta_out": null,
    "slip": {
-    "en": 0.4
+    "en": 1.33
    },
    "take": "HKc-seed30313-w3.mp4",
    "lyric": "",
@@ -769,7 +763,7 @@
    "ta_in": null,
    "ta_out": null,
    "slip": {
-    "en": 0.4
+    "en": 1.9
    },
    "take": "CQa-seed30313-w3.mp4",
    "lyric": "",
@@ -782,7 +776,7 @@
    "slug": "chorus-answer-lower-path-my-home-is-near-the-for",
    "title": "Chorus answer, lower path — 'my home is near the forest!'",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "en_in": 64.25,
    "en_out": 69.567,
    "ta_in": null,
@@ -854,7 +848,7 @@
    "slug": "chorus-question-upper-path-valley-view-the-child",
    "title": "Chorus question, upper path (valley view) — the children's actions",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "en_in": 85.519,
    "en_out": 90.883,
    "ta_in": null,
@@ -873,7 +867,7 @@
    "slug": "chorus-answer-upper-path-valley-view-my-home-is-",
    "title": "Chorus answer, upper path (valley view) — 'my home is near the forest!'",
    "kind": "none",
-   "gen": 8.0,
+   "gen": 6.0,
    "en_in": 90.883,
    "en_out": 96.2,
    "ta_in": null,
@@ -898,7 +892,7 @@
    "ta_in": null,
    "ta_out": null,
    "slip": {
-    "en": 0.4
+    "en": 1.33
    },
    "take": "HKc-seed30313-w3.mp4",
    "lyric": "",
@@ -962,7 +956,7 @@
    "slug": "finale-2-everyone-s-answer-actions-home-is-near-",
    "title": "Finale 2 — everyone's answer actions: 'home is near the forest, that's where I'm going!'",
    "kind": "none",
-   "gen": 7.0,
+   "gen": 6.0,
    "en_in": 117.447,
    "en_out": 122.764,
    "ta_in": null,
@@ -981,7 +975,7 @@
    "slug": "finale-3-his-last-quick-spin-and-skip-a-goodbye-",
    "title": "Finale 3 — his last quick spin-and-skip, a goodbye wave, the family heads back down",
    "kind": "none",
-   "gen": 7.0,
+   "gen": 6.0,
    "en_in": 122.764,
    "en_out": 128.0,
    "ta_in": null,
