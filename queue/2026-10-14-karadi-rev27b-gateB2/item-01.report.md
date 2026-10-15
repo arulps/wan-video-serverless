@@ -1,6 +1,6 @@
 # item-01 report — DONE: rev 2.3 rebuilt, failed CAa kept as `-v2-parentswap`, CAa + CQb rendered at 6 s ($1.20), no scene cuts found, sheets, six slot cuts
 
-Run by CC (A12 watcher), 2026-10-14 21:02–21:15 Toronto. Repo `C:\Projects\opencode\video_image`, branch `main`.
+Run by CC (A12 watcher), 2026-10-14 21:02–21:13 Toronto. Repo `C:\Projects\opencode\video_image`, branch `main`.
 The queue had READY at 17:58; CC held it from 18:02 because Arul had said "hold on" in chat, and started on Arul's "Go" at 21:02.
 One render run, no retries. The clips were not judged.
 

@@ -92,7 +92,7 @@
    "slip": {
     "ta": 0.4
    },
-   "take": "CAa-seed30313-w3.mp4",
+   "take": "CAa-seed30313-w3-splice.mp4",
    "lyric": "காட்டுப் பக்கம் வீடிருக்கு அங்கே போறேங்க!",
    "lyric_en": ""
   },
@@ -312,7 +312,7 @@
    "slip": {
     "ta": 0.4
    },
-   "take": "CAa-seed30313-w3.mp4",
+   "take": "CAa-seed30313-w3-splice.mp4",
    "lyric": "காட்டுப் பக்கம் வீடிருக்கு அங்கே போறேங்க!",
    "lyric_en": ""
   },
@@ -602,7 +602,7 @@
    "slip": {
     "en": 0.4
    },
-   "take": "CAa-seed30313-w3.mp4",
+   "take": "CAa-seed30313-w3-splice.mp4",
    "lyric": "",
    "lyric_en": "Home in the forest, that's where I'm going!"
   },
@@ -784,7 +784,7 @@
    "slip": {
     "en": 0.4
    },
-   "take": "CAa-seed30313-w3.mp4",
+   "take": "CAa-seed30313-w3-splice.mp4",
    "lyric": "",
    "lyric_en": "Home in the forest, that's where I'm going!"
   },

@@ -1,0 +1,64 @@
+[HKc] -> wan3 wan3.0-video 720P 16:9 8s refs=7 first=False last=False est $0.80
+  wan3 submitted task 9b99c035-3724-475a-9f4b-5472106606b3
+  wan3 task 9b99c035-3724-475a-9f4b-5472106606b3: RUNNING
+  wan3 task 9b99c035-3724-475a-9f4b-5472106606b3: SUCCEEDED
+[HKc] done in 353.4s -> songs/a12-karadi-w3\out\HKc-seed30313-w3.mp4 (running list-price estimate $0.80)
+[HKb] -> wan3 wan3.0-video 720P 16:9 6s refs=9 first=False last=False est $0.60
+  wan3 submitted task be94d7ff-c409-4a50-a511-f6581318b53c
+  wan3 task be94d7ff-c409-4a50-a511-f6581318b53c: RUNNING
+  wan3 task be94d7ff-c409-4a50-a511-f6581318b53c: SUCCEEDED
+[HKb] done in 295.4s -> songs/a12-karadi-w3\out\HKb-seed30313-w3.mp4 (running list-price estimate $1.40)
+[JOIN] -> wan3 wan3.0-video 720P 16:9 6s refs=9 first=False last=False est $0.60
+  wan3 submitted task 8f931f4c-b2b9-4edf-9862-24896eb4e6a1
+  wan3 task 8f931f4c-b2b9-4edf-9862-24896eb4e6a1: RUNNING
+  wan3 task 8f931f4c-b2b9-4edf-9862-24896eb4e6a1: SUCCEEDED
+[JOIN] done in 306.0s -> songs/a12-karadi-w3\out\JOIN-seed30313-w3.mp4 (running list-price estimate $2.00)
+[CAb] -> wan3 wan3.0-video 720P 16:9 6s refs=7 first=False last=False est $0.60
+  wan3 submitted task 325c344c-8751-4c1c-b7d1-c0b3734be657
+  wan3 task 325c344c-8751-4c1c-b7d1-c0b3734be657: RUNNING
+  wan3 task 325c344c-8751-4c1c-b7d1-c0b3734be657: SUCCEEDED
+[CAb] done in 418.9s -> songs/a12-karadi-w3\out\CAb-seed30313-w3.mp4 (running list-price estimate $2.60)
+[V1Q] -> wan3 wan3.0-video 720P 16:9 6s refs=6 first=False last=False est $0.60
+  wan3 submitted task 0bc3c876-fd73-4875-ad0a-6310b9e0ce43
+  wan3 task 0bc3c876-fd73-4875-ad0a-6310b9e0ce43: RUNNING
+  wan3 task 0bc3c876-fd73-4875-ad0a-6310b9e0ce43: SUCCEEDED
+[V1Q] done in 290.0s -> songs/a12-karadi-w3\out\V1Q-seed30313-w3.mp4 (running list-price estimate $3.20)
+[V2Q] -> wan3 wan3.0-video 720P 16:9 6s refs=6 first=False last=False est $0.60
+  wan3 submitted task 9becfbdc-ce3f-4a7e-9562-f6df37b1bdd4
+  wan3 task 9becfbdc-ce3f-4a7e-9562-f6df37b1bdd4: RUNNING
+  wan3 task 9becfbdc-ce3f-4a7e-9562-f6df37b1bdd4: SUCCEEDED
+[V2Q] done in 320.3s -> songs/a12-karadi-w3\out\V2Q-seed30313-w3.mp4 (running list-price estimate $3.80)
+[V3Q] -> wan3 wan3.0-video 720P 16:9 6s refs=9 first=False last=False est $0.60
+  wan3 submitted task a3549bb5-09ea-4aca-bb2c-8c3a44b78d8d
+  wan3 task a3549bb5-09ea-4aca-bb2c-8c3a44b78d8d: RUNNING
+  wan3 task a3549bb5-09ea-4aca-bb2c-8c3a44b78d8d: SUCCEEDED
+[V3Q] done in 417.0s -> songs/a12-karadi-w3\out\V3Q-seed30313-w3.mp4 (running list-price estimate $4.40)
+[V4Q] -> wan3 wan3.0-video 720P 16:9 6s refs=7 first=False last=False est $0.60
+  wan3 submitted task e30fc120-2666-4192-9b72-d8b0c6177ad0
+  wan3 task e30fc120-2666-4192-9b72-d8b0c6177ad0: RUNNING
+  wan3 task e30fc120-2666-4192-9b72-d8b0c6177ad0: SUCCEEDED
+[V4Q] done in 291.0s -> songs/a12-karadi-w3\out\V4Q-seed30313-w3.mp4 (running list-price estimate $5.00)
+[O2] -> wan3 wan3.0-video 720P 16:9 6s refs=9 first=False last=False est $0.60
+  wan3 submitted task 35eb7e36-df6a-4aa5-883c-b144604b9061
+  wan3 task 35eb7e36-df6a-4aa5-883c-b144604b9061: RUNNING
+  wan3 task 35eb7e36-df6a-4aa5-883c-b144604b9061: SUCCEEDED
+[O2] done in 362.7s -> songs/a12-karadi-w3\out\O2-seed30313-w3.mp4 (running list-price estimate $5.60)
+[O3] -> wan3 wan3.0-video 720P 16:9 6s refs=10 first=False last=False est $0.60
+  wan3 submitted task f6ed17f6-a462-4ab5-804c-9f987485ab40
+  wan3 task f6ed17f6-a462-4ab5-804c-9f987485ab40: RUNNING
+  wan3 task f6ed17f6-a462-4ab5-804c-9f987485ab40: SUCCEEDED
+[O3] done in 305.5s -> songs/a12-karadi-w3\out\O3-seed30313-w3.mp4 (running list-price estimate $6.20)
+
+SHOT       STATUS       WALL_S  FILE
+HKc        done          353.4  songs/a12-karadi-w3\out\HKc-seed30313-w3.mp4
+HKb        done          295.4  songs/a12-karadi-w3\out\HKb-seed30313-w3.mp4
+JOIN       done          306.0  songs/a12-karadi-w3\out\JOIN-seed30313-w3.mp4
+CAb        done          418.9  songs/a12-karadi-w3\out\CAb-seed30313-w3.mp4
+V1Q        done          290.0  songs/a12-karadi-w3\out\V1Q-seed30313-w3.mp4
+V2Q        done          320.3  songs/a12-karadi-w3\out\V2Q-seed30313-w3.mp4
+V3Q        done          417.0  songs/a12-karadi-w3\out\V3Q-seed30313-w3.mp4
+V4Q        done          291.0  songs/a12-karadi-w3\out\V4Q-seed30313-w3.mp4
+O2         done          362.7  songs/a12-karadi-w3\out\O2-seed30313-w3.mp4
+O3         done          305.5  songs/a12-karadi-w3\out\O3-seed30313-w3.mp4
+
+total GPU-minutes (done shots): 56.0
